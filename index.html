@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: enterprise-governance-v8 -->
+<!-- build: pilot-readiness-v9 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -257,6 +257,20 @@ const auditLogs=[
  {time:'18:55',text:'佐藤美咲が店長宛に非公開質問を送信'},
  {time:'18:30',text:'自動バックアップ完了'}
 ];
+const pilotChecklist=[
+ {id:'approval',label:'会社・上長の承認',done:false},
+ {id:'owner',label:'運用責任者の決定',done:false},
+ {id:'pilot',label:'1店舗パイロット開始',done:false},
+ {id:'roles',label:'役職・権限表の確定',done:true},
+ {id:'retention',label:'データ保存ルールの確定',done:true},
+ {id:'support',label:'問い合わせ窓口の決定',done:false}
+];
+let incidentStatus='平常';
+const changelog=[
+ {version:'0.9 Demo',date:'2026/09/20',text:'通知ディープリンク、担当・期限、管理センターを追加'},
+ {version:'0.8 Demo',date:'2026/09/20',text:'QR映像マニュアル、引き継ぎ履歴を追加'},
+ {version:'0.7 Demo',date:'2026/09/20',text:'確認者一覧、再通知、画像添付を追加'}
+];
 function go(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active')}
 function applyStore(){const s=document.getElementById('store').value;document.getElementById('homeTitle').textContent=s+'の今日';document.getElementById('guideBanner').style.display=s==='西口店'?'none':'block'}
 function applyRole(){const r=currentAccountRole;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';const rn=document.getElementById('roleName');if(rn)rn.textContent=(roleLabels[r]||r)+'（アカウント登録）'}
@@ -336,12 +350,15 @@ function openAdminCenter(){
   document.getElementById('modalBody').innerHTML=
     '<div class="head"><h3>管理センター</h3><small>企業導入デモ</small></div>'+
     '<div class="demobadge">この画面の数値・人物・ログはすべてデモデータ</div>'+
-    '<section class="section"><div class="head"><h3>導入効果KPI</h3><small>サンプル値</small></div>'+
+    '<section class="section"><div class="head"><h3>導入後に計測するKPI</h3><small>現在は未計測</small></div>'+
+      '<div class="card"><div class="sub">※ここは実績ではありません。パイロット開始後に実データで導入前／導入後を比較します。</div></div>'+
       '<div class="adminGrid">'+
-        '<div class="card"><strong>25%</strong><div class="sub">未確認率</div><div class="kpidown">12件 → 3件</div></div>'+
-        '<div class="card"><strong>28分</strong><div class="sub">平均対応完了</div><div class="kpidown">64分 → 28分</div></div>'+
-        '<div class="card"><strong>7分</strong><div class="sub">質問初回回答</div><div class="kpidown">18分 → 7分</div></div>'+
-        '<div class="card"><strong>89%</strong><div class="sub">再確認率</div><div class="kpiup">61% → 89%</div></div>'+
+        '<div class="card"><strong>--</strong><div class="sub">未確認率</div><div class="kpidown">導入前 → 導入後</div></div>'+
+        '<div class="card"><strong>--</strong><div class="sub">平均対応完了時間</div><div class="kpidown">導入前 → 導入後</div></div>'+
+        '<div class="card"><strong>--</strong><div class="sub">マニュアル再確認率</div><div class="kpidown">導入前 → 導入後</div></div>'+
+        '<div class="card"><strong>--</strong><div class="sub">他店舗勤務時の質問件数</div><div class="kpidown">導入前 → 導入後</div></div>'+
+        '<div class="card"><strong>--</strong><div class="sub">未確認者への再通知回数</div><div class="kpidown">導入前 → 導入後</div></div>'+
+        '<div class="card"><strong>--</strong><div class="sub">FAQ化できた質問数</div><div class="kpidown">パイロット中に集計</div></div>'+
       '</div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>アカウント管理</h3><small>在籍・退職対応</small></div>'+
@@ -369,6 +386,24 @@ function openAdminCenter(){
       '<div class="card"><div class="title">マニュアル・映像の権利</div><div class="sub">作成主体と利用範囲を組織ポリシーで明記。外部配布や転用は権限者承認を前提とする想定。</div></div>'+
       '<div class="card"><div class="title">デモ環境</div><div class="sub">現在の公開デモには架空データのみを使用。実在の店舗・スタッフ・機密情報は入れない前提。</div></div>'+
     '</section>'+
+    '<section class="section"><div class="head"><h3>パイロット導入チェック</h3><small>本番前</small></div>'+
+      '<div class="card">'+pilotChecklist.map(x=>'<div class="controlrow"><div><div class="title">'+x.label+'</div><div class="sub">'+(x.done?'準備済み':'未完了')+'</div></div><div class="switch '+(x.done?'on':'')+'" onclick="togglePilot(\''+x.id+'\')"></div></div>').join('')+'</div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>データ管理</h3><small>申請・承認</small></div>'+
+      '<div class="card"><div class="title">データ書き出し</div><div class="sub">CSVや監査用データの書き出しは権限者承認を前提にする想定。</div><button class="btn ghost full" style="margin-top:8px" onclick="requestExport()">書き出し申請（デモ）</button></div>'+
+      '<div class="card"><div class="title">データ削除</div><div class="sub">退職・保存期間満了・管理者依頼に応じて削除申請を残す想定。</div><button class="btn ghost full" style="margin-top:8px" onclick="requestDeletion()">削除申請（デモ）</button></div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>端末紛失・不正利用対応</h3><small>緊急操作</small></div>'+
+      '<div class="card"><div class="title">全セッション強制ログアウト</div><div class="sub">端末紛失や不正利用の疑いがある時に、全端末で再ログインを要求する想定。</div><button class="btn primary full" style="margin-top:8px" onclick="forceLogoutDemo()">強制ログアウト実行（デモ）</button></div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>障害・インシデント対応</h3><small>現在 '+incidentStatus+'</small></div>'+
+      '<div class="card"><div class="title">現在の状態</div><div class="sub">'+incidentStatus+'。異常発生時は記録→影響範囲確認→復旧→再発防止を残す想定。</div><button class="btn ghost full" style="margin-top:8px" onclick="openIncidentDemo()">インシデント記録を開く</button></div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>問い合わせ窓口</h3><small>運用サポート</small></div>'+
+      '<div class="card"><div class="title">一次窓口：店長 / MG</div><div class="sub">操作・権限・店舗運用に関する問い合わせ。</div></div>'+
+      '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 0.9 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
     '<section class="section"><div class="head"><h3>操作ログ</h3><small>誰が・いつ・何を</small></div><div class="card">'+logs+'</div></section>';
   document.getElementById('modal').classList.add('open');
 }
@@ -386,6 +421,32 @@ function toggleAccount(id){
   toast(a.name+' を'+(a.active?'再開':'利用停止')+'しました（デモ）');
 }
 function runBackup(){lastBackup='たった今';auditLogs.unshift({time:'19:50',text:'渡邉友介が手動バックアップを実行'});openAdminCenter();toast('バックアップが完了しました（デモ）')}
+function togglePilot(id){
+  const x=pilotChecklist.find(v=>v.id===id);if(!x)return;
+  x.done=!x.done;
+  openAdminCenter();
+  toast(x.label+'：'+(x.done?'準備済み':'未完了')+'（デモ）');
+}
+function requestExport(){
+  auditLogs.unshift({time:'20:45',text:'渡邉友介がデータ書き出し申請を作成'});
+  toast('書き出し申請を作成しました（デモ）');
+}
+function requestDeletion(){
+  auditLogs.unshift({time:'20:45',text:'渡邉友介がデータ削除申請を作成'});
+  toast('削除申請を作成しました（デモ）');
+}
+function forceLogoutDemo(){
+  auditLogs.unshift({time:'20:45',text:'渡邉友介が全セッション強制ログアウトを実行'});
+  toast('全端末を強制ログアウトしました（デモ）');
+}
+function openIncidentDemo(){
+  document.getElementById('modalBody').innerHTML=
+    '<h3>障害・インシデント記録</h3>'+
+    '<div class="card"><div class="title">状態</div><div class="sub">平常</div></div>'+
+    '<div class="card"><div class="title">記録項目</div><div class="sub">発生日時 / 影響範囲 / 原因 / 暫定対応 / 復旧日時 / 再発防止</div></div>'+
+    '<button class="btn primary full" onclick="toast(\'インシデントを記録しました（デモ）\')">記録を作成（デモ）</button>';
+  document.getElementById('modal').classList.add('open');
+}
 function openProfile(){
   const r=currentAccountRole;
   const imgStyle=profileImageData?'background-image:url('+profileImageData+')':'';
