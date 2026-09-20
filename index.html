@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: enterprise-readiness-complete-v16 -->
+<!-- build: shift-management-v17 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -16,6 +16,7 @@
 .userwm-session{position:fixed;right:max(calc((100vw - 430px)/2 + 8px),8px);bottom:76px;z-index:3;pointer-events:none;font-size:7px;font-weight:800;color:#667085;opacity:.34;background:#f4f6f8cc;padding:3px 5px;border-radius:5px}
 .syncbar{margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:#fff;font-size:10px;cursor:pointer}.syncbar b{font-size:10px}.syncpill{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:900;color:#157f5b}.syncpill.off{color:#a65d0b}.syncdot{width:7px;height:7px;border-radius:50%;background:#12b76a}.syncpill.off .syncdot{background:#f79009}
 .permtable{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff}.permtable table{border-collapse:collapse;min-width:560px;width:100%;font-size:9px}.permtable th,.permtable td{padding:8px;border-bottom:1px solid #eef1f4;text-align:center;white-space:nowrap}.permtable th:first-child,.permtable td:first-child{text-align:left;position:sticky;left:0;background:#fff;z-index:1}.permok{color:#157f5b;font-weight:900}.permno{color:#98a2b3}.healthrow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eef1f4}.healthrow:last-child{border-bottom:0}.healthok{font-size:9px;font-weight:900;color:#157f5b}.storagebar{height:8px;background:#e9edf2;border-radius:999px;overflow:hidden;margin-top:7px}.storagebar i{display:block;height:100%;width:12%;background:#667085;border-radius:999px}.authbadge{display:inline-flex;align-items:center;gap:5px;background:#ecfdf3;color:#067647;border:1px solid #abefc6;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:900}.legalbtn{cursor:pointer}.invitepending{opacity:.72}
+.shiftday{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid #eef1f4}.shiftday:last-child{border-bottom:0}.shiftdate{font-size:10px;font-weight:900;text-align:center;padding-top:3px}.shiftdate strong{font-size:18px;display:block}.shiftbox{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}.shiftbox.support{border-color:#b9c9ff;background:#f6f8ff}.shiftwarn{margin-top:7px;padding:8px 9px;border-radius:10px;background:#fff4e5;color:#8a4b08;font-size:10px;font-weight:800}.shiftok{margin-top:7px;padding:8px 9px;border-radius:10px;background:#ecfdf3;color:#067647;font-size:10px;font-weight:800}.staffing{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eef1f4}.staffing:last-child{border-bottom:0}.coverage{height:7px;background:#eef1f4;border-radius:999px;overflow:hidden;margin-top:5px}.coverage i{display:block;height:100%;border-radius:999px;background:#667085}.coverage i.low{background:#c43232}.shiftstatus{display:inline-flex;align-items:center;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:900;background:#eef2ff;color:#315fd3}
 .top{position:sticky;top:0;z-index:10;background:#f4f6f8ee;backdrop-filter:blur(15px);padding:14px;border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;justify-content:space-between}.brand h1{font-size:18px;margin:0}.tiny{font-size:10px;color:var(--muted)}
 .topactions{display:flex;align-items:center;gap:8px}.notifbtn{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid #d7dde6;background:#fff;color:#101828;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px #1018280d}.notifbadge{position:absolute;right:-3px;top:-3px;min-width:18px;height:18px;border-radius:999px;background:#c43232;color:#fff;border:2px solid var(--bg);font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 4px}.profilebtn{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid #d7dde6;background:linear-gradient(145deg,#1d2939,#344054);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:visible;cursor:pointer;box-shadow:0 3px 10px #10182814}
@@ -34,7 +35,7 @@
 .urg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.urg button{border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px 2px;font-size:11px;font-weight:800}.urg button.active[data-l="緊急"]{background:#8f1d1d;color:#fff}.urg button.active[data-l="高"]{background:#fff0f0;color:var(--red)}.urg button.active[data-l="通常"]{background:#fff6e8;color:var(--amber)}.urg button.active[data-l="低"]{background:#edf2ff;color:var(--blue)}
 input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px;margin-top:6px}textarea.input{min-height:90px}
 .skill{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #eef1f4}.skill:last-child{border-bottom:0}
-.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:68px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);z-index:20}.nav button{border:0;background:#fff;font-size:9px;color:#7b8494}.nav button span{display:block;font-size:18px}.nav button.active{color:#101828;font-weight:800}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:68px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);z-index:20}.nav button{border:0;background:#fff;font-size:8px;color:#7b8494;padding:5px 2px}.nav button span{display:block;font-size:17px}.nav button.active{color:#101828;font-weight:800}
 .modalbg{display:none;position:fixed;inset:0;background:#10182866;z-index:30;align-items:flex-end;justify-content:center}.modalbg.open{display:flex}.modal{position:relative;width:min(430px,100%);max-height:88vh;overflow:auto;background:#f8fafb;border-radius:24px 24px 0 0;padding:16px 16px 38px}.close{position:relative;z-index:8;float:right;border:0;background:#e9edf1;border-radius:10px;padding:8px}
 .wm-layer{display:none;position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden;padding:76px 0 90px;grid-template-columns:1fr 1fr;align-content:start;gap:92px 6px}
 .modalbg.confidential .wm-layer{display:grid}.wm-layer span{font-size:10px;font-weight:900;letter-spacing:.35px;color:#101828;opacity:.07;white-space:nowrap;transform:rotate(-29deg);transform-origin:center}
@@ -100,6 +101,12 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
       <button class="btn ghost full" style="margin-top:7px" onclick="openAckList()">確認状況を見る <span class="tiny">（店長以上）</span></button>
     </div>
     <div class="card"><div class="row"><div class="grow"><div class="title">公共料金控えの手順変更</div><div class="sub">最新版マニュアルの再確認が必要です。</div></div><span class="tag amber">再確認</span></div></div>
+  </section>
+  <section class="section"><div class="head"><h3>次のシフト</h3><small>勤務予定</small></div>
+    <div class="card tapcard" onclick="go('shift')"><div class="row"><div class="grow"><div class="title">9/21　17:00〜22:00</div><div class="sub">駅前店 ・ 応援勤務</div></div><span class="tag blue">初勤務</span></div>
+      <div class="shiftwarn">勤務前にStore Guideを確認してください。発注は未習得です。</div>
+      <div class="sub" style="margin-top:7px">タップしてシフト詳細を見る →</div>
+    </div>
   </section>
   <section class="section"><div class="head"><h3>自分の状態</h3><small>プロフィールに集約</small></div><div class="quick">
     <div class="card" onclick="openProfile()"><div class="title">👤 プロフィール</div><div class="sub">Skill Passport・役職・習得状況</div></div>
@@ -188,6 +195,37 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 </section>
 </main>
 
+<main id="shift" class="page">
+<section class="section">
+  <div class="head"><h3>シフト</h3><small>2026年9月</small></div>
+  <div class="card">
+    <div class="row"><div><div class="title">自分の勤務予定</div><div class="sub">確定済み 4件 / 変更申請 1件</div></div><span class="shiftstatus">公開済み</span></div>
+    <div class="shiftday"><div class="shiftdate"><strong>21</strong>月</div><div class="shiftbox support"><div class="title">17:00〜22:00 ・ 駅前店</div><div class="sub">応援勤務 / 初勤務</div><div class="shiftwarn">Store Guide確認推奨 ・ 発注は未習得</div><button class="btn blue full" style="margin-top:8px" onclick="openShiftDetail(1)">詳細を見る</button></div></div>
+    <div class="shiftday"><div class="shiftdate"><strong>23</strong>水</div><div class="shiftbox"><div class="title">13:00〜22:00 ・ 西口店</div><div class="sub">通常勤務</div><div class="shiftok">必要スキル：問題なし</div><button class="btn ghost full" style="margin-top:8px" onclick="openShiftDetail(2)">詳細を見る</button></div></div>
+    <div class="shiftday"><div class="shiftdate"><strong>25</strong>金</div><div class="shiftbox"><div class="title">17:00〜22:00 ・ 西口店</div><div class="sub">通常勤務</div></div></div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="head"><h3>申請・変更</h3><small>本人操作</small></div>
+  <div class="quick">
+    <div class="card" onclick="openShiftPreference()"><div class="title">🗓 希望を提出</div><div class="sub">出勤可能時間・休み希望</div></div>
+    <div class="card" onclick="openShiftChange()"><div class="title">↔ 変更を申請</div><div class="sub">交代・時間変更</div></div>
+  </div>
+  <div class="card tapcard" onclick="openSupportRequest()"><div class="row"><div><div class="title">応援募集</div><div class="sub">中央店 9/22 18:00〜22:00</div></div><span class="tag red">1名不足</span></div><div class="sub">タップして応募条件を見る →</div></div>
+</section>
+
+<section class="section" id="managerShiftSection">
+  <div class="head"><h3>店舗の人員状況</h3><small>店長以上</small></div>
+  <div class="card">
+    <div class="staffing"><div><div class="title">9/21 17:00〜22:00</div><div class="sub">必要4名 / 配置4名</div><div class="coverage"><i style="width:100%"></i></div></div><span class="tag green">充足</span></div>
+    <div class="staffing"><div><div class="title">9/22 18:00〜22:00</div><div class="sub">必要4名 / 配置3名</div><div class="coverage"><i class="low" style="width:75%"></i></div></div><span class="tag red">1名不足</span></div>
+    <div class="staffing"><div><div class="title">9/23 13:00〜17:00</div><div class="sub">必要3名 / 配置3名</div><div class="coverage"><i style="width:100%"></i></div></div><span class="tag green">充足</span></div>
+  </div>
+  <button class="btn primary full" onclick="openShiftBuilder()">シフト作成・調整（デモ）</button>
+</section>
+</main>
+
 <main id="settings" class="page">
 <section class="section role-list"><div class="head"><h3>権限と運用</h3><small id="roleName">店長（デモ権限）</small></div>
   <div class="card"><div class="title">役職はアカウント作成時に登録</div><div class="sub">ホームでは切り替えません。役職変更は管理側で更新する想定です。</div></div>
@@ -205,6 +243,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 <button class="active" onclick="go('home',this)"><span>⌂</span>ホーム</button>
 <button onclick="go('handover',this)"><span>📝</span>引き継ぎ</button>
 <button onclick="go('tasks',this)"><span>✓</span>業務</button>
+<button onclick="go('shift',this)"><span>🗓</span>シフト</button>
 <button onclick="go('manuals',this)"><span>📖</span>マニュアル</button>
 <button onclick="go('report',this)"><span>!</span>報告・質問</button>
 </nav>
@@ -290,6 +329,7 @@ const pilotChecklist=[
 ];
 let incidentStatus='平常';
 const changelog=[
+ {version:'1.1 Demo',date:'2026/09/20',text:'シフト確認・希望提出・変更申請・応援募集・人員不足警告を追加'},
  {version:'1.0 Demo',date:'2026/09/20',text:'認証・テナント分離・権限表・オフライン同期・運用監視を統合'},
  {version:'0.9 Demo',date:'2026/09/20',text:'通知ディープリンク、担当・期限、管理センターを追加'},
  {version:'0.8 Demo',date:'2026/09/20',text:'QR映像マニュアル、引き継ぎ履歴を追加'}
@@ -306,6 +346,58 @@ const legalDocs=[
  {id:'privacy',title:'プライバシーポリシー',version:'Draft 0.1',text:'取得する情報、利用目的、保存期間、削除、問い合わせ窓口を明記する想定です。'},
  {id:'security',title:'情報セキュリティ方針',version:'Draft 0.1',text:'最小権限、アクセス記録、端末紛失、情報持ち出し、インシデント対応を定める想定です。'}
 ];
+const shiftDemo=[
+ {id:1,date:'9/21',time:'17:00〜22:00',store:'駅前店',support:true,first:true,status:'確定',needed:['レジ接客','公共料金','宅配便受付','発注']},
+ {id:2,date:'9/23',time:'13:00〜22:00',store:'西口店',support:false,first:false,status:'確定',needed:['レジ接客','公共料金','コピー機対応']}
+];
+let shiftPreferenceState='未提出';
+let shiftChangeState='申請中';
+function openShiftDetail(id){
+  const s=shiftDemo.find(x=>x.id===id);if(!s)return;
+  const skillMap=Object.fromEntries(skillPassport.map(x=>[x.name,x]));
+  const missing=s.needed.filter(x=>!skillMap[x]||skillMap[x].score<60);
+  const guide=s.first?'<div class="card"><div class="title">📍 この店舗は初めてです</div><div class="sub">勤務前に駅前店のStore Guideを確認してください。</div><button class="btn blue full" style="margin-top:8px" onclick="closeModal();document.getElementById(\'store\').value=\'駅前店\';applyStore();go(\'home\');setTimeout(()=>openGuide(),180)">Store Guideを開く</button></div>':'';
+  document.getElementById('modalBody').innerHTML=
+    '<h3>'+s.date+' '+s.time+'</h3><div class="sub">'+s.store+' ・ '+(s.support?'応援勤務':'通常勤務')+' ・ '+s.status+'</div>'+
+    guide+
+    '<div class="card"><div class="title">必要スキル</div>'+s.needed.map(x=>{const sk=skillMap[x];return '<div class="ackline"><span>'+x+'</span><span class="tag '+(sk&&sk.score>=60?'green':'red')+'">'+(sk?sk.status:'未習得')+'</span></div>'}).join('')+'</div>'+
+    (missing.length?'<div class="shiftwarn">この勤務で不足しているスキル：'+missing.join('、')+'。配置責任者にも表示されます。</div>':'<div class="shiftok">この勤務に必要なスキルは満たしています。</div>')+
+    '<button class="btn ghost full" style="margin-top:10px" onclick="openShiftChange()">この勤務の変更を申請</button>';
+  document.getElementById('modal').classList.add('open');
+}
+function openShiftPreference(){
+  document.getElementById('modalBody').innerHTML=
+    '<h3>シフト希望を提出</h3><div class="card"><label class="tiny">対象週</label><div class="title">9/28〜10/4</div></div>'+
+    '<div class="card"><label class="tiny">出勤可能時間</label><select class="input"><option>月 17:00〜22:00</option><option>水 13:00〜22:00</option><option>金 17:00〜22:00</option></select><textarea class="input" placeholder="休み希望・補足"></textarea></div>'+
+    '<button class="btn blue full" onclick="submitShiftPreference()">この内容で提出</button>';
+  document.getElementById('modal').classList.add('open');
+}
+function submitShiftPreference(){shiftPreferenceState='提出済み';auditLogs.unshift({time:'23:05',text:'渡邉友介がシフト希望を提出'});closeModal();toast('シフト希望を提出しました（デモ）')}
+function openShiftChange(){
+  document.getElementById('modalBody').innerHTML=
+    '<h3>シフト変更申請</h3><select class="input"><option>9/21 17:00〜22:00 駅前店</option><option>9/23 13:00〜22:00 西口店</option></select>'+
+    '<select class="input" style="margin-top:8px"><option>交代希望</option><option>開始時間変更</option><option>終了時間変更</option><option>欠勤相談</option></select>'+
+    '<textarea class="input" placeholder="理由・希望内容"></textarea><button class="btn primary full" onclick="submitShiftChange()">変更を申請</button>';
+  document.getElementById('modal').classList.add('open');
+}
+function submitShiftChange(){shiftChangeState='申請中';notifications.unshift({id:99,type:'シフト',title:'シフト変更申請を受付',body:'店長の確認待ちです。',read:false});updateNotificationBadge();closeModal();toast('変更申請を送りました（デモ）')}
+function openSupportRequest(){
+  document.getElementById('modalBody').innerHTML=
+    '<h3>応援募集</h3><div class="card"><div class="title">中央店 ・ 9/22 18:00〜22:00</div><div class="sub">不足 1名 / 必要スキル：レジ接客・宅配便受付</div></div>'+
+    '<div class="card"><div class="title">あなたの適合状況</div><div class="shiftok">レジ接客：単独対応可 / 宅配便受付：単独対応可</div><div class="sub">中央店は初回勤務になるため、確定後にStore Guideが表示されます。</div></div>'+
+    '<button class="btn blue full" onclick="applySupportShift()">応援に応募する</button>';
+  document.getElementById('modal').classList.add('open');
+}
+function applySupportShift(){closeModal();toast('応援勤務に応募しました（デモ）')}
+function openShiftBuilder(){
+  if(roleRank[currentAccountRole]<roleRank.manager){denyAccess();return}
+  document.getElementById('modalBody').innerHTML=
+    '<h3>シフト作成・調整</h3><div class="card"><div class="title">9/22 18:00〜22:00</div><div class="sub">必要4名 / 配置3名</div><div class="shiftwarn">1名不足。応援募集を公開中。</div></div>'+
+    '<div class="card"><div class="title">配置チェック</div><div class="sub">鈴木蓮：レジ接客 ○ / 宅配便 ○</div><div class="sub">高橋彩乃：レジ接客 ○ / 宅配便 △</div><div class="sub">田中悠真：他店舗と時間重複なし</div></div>'+
+    '<div class="card"><div class="title">自動警告</div><div class="sub">ダブルブッキング / 必要人数不足 / 必要スキル不足 / 初勤務店舗をチェックする想定。</div></div>'+
+    '<button class="btn primary full" onclick="toast(\'シフトを確定し、対象者へ通知しました（デモ）\')">確定して通知</button>';
+  document.getElementById('modal').classList.add('open');enableConfidentialWatermark();
+}
 function currentUserStamp(){
   const d=new Date();
   const date=d.toLocaleDateString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit'});
@@ -332,7 +424,7 @@ function canOpen(scope){
 function denyAccess(){toast('このアカウントには閲覧権限がありません')}
 function go(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active')}
 function applyStore(){const s=document.getElementById('store').value;document.getElementById('homeTitle').textContent=s+'の今日';document.getElementById('guideBanner').style.display=s==='西口店'?'none':'block';refreshUserWatermark()}
-function applyRole(){const r=currentAccountRole;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';const rn=document.getElementById('roleName');if(rn)rn.textContent=(roleLabels[r]||r)+'（アカウント登録）';refreshUserWatermark()}
+function applyRole(){const r=currentAccountRole;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';const rn=document.getElementById('roleName');if(rn)rn.textContent=(roleLabels[r]||r)+'（アカウント登録）';const ms=document.getElementById('managerShiftSection');if(ms)ms.style.display=roleRank[r]>=roleRank.manager?'block':'none';refreshUserWatermark()}
 function urgency(btn,l){currentUrgency=l;document.querySelectorAll('.urg button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('urgNote').textContent={
 低:'低：全クルー共有＋本部以外のリーダー以上へ通知。',
 通常:'通常：全クルー共有＋本部以外のリーダー以上へ通知。',
@@ -436,6 +528,8 @@ function openAdminCenter(){
   const permRows=[
     ['自分のSkill Passport',['✓','✓','✓','✓','✓','✓','✓']],
     ['店舗の公開マニュアル',['✓','✓','✓','✓','✓','✓','✓']],
+    ['自分のシフト・希望提出',['✓','✓','✓','✓','✓','✓','✓']],
+    ['シフト作成・承認',['—','—','✓','✓','✓','✓','✓']],
     ['確認状況一覧',['—','—','✓','✓','✓','✓','✓']],
     ['アカウント管理',['—','—','✓','✓','✓','✓','✓']],
     ['監査ログ',['—','—','✓','✓','✓','✓','✓']],
@@ -532,7 +626,7 @@ function openAdminCenter(){
       '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>規約・プライバシー</h3><small>Draft</small></div><div class="card">'+legalDocs.map(d=>'<div class="controlrow legalbtn" onclick="openLegal(\''+d.id+'\')"><div><div class="title">'+d.title+'</div><div class="sub">'+d.version+'</div></div><span>›</span></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 1.0 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 1.1 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
     '<section class="section"><div class="head"><h3>操作ログ</h3><small>改ざん防止</small></div><div class="card"><div class="sub">監査ログは追記のみ。管理者でも既存記録を編集・削除できない想定。</div>'+logs+'</div></section>';
   document.getElementById('modal').classList.add('open');
   enableConfidentialWatermark();
