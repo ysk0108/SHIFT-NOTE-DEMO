@@ -1,0 +1,23 @@
+{
+  "id": "./",
+  "name": "SHIFT NOTE",
+  "short_name": "SHIFT NOTE",
+  "description": "店舗業務・引き継ぎ・シフト・マニュアルを一つにまとめる社内業務PWA",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#f4f6f8",
+  "theme_color": "#101828",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "./pwa-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
