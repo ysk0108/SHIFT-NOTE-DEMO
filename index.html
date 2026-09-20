@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: calendar-dot-time-nextday-v24 -->
+<!-- build: calendar-two-line-time-v25 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -18,7 +18,7 @@
 .permtable{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff}.permtable table{border-collapse:collapse;min-width:560px;width:100%;font-size:9px}.permtable th,.permtable td{padding:8px;border-bottom:1px solid #eef1f4;text-align:center;white-space:nowrap}.permtable th:first-child,.permtable td:first-child{text-align:left;position:sticky;left:0;background:#fff;z-index:1}.permok{color:#157f5b;font-weight:900}.permno{color:#98a2b3}.healthrow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eef1f4}.healthrow:last-child{border-bottom:0}.healthok{font-size:9px;font-weight:900;color:#157f5b}.storagebar{height:8px;background:#e9edf2;border-radius:999px;overflow:hidden;margin-top:7px}.storagebar i{display:block;height:100%;width:12%;background:#667085;border-radius:999px}.authbadge{display:inline-flex;align-items:center;gap:5px;background:#ecfdf3;color:#067647;border:1px solid #abefc6;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:900}.legalbtn{cursor:pointer}.invitepending{opacity:.72}
 .shiftday{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid #eef1f4}.shiftday:last-child{border-bottom:0}.shiftdate{font-size:10px;font-weight:900;text-align:center;padding-top:3px}.shiftdate strong{font-size:18px;display:block}.shiftbox{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}.shiftbox.support{border-color:#b9c9ff;background:#f6f8ff}.shiftwarn{margin-top:7px;padding:8px 9px;border-radius:10px;background:#fff4e5;color:#8a4b08;font-size:10px;font-weight:800}.shiftok{margin-top:7px;padding:8px 9px;border-radius:10px;background:#ecfdf3;color:#067647;font-size:10px;font-weight:800}.staffing{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eef1f4}.staffing:last-child{border-bottom:0}.coverage{height:7px;background:#eef1f4;border-radius:999px;overflow:hidden;margin-top:5px}.coverage i{display:block;height:100%;border-radius:999px;background:#667085}.coverage i.low{background:#c43232}.shiftstatus{display:inline-flex;align-items:center;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:900;background:#eef2ff;color:#315fd3}
 .deadlinecard{border:1px solid #ffd7a8;background:#fffaf3}.deadlinebig{font-size:22px;font-weight:900;margin-top:4px}.candidate{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eef1f4}.candidate:last-child{border-bottom:0}.candidate .name{font-size:11px;font-weight:900}.candidate .meta{font-size:9px;color:var(--muted);margin-top:2px}
-.prefcal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:9px}.prefcal .dow{font-size:8px;color:var(--muted);text-align:center;padding:4px 0}.prefday{border:1px solid var(--line);background:#fff;border-radius:10px;min-height:58px;padding:4px 2px;text-align:center;font-size:10px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;overflow:hidden}.prefday.out{opacity:.25}.prefday.active{border-color:#315fd3;background:#eef2ff;color:#1f4bb8}.prefdot{width:6px;height:6px;border-radius:50%;margin-top:1px;background:transparent;flex:0 0 auto}.prefdot.green{background:#12b76a}.prefdot.red{background:#c43232}.prefnum{font-size:10px;font-weight:900;line-height:1.05}.preftime{display:block;max-width:100%;font-size:6.5px;line-height:1.05;font-weight:800;letter-spacing:-.25px;white-space:nowrap;overflow:hidden;text-overflow:clip;color:#667085}.prefday.active .preftime{color:#315fd3}.preflegend{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:9px;color:var(--muted)}.preflegend span{display:inline-flex;align-items:center;gap:4px}.preflegend i{width:7px;height:7px;border-radius:50%;background:#12b76a}.preflegend .off i{background:#c43232}.prefeditor{margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fff}.prefsummary{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.prefcal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:9px}.prefcal .dow{font-size:8px;color:var(--muted);text-align:center;padding:4px 0}.prefday{border:1px solid var(--line);background:#fff;border-radius:10px;min-height:58px;padding:4px 2px;text-align:center;font-size:10px;font-weight:800;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;overflow:hidden}.prefday.out{opacity:.25}.prefday.active{border-color:#315fd3;background:#eef2ff;color:#1f4bb8}.prefdot{width:6px;height:6px;border-radius:50%;margin-top:1px;background:transparent;flex:0 0 auto}.prefdot.green{background:#12b76a}.prefdot.red{background:#c43232}.prefnum{font-size:10px;font-weight:900;line-height:1.05}.preftime{display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:100%;font-size:7px;line-height:1.05;font-weight:800;letter-spacing:-.1px;color:#667085;gap:1px}.preftime span{display:block;white-space:nowrap}.prefday.active .preftime{color:#315fd3}.preflegend{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:9px;color:var(--muted)}.preflegend span{display:inline-flex;align-items:center;gap:4px}.preflegend i{width:7px;height:7px;border-radius:50%;background:#12b76a}.preflegend .off i{background:#c43232}.prefeditor{margin-top:10px;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fff}.prefsummary{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .timeinputs{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr);gap:6px;align-items:center;margin-top:8px}
 .timefield{min-width:0;width:100%;height:40px;overflow:hidden;display:flex;align-items:center}
 .timefield input[type="time"]{-webkit-appearance:none;appearance:none;box-sizing:border-box;width:100%;max-width:100%;min-width:0;height:40px;padding:0 8px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:12px;text-align:center;display:block;line-height:40px;margin:0}
@@ -353,6 +353,7 @@ const pilotChecklist=[
 ];
 let incidentStatus='平常';
 const changelog=[
+ {version:'1.7 Demo',date:'2026/09/21',text:'カレンダー内の時間を開始・終了の2段表示に変更'},
  {version:'1.6 Demo',date:'2026/09/21',text:'希望確定後の翌日移動・カレンダー上の状態丸と時間表示・iPad時間位置を調整'},
  {version:'1.5 Demo',date:'2026/09/20',text:'希望時間の手入力・時間テンプレート・傾向候補・未入力日の自動休みを追加'},
  {version:'1.4 Demo',date:'2026/09/20',text:'希望提出カレンダーと募集前の事前希望登録を追加'},
@@ -481,7 +482,14 @@ function renderPreferenceCalendar(){
     const pref=calendarPreferenceDraft[key];
     const cls=pref?(pref.status==='available'?' available':' offday'):'';
     const dot=pref?(pref.status==='available'?' green':' red'):'';
-    const time=pref?(pref.status==='available'&&pref.start&&pref.end?(pref.start+'〜'+pref.end):'休み'):'';
+    let time='';
+    if(pref){
+      if(pref.status==='available'&&pref.start&&pref.end){
+        time='<span>'+pref.start+'</span><span>'+pref.end+'</span>';
+      }else if(pref.status==='off'){
+        time='<span>休み</span>';
+      }
+    }
     html+='<button class="prefday'+cls+(selectedPreferenceDate===key?' active':'')+'" onclick="selectPreferenceDate(\''+key+'\')"><span class="prefdot'+dot+'"></span><span class="prefnum">'+day+'</span><span class="preftime">'+time+'</span></button>';
   }
   return html;
@@ -919,7 +927,7 @@ function openAdminCenter(){
       '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>規約・プライバシー</h3><small>Draft</small></div><div class="card">'+legalDocs.map(d=>'<div class="controlrow legalbtn" onclick="openLegal(\''+d.id+'\')"><div><div class="title">'+d.title+'</div><div class="sub">'+d.version+'</div></div><span>›</span></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 1.6 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 1.7 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
     '<section class="section"><div class="head"><h3>操作ログ</h3><small>改ざん防止</small></div><div class="card"><div class="sub">監査ログは追記のみ。管理者でも既存記録を編集・削除できない想定。</div>'+logs+'</div></section>';
   document.getElementById('modal').classList.add('open');
   enableConfidentialWatermark();
