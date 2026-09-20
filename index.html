@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: phrase-level-global-translation-v32 -->
+<!-- build: maximal-translation-coverage-v33 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -348,6 +348,7 @@ function applyLanguage(){
   document.querySelectorAll('*').forEach(el=>{
     const originals=translationAttrOriginal.get(el);
     if(originals)Object.entries(originals).forEach(([a,v])=>{if(v!=null)el.setAttribute(a,v)});
+    if(translationControlOriginal.has(el))el.value=translationControlOriginal.get(el);
   });
   const walkerRestore=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
   let restoreNode;while((restoreNode=walkerRestore.nextNode())){
@@ -373,8 +374,10 @@ function refreshTranslationSamples(){
 function openLanguageSettings(){
   const d=uiLang[currentLanguage]||uiLang.ja;
   const opts=languageOptions.map(x=>'<option value="'+x.code+'" '+(x.code===currentLanguage?'selected':'')+'>'+x.label+'</option>').join('');
+  const audit=untranslatedJapaneseAudit();
+  const auditText=currentLanguage==='ja'?'日本語原文モード':(audit.count===0?'表示中の未翻訳日本語：0件':'表示中の未翻訳日本語：'+audit.count+'件（自動翻訳バックエンド接続対象）');
   document.getElementById('modalBody').innerHTML=
-    '<h3>'+d.language+'</h3><div class="card"><div class="title">'+d.choose+'</div><select id="languageSelect" class="input" style="margin-top:8px">'+opts+'</select><div class="translation-note">'+(d.translation_note||uiLang.en.translation_note)+'</div><div class="translation-note">🌐 現在の画面・モーダル・通知・入力補助・管理画面を含む日本語UIをすべて翻訳対象として登録。人名・店舗名などの固有名詞は原文維持。本番では未登録文も翻訳バックエンドで自動翻訳します。</div></div>'+
+    '<h3>'+d.language+'</h3><div class="card"><div class="title">'+d.choose+'</div><select id="languageSelect" class="input" style="margin-top:8px">'+opts+'</select><div class="translation-note">'+(d.translation_note||uiLang.en.translation_note)+'</div><div class="translation-note">🌐 現在の画面・モーダル・通知・入力補助・管理画面を含む日本語UIをすべて翻訳対象として登録。人名・店舗名などの固有名詞は原文維持。本番では未登録文も翻訳バックエンドで自動翻訳します。</div><div class="translation-note">🔎 '+auditText+'</div></div>'+
     '<button class="btn blue full" onclick="saveLanguageSetting()">'+d.save+'</button>';
   document.getElementById('modal').classList.add('open');
 }
@@ -593,6 +596,93 @@ const phraseI18n=[
  {ja:'準備済み',en:'Ready','zh-CN':'已准备',ko:'준비 완료',vi:'Sẵn sàng',ne:'तयार',pt:'Pronto',si:'සූදානම්',ta:'தயார்'},
  {ja:'未完了',en:'Incomplete','zh-CN':'未完成',ko:'미완료',vi:'Chưa hoàn tất',ne:'अपूर्ण',pt:'Incompleto',si:'අසම්පූර්ණ',ta:'முழுமையில்லை'}
 ];
+
+const maximalPhraseI18n=[
+ {ja:'複数店舗',en:'Multiple stores','zh-CN':'多家门店',ko:'여러 점포',vi:'Nhiều cửa hàng',ne:'धेरै स्टोर',pt:'Várias lojas',si:'ශාඛා කිහිපයක්',ta:'பல கடைகள்'},
+ {ja:'エリア',en:'Area','zh-CN':'区域',ko:'지역',vi:'Khu vực',ne:'क्षेत्र',pt:'Área',si:'ප්‍රදේශය',ta:'பகுதி'},
+ {ja:'レギュラークルー',en:'Regular Crew','zh-CN':'普通员工',ko:'일반 크루',vi:'Nhân viên thường',ne:'नियमित क्रु',pt:'Equipe regular',si:'සාමාන්‍ය කාර්ය මණ්ඩලය',ta:'சாதாரண பணியாளர்'},
+ {ja:'リーダー',en:'Leader','zh-CN':'负责人',ko:'리더',vi:'Trưởng ca',ne:'लिडर',pt:'Líder',si:'නායක',ta:'தலைவர்'},
+ {ja:'店長',en:'Store Manager','zh-CN':'店长',ko:'점장',vi:'Quản lý cửa hàng',ne:'स्टोर म्यानेजर',pt:'Gerente da loja',si:'ශාඛා කළමනාකරු',ta:'கடை மேலாளர்'},
+ {ja:'統括',en:'Area Lead','zh-CN':'区域统筹',ko:'총괄',vi:'Quản lý khu vực',ne:'क्षेत्र प्रमुख',pt:'Supervisor regional',si:'ප්‍රදේශ ප්‍රධානියා',ta:'பகுதி பொறுப்பாளர்'},
+ {ja:'オーナー',en:'Owner','zh-CN':'业主',ko:'오너',vi:'Chủ sở hữu',ne:'मालिक',pt:'Proprietário',si:'හිමිකරු',ta:'உரிமையாளர்'},
+ {ja:'本部',en:'HQ','zh-CN':'总部',ko:'본부',vi:'Trụ sở',ne:'मुख्यालय',pt:'Sede',si:'මූලස්ථානය',ta:'தலைமையகம்'},
+ {ja:'この店舗は初めてです',en:'This is your first shift at this store','zh-CN':'这是你第一次在这家门店上班',ko:'이 점포는 첫 근무입니다',vi:'Đây là ca đầu tiên tại cửa hàng này',ne:'यो स्टोरमा पहिलो सिफ्ट हो',pt:'Este é seu primeiro turno nesta loja',si:'මෙම ශාඛාවේ පළමු වැඩ මුරයයි',ta:'இந்த கடையில் இது உங்கள் முதல் பணி'},
+ {ja:'いつもの店舗との違いだけ確認。Skill Passportはそのまま引き継がれます。',en:'Check only what differs from your usual store. Your Skill Passport carries over.', 'zh-CN':'只需确认与常用门店不同之处，Skill Passport会继续保留。',ko:'평소 점포와 다른 점만 확인하세요. Skill Passport는 그대로 유지됩니다.',vi:'Chỉ cần kiểm tra điểm khác với cửa hàng thường làm. Skill Passport được giữ nguyên.',ne:'सामान्य स्टोरभन्दा फरक कुरा मात्र जाँच गर्नुहोस्। Skill Passport जस्ताको तस्तै रहन्छ।',pt:'Confira apenas o que muda em relação à sua loja habitual. O Skill Passport é mantido.',si:'සාමාන්‍ය ශාඛාවෙන් වෙනස් දේ පමණක් බලන්න. Skill Passport එලෙසම ගෙන යයි.',ta:'உங்கள் வழக்கமான கடையிலிருந்து வேறுபடும் விஷயங்களை மட்டும் சரிபார்க்கவும். Skill Passport தொடரும்.'},
+ {ja:'勤務前に駅前店のStore Guideを確認してください。',en:'Check the Store Guide before your shift.', 'zh-CN':'上班前请确认Store Guide。',ko:'근무 전에 Store Guide를 확인하세요.',vi:'Hãy xem Store Guide trước ca làm.',ne:'सिफ्ट अघि Store Guide जाँच गर्नुहोस्।',pt:'Confira o Store Guide antes do turno.',si:'වැඩ මුරයට පෙර Store Guide බලන්න.',ta:'பணி நேரத்திற்கு முன் Store Guide-ஐ பார்க்கவும்.'},
+ {ja:'Store Guideを開く',en:'Open Store Guide','zh-CN':'打开Store Guide',ko:'Store Guide 열기',vi:'Mở Store Guide',ne:'Store Guide खोल्नुहोस्',pt:'Abrir Store Guide',si:'Store Guide විවෘත කරන්න',ta:'Store Guide திற'},
+ {ja:'不足しているスキル',en:'Missing skills','zh-CN':'缺少的技能',ko:'부족한 스킬',vi:'Kỹ năng còn thiếu',ne:'कम सीप',pt:'Habilidades faltantes',si:'අඩු කුසලතා',ta:'குறைந்த திறன்கள்'},
+ {ja:'配置責任者にも表示されます。',en:'This is also shown to the staffing manager.', 'zh-CN':'配置负责人也会看到。',ko:'배치 책임자에게도 표시됩니다.',vi:'Nội dung này cũng hiển thị cho người phụ trách bố trí.',ne:'यो स्टाफिङ जिम्मेवारलाई पनि देखाइन्छ।',pt:'Isso também é mostrado ao responsável pela escala.',si:'මෙය කාර්ය මණ්ඩල සැලසුම් භාරකරුටද පෙන්වයි.',ta:'இது பணியாளர் ஒதுக்கீடு பொறுப்பாளருக்கும் காட்டப்படும்.'},
+ {ja:'この勤務に必要なスキルは満たしています。',en:'You meet the required skills for this shift.', 'zh-CN':'已满足本班次所需技能。',ko:'이 근무에 필요한 스킬을 충족합니다.',vi:'Bạn đáp ứng các kỹ năng cần cho ca này.',ne:'यो सिफ्टका आवश्यक सीप पूरा छन्।',pt:'Você atende às habilidades exigidas para este turno.',si:'මෙම වැඩ මුරයට අවශ්‍ය කුසලතා ඔබ සපුරාලයි.',ta:'இந்த பணிக்குத் தேவையான திறன்கள் உங்களிடம் உள்ளன.'},
+ {ja:'この勤務の変更を申請',en:'Request a change for this shift','zh-CN':'申请变更本班次',ko:'이 근무 변경 신청',vi:'Yêu cầu thay đổi ca này',ne:'यो सिफ्ट परिवर्तन अनुरोध',pt:'Solicitar alteração deste turno',si:'මෙම වැඩ මුරය වෙනස් කිරීමට ඉල්ලන්න',ta:'இந்த பணி நேரத்தை மாற்ற கோரு'},
+ {ja:'シフト希望を提出',en:'Submit shift availability','zh-CN':'提交排班希望',ko:'시프트 희망 제출',vi:'Gửi nguyện vọng ca làm',ne:'सिफ्ट उपलब्धता पठाउनुहोस्',pt:'Enviar disponibilidade de turno',si:'වැඩ මුර කැමැත්ත යවන්න',ta:'பணி விருப்பத்தை சமர்ப்பி'},
+ {ja:'対象',en:'Period','zh-CN':'对象',ko:'대상',vi:'Đối tượng',ne:'अवधि',pt:'Período',si:'අදාළ',ta:'காலம்'},
+ {ja:'日付をタップして入力。出勤可能 / 休み希望を確定すると自動で翌日に進みます。',en:'Tap a date to enter availability. After choosing available or off, it moves to the next day automatically.', 'zh-CN':'点击日期输入，确定可出勤或休息后会自动进入下一天。',ko:'날짜를 탭해 입력하세요. 출근 가능/휴무를 확정하면 자동으로 다음 날로 이동합니다.',vi:'Chạm ngày để nhập. Sau khi xác nhận có thể làm hoặc nghỉ, hệ thống tự chuyển sang ngày tiếp theo.',ne:'मिति थिचेर भर्नुहोस्। उपलब्ध वा बिदा तय गरेपछि अर्को दिनमा स्वतः जान्छ।',pt:'Toque na data. Ao confirmar disponível ou folga, avança automaticamente para o dia seguinte.',si:'දිනය තට්ටු කර ඇතුළත් කරන්න. වැඩ කළ හැකි/නිවාඩු තහවුරු කළ පසු ඊළඟ දිනට ස්වයංක්‍රීයව යයි.',ta:'தேதியைத் தட்டி உள்ளிடவும். வர முடியும்/விடுப்பு உறுதி செய்ததும் அடுத்த நாளுக்கு தானாக நகரும்.'},
+ {ja:'全体の補足・希望',en:'Overall notes / requests','zh-CN':'整体补充/希望',ko:'전체 보충/희망',vi:'Ghi chú / nguyện vọng chung',ne:'समग्र टिप्पणी/अनुरोध',pt:'Observações gerais',si:'සමස්ත සටහන්/කැමැත්ත',ta:'மொத்த குறிப்புகள்/விருப்பங்கள்'},
+ {ja:'この期間の入力を全削除',en:'Clear all entries for this period','zh-CN':'清除本期间全部输入',ko:'이 기간 입력 전체 삭제',vi:'Xóa toàn bộ mục trong giai đoạn này',ne:'यो अवधिका सबै प्रविष्टि हटाउनुहोस्',pt:'Limpar todas as entradas deste período',si:'මෙම කාලසීමාවේ සියලු ඇතුළත් කිරීම් මකන්න',ta:'இந்த காலத்தின் அனைத்து உள்ளீடுகளையும் நீக்கு'},
+ {ja:'この内容で提出',en:'Submit these details','zh-CN':'提交此内容',ko:'이 내용으로 제출',vi:'Gửi nội dung này',ne:'यो विवरण पठाउनुहोस्',pt:'Enviar estes dados',si:'මෙම විස්තර යවන්න',ta:'இந்த விவரங்களை சமர்ப்பி'},
+ {ja:'終了時間は開始時間より後にしてください',en:'End time must be later than start time','zh-CN':'结束时间必须晚于开始时间',ko:'종료 시간은 시작 시간보다 늦어야 합니다',vi:'Giờ kết thúc phải sau giờ bắt đầu',ne:'अन्त्य समय सुरु समयभन्दा पछि हुनुपर्छ',pt:'O horário de término deve ser posterior ao início',si:'අවසන් වේලාව ආරම්භ වේලාවට පසුව විය යුතුය',ta:'முடிவு நேரம் தொடக்க நேரத்திற்குப் பிறகு இருக்க வேண்டும்'},
+ {ja:'先に開始・終了時間を入力してください',en:'Enter start and end times first','zh-CN':'请先输入开始和结束时间',ko:'먼저 시작/종료 시간을 입력하세요',vi:'Hãy nhập giờ bắt đầu và kết thúc trước',ne:'पहिले सुरु र अन्त्य समय लेख्नुहोस्',pt:'Informe primeiro os horários de início e término',si:'පළමුව ආරම්භ සහ අවසන් වේලාව ඇතුළත් කරන්න',ta:'முதலில் தொடக்க மற்றும் முடிவு நேரத்தை உள்ளிடவும்'},
+ {ja:'テンプレート名を入力してください',en:'Enter a template name','zh-CN':'请输入模板名称',ko:'템플릿 이름을 입력하세요',vi:'Nhập tên mẫu',ne:'टेम्प्लेट नाम लेख्नुहोस्',pt:'Digite o nome do modelo',si:'අච්චු නම ඇතුළත් කරන්න',ta:'வார்ப்புரு பெயரை உள்ளிடவும்'},
+ {ja:'時間テンプレートを保存しました',en:'Time template saved','zh-CN':'时间模板已保存',ko:'시간 템플릿을 저장했습니다',vi:'Đã lưu mẫu thời gian',ne:'समय टेम्प्लेट सेभ भयो',pt:'Modelo de horário salvo',si:'වේලා අච්චුව සුරකින ලදී',ta:'நேர வார்ப்புரு சேமிக்கப்பட்டது'},
+ {ja:'提出済み',en:'Submitted','zh-CN':'已提交',ko:'제출 완료',vi:'Đã gửi',ne:'पेश गरिएको',pt:'Enviado',si:'යවා ඇත',ta:'சமர்ப்பிக்கப்பட்டது'},
+ {ja:'希望日を提出しました',en:'Availability submitted','zh-CN':'希望日期已提交',ko:'희망일을 제출했습니다',vi:'Đã gửi ngày mong muốn',ne:'उपलब्धता पठाइयो',pt:'Disponibilidade enviada',si:'කැමති දින යවා ඇත',ta:'விருப்ப நாட்கள் சமர்ப்பிக்கப்பட்டது'},
+ {ja:'先の希望を事前登録',en:'Pre-register future availability','zh-CN':'预先登记未来希望',ko:'향후 희망 사전 등록',vi:'Đăng ký trước lịch mong muốn',ne:'भविष्य उपलब्धता अग्रिम दर्ता',pt:'Pré-registrar disponibilidade futura',si:'ඉදිරි කැමැත්ත පෙර ලියාපදිංචි කරන්න',ta:'எதிர்கால விருப்பத்தை முன்பதிவு செய்'},
+ {ja:'募集期間外でも予定を入れておけます。該当するシフト募集が始まったら、自動で希望入力へ引き継ぐ想定です。',en:'You can enter plans before the request period. They will carry over when that shift request opens.', 'zh-CN':'募集期外也可预先登记，排班募集开始后会自动带入。',ko:'모집 기간 전에도 일정을 입력할 수 있으며 해당 모집 시작 시 자동으로 이어집니다.',vi:'Có thể nhập lịch ngoài thời gian nhận đăng ký và tự động chuyển sang đợt đăng ký khi mở.',ne:'आह्वान अवधि अघि पनि योजना राख्न सकिन्छ र खुल्दा स्वतः सर्छ।',pt:'Você pode registrar antes do período e os dados serão levados para a próxima coleta.',si:'ඉල්ලීම් කාලයට පෙරත් සැලසුම් ඇතුළත් කළ හැකි අතර විවෘත වූ විට ස්වයංක්‍රීයව මාරු වේ.',ta:'விண்ணப்ப காலத்திற்கு முன்பே திட்டம் உள்ளிடலாம்; திறந்ததும் தானாக மாற்றப்படும்.'},
+ {ja:'補足（任意）',en:'Notes (optional)','zh-CN':'补充（可选）',ko:'보충(선택)',vi:'Ghi chú (không bắt buộc)',ne:'टिप्पणी (ऐच्छिक)',pt:'Observações (opcional)',si:'සටහන් (අවශ්‍ය නැත)',ta:'குறிப்பு (விருப்பம்)'},
+ {ja:'事前希望を登録',en:'Save future availability','zh-CN':'登记预先希望',ko:'사전 희망 등록',vi:'Lưu nguyện vọng trước',ne:'अग्रिम उपलब्धता दर्ता',pt:'Salvar disponibilidade futura',si:'ඉදිරි කැමැත්ත සුරකින්න',ta:'எதிர்கால விருப்பத்தை சேமி'},
+ {ja:'登録済み',en:'Registered','zh-CN':'已登记',ko:'등록됨',vi:'Đã đăng ký',ne:'दर्ता गरिएको',pt:'Registrado',si:'ලියාපදිංචි කර ඇත',ta:'பதிவு செய்யப்பட்டது'},
+ {ja:'日付を選んでください',en:'Choose a date','zh-CN':'请选择日期',ko:'날짜를 선택하세요',vi:'Chọn ngày',ne:'मिति छान्नुहोस्',pt:'Escolha uma data',si:'දිනයක් තෝරන්න',ta:'தேதியைத் தேர்ந்தெடுக்கவும்'},
+ {ja:'開始・終了時間を確認してください',en:'Check the start and end times','zh-CN':'请确认开始和结束时间',ko:'시작/종료 시간을 확인하세요',vi:'Kiểm tra giờ bắt đầu và kết thúc',ne:'सुरु र अन्त्य समय जाँच गर्नुहोस्',pt:'Verifique os horários de início e término',si:'ආරම්භ සහ අවසන් වේලාව පරීක්ෂා කරන්න',ta:'தொடக்க மற்றும் முடிவு நேரத்தைச் சரிபார்க்கவும்'},
+ {ja:'シフト変更申請',en:'Shift change request','zh-CN':'排班变更申请',ko:'시프트 변경 신청',vi:'Yêu cầu đổi ca',ne:'सिफ्ट परिवर्तन अनुरोध',pt:'Solicitação de alteração de turno',si:'වැඩ මුර වෙනස් කිරීමේ ඉල්ලීම',ta:'பணி மாற்ற கோரிக்கை'},
+ {ja:'交代希望',en:'Request swap','zh-CN':'希望换班',ko:'교대 희망',vi:'Muốn đổi ca',ne:'सिफ्ट साट्ने',pt:'Solicitar troca',si:'වැඩ මුර මාරු ඉල්ලීම',ta:'மாற்றுப் பணி கோரிக்கை'},
+ {ja:'開始時間変更',en:'Change start time','zh-CN':'更改开始时间',ko:'시작 시간 변경',vi:'Đổi giờ bắt đầu',ne:'सुरु समय परिवर्तन',pt:'Alterar horário de início',si:'ආරම්භ වේලාව වෙනස් කරන්න',ta:'தொடக்க நேரம் மாற்று'},
+ {ja:'終了時間変更',en:'Change end time','zh-CN':'更改结束时间',ko:'종료 시간 변경',vi:'Đổi giờ kết thúc',ne:'अन्त्य समय परिवर्तन',pt:'Alterar horário de término',si:'අවසන් වේලාව වෙනස් කරන්න',ta:'முடிவு நேரம் மாற்று'},
+ {ja:'欠勤相談',en:'Absence consultation','zh-CN':'缺勤咨询',ko:'결근 상담',vi:'Trao đổi về nghỉ ca',ne:'अनुपस्थिति परामर्श',pt:'Consulta de ausência',si:'නොපැමිණීමේ උපදේශනය',ta:'வராமை ஆலோசனை'},
+ {ja:'理由・希望内容',en:'Reason / request details','zh-CN':'理由/希望内容',ko:'사유/희망 내용',vi:'Lý do / nội dung mong muốn',ne:'कारण/अनुरोध विवरण',pt:'Motivo / detalhes',si:'හේතුව/ඉල්ලීමේ විස්තර',ta:'காரணம்/விருப்ப விவரம்'},
+ {ja:'店長の確認待ちです。',en:'Waiting for store manager review.', 'zh-CN':'等待店长确认。',ko:'점장 확인 대기 중입니다.',vi:'Đang chờ quản lý cửa hàng xác nhận.',ne:'स्टोर म्यानेजरको पुष्टि पर्खिँदै।',pt:'Aguardando revisão do gerente.',si:'ශාඛා කළමනාකරුගේ තහවුරු කිරීම බලාපොරොත්තුවෙන්.',ta:'கடை மேலாளர் உறுதிப்படுத்தலைக் காத்திருக்கிறது.'},
+ {ja:'応援に応募する',en:'Apply for support shift','zh-CN':'申请支援班次',ko:'지원 근무 지원',vi:'Đăng ký ca hỗ trợ',ne:'सहयोग सिफ्ट आवेदन',pt:'Candidatar-se ao turno de apoio',si:'සහාය වැඩ මුරයට අයදුම් කරන්න',ta:'உதவி பணிக்கு விண்ணப்பி'},
+ {ja:'あなたの適合状況',en:'Your fit','zh-CN':'你的匹配情况',ko:'본인 적합 상태',vi:'Mức phù hợp của bạn',ne:'तपाईंको उपयुक्तता',pt:'Sua compatibilidade',si:'ඔබගේ ගැළපීම',ta:'உங்கள் பொருத்தம்'},
+ {ja:'シフト作成の全体通知',en:'Shift planning announcement','zh-CN':'排班制作全体通知',ko:'시프트 작성 전체 공지',vi:'Thông báo lập ca cho toàn bộ nhân viên',ne:'सिफ्ट योजना सामूहिक सूचना',pt:'Comunicado de planejamento de turnos',si:'වැඩ මුර සැලසුම් සමූහ දැනුම්දීම',ta:'பணி அட்டவணை பொது அறிவிப்பு'},
+ {ja:'タイトル',en:'Title','zh-CN':'标题',ko:'제목',vi:'Tiêu đề',ne:'शीर्षक',pt:'Título',si:'මාතෘකාව',ta:'தலைப்பு'},
+ {ja:'希望提出の締切',en:'Availability deadline','zh-CN':'提交希望截止时间',ko:'희망 제출 마감',vi:'Hạn gửi nguyện vọng',ne:'उपलब्धता समयसीमा',pt:'Prazo de disponibilidade',si:'කැමැත්ත යැවීමේ අවසන් දිනය',ta:'விருப்ப சமர்ப்பிப்பு கடைசி நாள்'},
+ {ja:'通知内容',en:'Notification message','zh-CN':'通知内容',ko:'공지 내용',vi:'Nội dung thông báo',ne:'सूचना सामग्री',pt:'Conteúdo da notificação',si:'දැනුම්දීමේ අන්තර්ගතය',ta:'அறிவிப்பு உள்ளடக்கம்'},
+ {ja:'全体へ通知する',en:'Notify everyone','zh-CN':'通知全体人员',ko:'전체에 알림',vi:'Thông báo cho tất cả',ne:'सबैलाई सूचना',pt:'Notificar todos',si:'සියලු දෙනාට දැනුම් දෙන්න',ta:'அனைவருக்கும் அறிவி'},
+ {ja:'店舗管理の要請',en:'Store management request','zh-CN':'门店管理申请',ko:'점포 관리 요청',vi:'Yêu cầu quản lý cửa hàng',ne:'स्टोर व्यवस्थापन अनुरोध',pt:'Solicitação de gestão de loja',si:'ශාඛා කළමනාකරණ ඉල්ලීම',ta:'கடை நிர்வாக கோரிக்கை'},
+ {ja:'公開デモでは実店舗名を固定保存しません。入力内容はこのデモセッション内だけの扱いです。',en:'The public demo does not permanently store real store names. Entries exist only in this demo session.', 'zh-CN':'公开演示不会永久保存真实门店名，输入内容仅限本次演示会话。',ko:'공개 데모에서는 실제 점포명을 영구 저장하지 않으며 입력은 이 세션에서만 유지됩니다.',vi:'Bản demo công khai không lưu vĩnh viễn tên cửa hàng thật; dữ liệu chỉ tồn tại trong phiên demo này.',ne:'सार्वजनिक डेमोमा वास्तविक स्टोर नाम स्थायी रूपमा सेभ हुँदैन; इनपुट यो सेसनमा मात्र रहन्छ।',pt:'A demo pública não salva permanentemente nomes reais de lojas; os dados ficam apenas nesta sessão.',si:'පොදු ඩෙමෝව සැබෑ ශාඛා නාම ස්ථිරව සුරකින්නේ නැත; දත්ත මෙම සැසියට පමණි.',ta:'பொது டெமோவில் உண்மையான கடை பெயர்கள் நிரந்தரமாக சேமிக்கப்படாது; உள்ளீடு இந்த அமர்வில் மட்டும் இருக்கும்.'},
+ {ja:'要請を送る',en:'Send request','zh-CN':'发送申请',ko:'요청 보내기',vi:'Gửi yêu cầu',ne:'अनुरोध पठाउनुहोस्',pt:'Enviar solicitação',si:'ඉල්ලීම යවන්න',ta:'கோரிக்கையை அனுப்பு'},
+ {ja:'新しい店舗を追加',en:'Add a new store','zh-CN':'添加新门店',ko:'새 점포 추가',vi:'Thêm cửa hàng mới',ne:'नयाँ स्टोर थप्नुहोस्',pt:'Adicionar nova loja',si:'නව ශාඛාවක් එක් කරන්න',ta:'புதிய கடை சேர்க்க'},
+ {ja:'店舗名',en:'Store name','zh-CN':'门店名称',ko:'점포명',vi:'Tên cửa hàng',ne:'स्टोर नाम',pt:'Nome da loja',si:'ශාඛා නම',ta:'கடை பெயர்'},
+ {ja:'店舗名を入力',en:'Enter store name','zh-CN':'输入门店名称',ko:'점포명 입력',vi:'Nhập tên cửa hàng',ne:'स्टोर नाम लेख्नुहोस्',pt:'Digite o nome da loja',si:'ශාඛා නම ඇතුළත් කරන්න',ta:'கடை பெயரை உள்ளிடு'},
+ {ja:'備考',en:'Notes','zh-CN':'备注',ko:'비고',vi:'Ghi chú',ne:'टिप्पणी',pt:'Observações',si:'සටහන්',ta:'குறிப்புகள்'},
+ {ja:'開店日、管轄、補足など（任意）',en:'Opening date, area, notes, etc. (optional)','zh-CN':'开店日、管辖、补充等（可选）',ko:'개점일, 관할, 보충 등(선택)',vi:'Ngày mở cửa, khu vực, ghi chú... (không bắt buộc)',ne:'खुल्ने मिति, क्षेत्र, टिप्पणी आदि (ऐच्छिक)',pt:'Data de abertura, área, observações etc. (opcional)',si:'විවෘත දිනය, ප්‍රදේශය, සටහන් ආදිය (අවශ්‍ය නැත)',ta:'திறப்பு தேதி, பகுதி, குறிப்பு போன்றவை (விருப்பம்)'},
+ {ja:'既存店舗の名称変更',en:'Rename existing store','zh-CN':'更改现有门店名称',ko:'기존 점포명 변경',vi:'Đổi tên cửa hàng hiện có',ne:'अवस्थित स्टोर नाम परिवर्तन',pt:'Renomear loja existente',si:'පවතින ශාඛාවේ නම වෙනස් කරන්න',ta:'இருக்கும் கடை பெயரை மாற்று'},
+ {ja:'現在の店舗名',en:'Current store name','zh-CN':'当前门店名称',ko:'현재 점포명',vi:'Tên cửa hàng hiện tại',ne:'हालको स्टोर नाम',pt:'Nome atual da loja',si:'වත්මන් ශාඛා නම',ta:'தற்போதைய கடை பெயர்'},
+ {ja:'新しい店舗名',en:'New store name','zh-CN':'新门店名称',ko:'새 점포명',vi:'Tên cửa hàng mới',ne:'नयाँ स्टोर नाम',pt:'Novo nome da loja',si:'නව ශාඛා නම',ta:'புதிய கடை பெயர்'},
+ {ja:'変更後の店舗名',en:'New store name','zh-CN':'更改后的门店名称',ko:'변경 후 점포명',vi:'Tên cửa hàng sau thay đổi',ne:'परिवर्तित स्टोर नाम',pt:'Nome após alteração',si:'වෙනස් කළ ශාඛා නම',ta:'மாற்றிய கடை பெயர்'},
+ {ja:'変更理由',en:'Reason for change','zh-CN':'变更理由',ko:'변경 사유',vi:'Lý do thay đổi',ne:'परिवर्तन कारण',pt:'Motivo da alteração',si:'වෙනස් කිරීමේ හේතුව',ta:'மாற்ற காரணம்'},
+ {ja:'承認権限者の確認待ちです。',en:'Waiting for review by an approver.', 'zh-CN':'等待有审批权限的人确认。',ko:'승인 권한자의 확인을 기다리는 중입니다.',vi:'Đang chờ người có quyền phê duyệt xác nhận.',ne:'स्वीकृति अधिकार भएको व्यक्तिको पुष्टि पर्खिँदै।',pt:'Aguardando revisão de um aprovador.',si:'අනුමත කිරීමේ බලය ඇති අයෙකුගේ තහවුරු කිරීම බලාපොරොත්තුවෙන්.',ta:'ஒப்புதல் அதிகாரியின் உறுதிப்படுத்தலைக் காத்திருக்கிறது.'},
+ {ja:'会社・上長の承認',en:'Company / supervisor approval','zh-CN':'公司/上级批准',ko:'회사/상사 승인',vi:'Phê duyệt của công ty / cấp trên',ne:'कम्पनी/उच्च अधिकारी स्वीकृति',pt:'Aprovação da empresa/supervisor',si:'සමාගම/ඉහළ නිලධාරී අනුමැතිය',ta:'நிறுவனம்/மேலாளர் ஒப்புதல்'},
+ {ja:'運用責任者の決定',en:'Assign operations owner','zh-CN':'确定运营负责人',ko:'운영 책임자 결정',vi:'Chỉ định người phụ trách vận hành',ne:'सञ्चालन जिम्मेवार तय',pt:'Definir responsável pela operação',si:'මෙහෙයුම් භාරකරු තීරණය කරන්න',ta:'செயல்பாட்டு பொறுப்பாளரை நியமி'},
+ {ja:'1店舗パイロット開始',en:'Start one-store pilot','zh-CN':'开始单店试点',ko:'1개 점포 파일럿 시작',vi:'Bắt đầu thử nghiệm tại 1 cửa hàng',ne:'एक स्टोर पाइलट सुरु',pt:'Iniciar piloto em uma loja',si:'එක් ශාඛා පයිලට් ආරම්භ කරන්න',ta:'ஒரு கடை பைலட்டை தொடங்கு'},
+ {ja:'役職・権限表の確定',en:'Finalize role / permission matrix','zh-CN':'确定角色/权限表',ko:'역할/권한표 확정',vi:'Chốt bảng vai trò/quyền',ne:'भूमिका/अनुमति तालिका निश्चित',pt:'Finalizar matriz de funções/permissões',si:'භූමිකා/අවසර වගුව තහවුරු කරන්න',ta:'பங்கு/அனுமதி அட்டவணையை இறுதி செய்'},
+ {ja:'データ保存ルールの確定',en:'Finalize data retention rules','zh-CN':'确定数据保存规则',ko:'데이터 보존 규칙 확정',vi:'Chốt quy tắc lưu dữ liệu',ne:'डेटा सुरक्षित नियम निश्चित',pt:'Finalizar regras de retenção',si:'දත්ත රඳවා තැබීමේ නීති තහවුරු කරන්න',ta:'தரவு சேமிப்பு விதிகளை இறுதி செய்'},
+ {ja:'問い合わせ窓口の決定',en:'Set support contact','zh-CN':'确定咨询窗口',ko:'문의 창구 결정',vi:'Xác định đầu mối hỗ trợ',ne:'सम्पर्क सहायता तय',pt:'Definir contato de suporte',si:'සහාය සම්බන්ධතාව තීරණය කරන්න',ta:'ஆதரவு தொடர்பை நிர்ணயி'},
+ {ja:'自動バックアップ完了',en:'Automatic backup completed','zh-CN':'自动备份完成',ko:'자동 백업 완료',vi:'Đã hoàn tất sao lưu tự động',ne:'स्वचालित ब्याकअप सम्पन्न',pt:'Backup automático concluído',si:'ස්වයංක්‍රීය උපස්ථය සම්පූර්ණයි',ta:'தானியங்கி காப்புப்பிரதி முடிந்தது'},
+ {ja:'この端末',en:'This device','zh-CN':'此设备',ko:'이 기기',vi:'Thiết bị này',ne:'यो उपकरण',pt:'Este dispositivo',si:'මෙම උපාංගය',ta:'இந்த சாதனம்'},
+ {ja:'社員ID + Face ID',en:'Employee ID + Face ID','zh-CN':'员工ID + Face ID',ko:'사원 ID + Face ID',vi:'ID nhân viên + Face ID',ne:'कर्मचारी ID + Face ID',pt:'ID do funcionário + Face ID',si:'සේවක ID + Face ID',ta:'பணியாளர் ID + Face ID'},
+ {ja:'映像の内容',en:'Video contents','zh-CN':'视频内容',ko:'영상 내용',vi:'Nội dung video',ne:'भिडियो सामग्री',pt:'Conteúdo do vídeo',si:'වීඩියෝ අන්තර්ගතය',ta:'வீடியோ உள்ளடக்கம்'},
+ {ja:'本部からの注意',en:'HQ note','zh-CN':'总部注意事项',ko:'본부 주의사항',vi:'Lưu ý từ trụ sở',ne:'मुख्यालय सूचना',pt:'Aviso da sede',si:'මූලස්ථාන සටහන',ta:'தலைமையக குறிப்பு'},
+ {ja:'確認しました',en:'Confirmed','zh-CN':'已确认',ko:'확인했습니다',vi:'Đã xác nhận',ne:'पुष्टि गरियो',pt:'Confirmado',si:'තහවුරු කළා',ta:'உறுதிப்படுத்தப்பட்டது'},
+ {ja:'最新版を確認しました',en:'Latest version confirmed','zh-CN':'已确认最新版',ko:'최신 버전 확인 완료',vi:'Đã xác nhận phiên bản mới nhất',ne:'नवीनतम संस्करण पुष्टि',pt:'Versão mais recente confirmada',si:'නවතම අනුවාදය තහවුරු කළා',ta:'சமீபத்திய பதிப்பு உறுதிப்படுத்தப்பட்டது'},
+ {ja:'最終更新',en:'Last updated','zh-CN':'最后更新',ko:'최종 업데이트',vi:'Cập nhật gần nhất',ne:'अन्तिम अपडेट',pt:'Última atualização',si:'අවසන් යාවත්කාලීන කිරීම',ta:'கடைசி புதுப்பிப்பு'},
+ {ja:'側面カバーを開く',en:'Open the side cover','zh-CN':'打开侧盖',ko:'측면 커버 열기',vi:'Mở nắp bên',ne:'छेउको कभर खोल्नुहोस्',pt:'Abra a tampa lateral',si:'පැත්තේ ආවරණය විවෘත කරන්න',ta:'பக்கக் கவரைத் திற'},
+ {ja:'用紙をそろえてセット',en:'Align and load the paper','zh-CN':'整理并装入纸张',ko:'용지를 정리해 넣기',vi:'Xếp thẳng và nạp giấy',ne:'कागज मिलाएर राख्नुहोस्',pt:'Alinhe e coloque o papel',si:'කඩදාසි සරිලන ලෙස තබන්න',ta:'காகிதத்தை ஒழுங்குபடுத்து ஏற்று'},
+ {ja:'紙詰まり表示がないか確認',en:'Check for a paper-jam indicator','zh-CN':'确认是否有卡纸提示',ko:'용지 걸림 표시 확인',vi:'Kiểm tra cảnh báo kẹt giấy',ne:'कागज अड्किएको संकेत जाँच',pt:'Verifique o indicador de atolamento',si:'කඩදාසි සිරවීමේ සලකුණ පරීක්ෂා කරන්න',ta:'காகித சிக்கல் குறியீட்டைச் சரிபார்'},
+ {ja:'デモ草案',en:'Demo draft','zh-CN':'演示草案',ko:'데모 초안',vi:'Bản nháp demo',ne:'डेमो मस्यौदा',pt:'Rascunho de demo',si:'ඩෙමෝ කෙටුම්පත',ta:'டெமோ வரைவு'},
+ {ja:'本番化前に必要',en:'Required before production','zh-CN':'正式上线前需要',ko:'본격 운영 전 필요',vi:'Cần trước khi triển khai thật',ne:'उत्पादन अघि आवश्यक',pt:'Necessário antes da produção',si:'නිෂ්පාදන පෙර අවශ්‍යයි',ta:'தயாரிப்பு முன் தேவை'},
+ {ja:'実際の事業者、データ処理、委託先、問い合わせ先、法務確認に合わせて正式文書化します。',en:'Finalize the documents for the actual operator, data processing, vendors, support contacts, and legal review.', 'zh-CN':'根据实际运营方、数据处理、受托方、联系方式和法务审核正式制定文件。',ko:'실제 사업자, 데이터 처리, 위탁사, 문의처, 법무 검토에 맞춰 공식 문서화합니다.',vi:'Hoàn thiện văn bản theo đơn vị vận hành, xử lý dữ liệu, nhà cung cấp, liên hệ hỗ trợ và rà soát pháp lý.',ne:'वास्तविक सञ्चालनकर्ता, डेटा प्रशोधन, विक्रेता, सम्पर्क र कानुनी समीक्षाअनुसार औपचारिक दस्तावेज बनाइन्छ।',pt:'Formalize os documentos conforme operador, tratamento de dados, fornecedores, contato de suporte e revisão jurídica.',si:'සැබෑ මෙහෙයුම්කරු, දත්ත සැකසීම, සැපයුම්කරුවන්, සහාය සම්බන්ධතා සහ නීති සමාලෝචනය අනුව ලේඛන අවසන් කරයි.',ta:'உண்மையான இயக்குநர், தரவு செயலாக்கம், வழங்குநர்கள், ஆதரவு தொடர்பு மற்றும் சட்ட ஆய்வுக்கு ஏற்ப ஆவணங்களை இறுதி செய்யவும்.'}
+];
+
 function runtimeTranslateJapanese(input){
   if(currentLanguage==='ja'||input==null)return input;
   let out=String(input);
@@ -600,7 +690,7 @@ function runtimeTranslateJapanese(input){
   const exact=exactI18n.find(x=>x.ja===out.trim());
   if(exact&&exact[currentLanguage])return out.replace(out.trim(),exact[currentLanguage]);
   // Replace longer known phrases before shorter ones.
-  const sorted=phraseI18n.slice().sort((a,b)=>b.ja.length-a.ja.length);
+  const sorted=phraseI18n.concat(maximalPhraseI18n).slice().sort((a,b)=>b.ja.length-a.ja.length);
   sorted.forEach(x=>{if(x[currentLanguage]&&out.includes(x.ja))out=out.split(x.ja).join(x[currentLanguage])});
   // Main navigation dictionary can also appear inside composite messages.
   const d=uiLang[currentLanguage]||uiLang.en;
@@ -643,6 +733,7 @@ function registerTranslationTextNode(node){
   }
   node.nodeValue=exactTranslateJapanese(original);
 }
+const translationControlOriginal=new WeakMap();
 function registerTranslationAttributes(el){
   if(!el||el.nodeType!==1)return;
   const attrs=['placeholder','title','aria-label','data-label'];
@@ -656,6 +747,12 @@ function registerTranslationAttributes(el){
     el.setAttribute(a,exactTranslateJapanese(original));
   });
   translationAttrOriginal.set(el,originals);
+  // Buttons may carry their label in value rather than a text node.
+  if(el.tagName==='INPUT'&&['button','submit','reset'].includes((el.type||'').toLowerCase())){
+    if(!translationControlOriginal.has(el))translationControlOriginal.set(el,el.value);
+    const ov=translationControlOriginal.get(el);
+    if(containsJapaneseText(ov))el.value=runtimeTranslateJapanese(ov);
+  }
 }
 function applyFullTranslationTargets(root=document.body){
   if(translationSweepBusy||!root)return;
@@ -671,6 +768,26 @@ function applyFullTranslationTargets(root=document.body){
     }
     roots.forEach(registerTranslationTextNode);
   }finally{translationSweepBusy=false}
+}
+function untranslatedJapaneseAudit(){
+  if(currentLanguage==='ja')return {count:0,samples:[]};
+  const samples=[];
+  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  let n;
+  while((n=walker.nextNode())){
+    if(!n.parentElement||n.parentElement.closest('script,style,noscript'))continue;
+    const s=(n.nodeValue||'').trim();
+    if(!containsJapaneseText(s)||isPreservedJapanese(s))continue;
+    const translated=runtimeTranslateJapanese(s);
+    if(translated===s)samples.push(s);
+  }
+  document.querySelectorAll('[placeholder],[title],[aria-label]').forEach(el=>{
+    ['placeholder','title','aria-label'].forEach(a=>{
+      const s=(el.getAttribute(a)||'').trim();
+      if(s&&containsJapaneseText(s)&&runtimeTranslateJapanese(s)===s)samples.push(s);
+    });
+  });
+  return {count:samples.length,samples:[...new Set(samples)].slice(0,12)};
 }
 function scheduleFullTranslationSweep(){
   requestAnimationFrame(()=>applyFullTranslationTargets(document.body));
@@ -740,6 +857,7 @@ const pilotChecklist=[
 ];
 let incidentStatus='平常';
 const changelog=[
+ {version:'2.5 Demo',date:'2026/09/21',text:'翻訳辞書を最大拡張し、店舗管理・Store Guide・シフト作成・法務・エラー・操作文まで対応。未翻訳監査も追加'},
  {version:'2.4 Demo',date:'2026/09/21',text:'文章内の部分翻訳、Toast・確認ダイアログ・シフト・通知・Skill・管理系の翻訳範囲を拡大'},
  {version:'2.3 Demo',date:'2026/09/21',text:'画面内の全日本語UIを自動検出し翻訳対象へ登録する共通レイヤーを追加'},
  {version:'2.2 Demo',date:'2026/09/21',text:'画面UIと投稿本文の翻訳デモ、原文切替を追加'},
@@ -1354,7 +1472,7 @@ function openAdminCenter(){
       '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>規約・プライバシー</h3><small>Draft</small></div><div class="card">'+legalDocs.map(d=>'<div class="controlrow legalbtn" onclick="openLegal(\''+d.id+'\')"><div><div class="title">'+d.title+'</div><div class="sub">'+d.version+'</div></div><span>›</span></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 2.4 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 2.5 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
     auditSection;
   document.getElementById('modal').classList.add('open');
   enableConfidentialWatermark();
@@ -1692,6 +1810,7 @@ function toggleVideoDemo(){
 function openGuide(){const s=document.getElementById('store').value,rows=guides[s]||[];document.getElementById('modalBody').innerHTML='<h3>📍 '+s+' Store Guide</h3><div class="sub">この店舗だけの違いを確認</div>'+rows.map((r,i)=>'<div class="card"><div class="title">'+(i+1)+'. '+r[0]+'</div><div class="sub">'+r[1]+'</div></div>').join('')+'<button class="btn primary full" onclick="closeModal();toast(\''+s+'の初回確認を保存しました\')">確認しました</button>';document.getElementById('modal').classList.add('open')}
 function openManual(){document.getElementById('modalBody').innerHTML='<h3>📄 コピー機の用紙補充</h3><div class="sub">v1.3・最終更新 2026/09/20</div><div class="card"><div class="title">1. 側面カバーを開く</div></div><div class="card"><div class="title">2. 用紙をそろえてセット</div></div><div class="card"><div class="title">3. 紙詰まり表示がないか確認</div></div><button class="btn primary full" onclick="closeModal();toast(\'最新版の確認を記録しました\')">最新版を確認しました</button>';document.getElementById('modal').classList.add('open')}
 function closeModal(){stopQR();disableConfidentialWatermark();document.getElementById('modal').classList.remove('open')}
+document.getElementById('modal').addEventListener('transitionend',()=>{if(document.getElementById('modal').classList.contains('open'))scheduleFullTranslationSweep()});
 function toast(m){const t=document.getElementById('toast');t.textContent=runtimeTranslateJapanese(m);t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
 const nativeConfirm=window.confirm.bind(window),nativePrompt=window.prompt.bind(window);
 window.confirm=(m)=>nativeConfirm(runtimeTranslateJapanese(m));
