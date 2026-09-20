@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: permissions-storemaster-audit-v26 -->
+<!-- build: quick-report-back-navigation-v27 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -24,6 +24,13 @@
 .timefield input[type="time"]{-webkit-appearance:none;appearance:none;box-sizing:border-box;width:100%;max-width:100%;min-width:0;height:40px;padding:0 8px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:12px;text-align:center;display:block;line-height:40px;margin:0}
 .timefield input[type="time"]::-webkit-date-and-time-value{display:flex;align-items:center;justify-content:center;height:40px;min-height:40px;line-height:40px;text-align:center;margin:0;padding:0}
 .time-sep{display:flex;align-items:center;justify-content:center;width:28px;height:40px;font-size:15px;font-weight:800;line-height:1;color:#667085}.templates{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.templatechip{border:1px solid #cfd7e6;background:#f8faff;color:#315fd3;border-radius:999px;padding:6px 8px;font-size:9px;font-weight:900;cursor:pointer}.dangerghost{background:#fff;color:#c43232;border:1px solid #ffd1d1}.trendtag{display:inline-flex;align-items:center;gap:4px;font-size:8px;font-weight:900;border-radius:999px;padding:4px 6px;background:#fff7e8;color:#9a5b00;margin-top:4px}
+.pageback{display:inline-flex;align-items:center;gap:5px;border:0;background:transparent;color:#475467;font-size:11px;font-weight:900;padding:4px 2px;margin:0 0 7px;cursor:pointer}
+.quickhelp{background:#f8fafc;border:1px solid var(--line);border-radius:15px;padding:11px 12px;margin-top:10px}
+.quickhelp .qhhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.quickhelp .qhtitle{font-size:12px;font-weight:900}
+.quickhelp .qhbuttons{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}
+.quickhelp .qhbuttons button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 7px;font-size:10px;font-weight:900;color:#344054;cursor:pointer}
+.quickhelp .qhbuttons button:first-child{color:#b42318;background:#fffafa}.quickhelp .qhbuttons button:last-child{color:#315fd3;background:#f8faff}
 .top{position:sticky;top:0;z-index:10;background:#f4f6f8ee;backdrop-filter:blur(15px);padding:14px;border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;justify-content:space-between}.brand h1{font-size:18px;margin:0}.tiny{font-size:10px;color:var(--muted)}
 .topactions{display:flex;align-items:center;gap:8px}.notifbtn{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid #d7dde6;background:#fff;color:#101828;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px #1018280d}.notifbadge{position:absolute;right:-3px;top:-3px;min-width:18px;height:18px;border-radius:999px;background:#c43232;color:#fff;border:2px solid var(--bg);font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 4px}.profilebtn{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid #d7dde6;background:linear-gradient(145deg,#1d2939,#344054);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:visible;cursor:pointer;box-shadow:0 3px 10px #10182814}
@@ -122,6 +129,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 </main>
 
 <main id="handover" class="page">
+<button class="pageback" onclick="goBack()">← 戻る</button>
 <section class="section">
   <div class="head"><h3>進行中の引き継ぎ</h3><small>タップで詳細</small></div>
   <div id="handoverActive"></div>
@@ -130,17 +138,21 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
   <div class="head"><h3>履歴</h3><small>確認済みも保存</small></div>
   <div id="handoverHistory"></div>
 </section>
+<section class="section"><div class="quickhelp"><div class="qhhead"><div><div class="qhtitle">報告・質問</div><div class="sub">異常報告や分からないことをその場から送れます。</div></div><span class="tag blue">Quick</span></div><div class="qhbuttons"><button onclick="openReportQuick('report')">! 報告する</button><button onclick="openReportQuick('question')">? 質問する</button></div></div></section>
 </main>
 
 <main id="tasks" class="page">
+<button class="pageback" onclick="goBack()">← 戻る</button>
 <section class="section"><div class="head"><h3>今日の業務</h3><small>新人モード対応</small></div>
   <div class="card"><div class="title">今日必要な5つだけ表示</div><div class="sub">レジ・公共料金・宅配便・フライヤー・締め作業など、シフトに応じて絞り込み。</div></div>
   <div class="card"><div class="title">✓ レジ周辺補充</div><div class="sub">完了</div></div>
   <div class="card"><div class="title">○ コピー機用紙確認</div><div class="sub">未着手</div></div>
 </section>
+<section class="section"><div class="quickhelp"><div class="qhhead"><div><div class="qhtitle">報告・質問</div><div class="sub">異常報告や分からないことをその場から送れます。</div></div><span class="tag blue">Quick</span></div><div class="qhbuttons"><button onclick="openReportQuick('report')">! 報告する</button><button onclick="openReportQuick('question')">? 質問する</button></div></div></section>
 </main>
 
 <main id="manuals" class="page">
+<button class="pageback" onclick="goBack()">← 戻る</button>
 <section class="section"><div class="head"><h3>業務マニュアル</h3><small>本部作成・QR対応</small></div>
   <div class="qrhero">
     <div class="title">▦ QRで映像マニュアルを開く</div>
@@ -151,9 +163,11 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
   <div class="card"><div class="row"><div class="grow"><div class="title">🎬 コピー機の用紙補充</div><div class="sub">本部作成・映像 1:42・v1.3・2026/09/20更新</div></div><span class="tag red">再確認必要</span></div><button class="btn blue full" style="margin-top:10px" onclick="showVideoManual()">映像を見る</button></div>
   <div class="card"><div class="title">🧾 公共料金受付</div><div class="sub">本部作成・映像 2:18・v2.0・最新版確認済み</div></div>
 </section>
+<section class="section"><div class="quickhelp"><div class="qhhead"><div><div class="qhtitle">報告・質問</div><div class="sub">異常報告や分からないことをその場から送れます。</div></div><span class="tag blue">Quick</span></div><div class="qhbuttons"><button onclick="openReportQuick('report')">! 報告する</button><button onclick="openReportQuick('question')">? 質問する</button></div></div></section>
 </main>
 
 <main id="report" class="page">
+<button class="pageback" onclick="goBack()">← 戻る</button>
 <section class="section"><div class="head"><h3>異常・事故・設備報告</h3><small>緊急度で通知先を変える</small></div>
   <div class="card">
     <label class="tiny">緊急度</label>
@@ -203,6 +217,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 </main>
 
 <main id="shift" class="page">
+<button class="pageback" onclick="goBack()">← 戻る</button>
 <section class="section">
   <div class="head"><h3>シフト</h3><small>2026年9月</small></div>
   <div class="card deadlinecard" id="shiftCycleCard">
@@ -251,6 +266,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 </main>
 
 <main id="settings" class="page">
+<button class="pageback" onclick="goBack()">← 戻る</button>
 <section class="section role-list"><div class="head"><h3>権限と運用</h3><small id="roleName">店長（デモ権限）</small></div>
   <div class="card"><div class="title">役職はアカウント作成時に登録</div><div class="sub">ホームでは切り替えません。役職変更は管理側で更新する想定です。</div></div>
   <div class="card"><div class="title">レギュラークルー</div><div class="sub">閲覧・確認・完了・報告</div></div>
@@ -264,12 +280,12 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 </main>
 
 <nav class="nav">
-<button class="active" onclick="go('home',this)"><span>⌂</span>ホーム</button>
-<button onclick="go('handover',this)"><span>📝</span>引き継ぎ</button>
-<button onclick="go('tasks',this)"><span>✓</span>業務</button>
-<button onclick="go('shift',this)"><span>🗓</span>シフト</button>
-<button onclick="go('manuals',this)"><span>📖</span>マニュアル</button>
-<button onclick="go('report',this)"><span>!</span>報告・質問</button>
+<button class="active" data-page="home" onclick="go('home',this)"><span>⌂</span>ホーム</button>
+<button data-page="handover" onclick="go('handover',this)"><span>📝</span>引き継ぎ</button>
+<button data-page="tasks" onclick="go('tasks',this)"><span>✓</span>業務</button>
+<button data-page="shift" onclick="go('shift',this)"><span>🗓</span>シフト</button>
+<button data-page="manuals" onclick="go('manuals',this)"><span>📖</span>マニュアル</button>
+<button data-page="report" onclick="go('report',this)"><span>!</span>報告・質問</button>
 </nav>
 </div>
 
@@ -353,6 +369,7 @@ const pilotChecklist=[
 ];
 let incidentStatus='平常';
 const changelog=[
+ {version:'1.9 Demo',date:'2026/09/21',text:'引き継ぎ・業務・マニュアルに報告質問クイック窓と戻るナビを追加'},
  {version:'1.8 Demo',date:'2026/09/21',text:'店舗マスタ承認を店長以上、監査ログをオーナー以上に権限変更'},
  {version:'1.7 Demo',date:'2026/09/21',text:'カレンダー内の時間を開始・終了の2段表示に変更'},
  {version:'1.6 Demo',date:'2026/09/21',text:'希望確定後の翌日移動・カレンダー上の状態丸と時間表示・iPad時間位置を調整'},
@@ -718,7 +735,32 @@ function canOpen(scope){
   return true;
 }
 function denyAccess(){toast('このアカウントには閲覧権限がありません')}
-function go(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active')}
+let previousPageId='home';
+function go(id,btn,fromBack=false){
+  const current=document.querySelector('.page.active');
+  if(!fromBack&&current&&current.id!==id)previousPageId=current.id;
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  const target=document.getElementById(id);if(target)target.classList.add('active');
+  document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));
+  if(btn)btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function goBack(){
+  const target=previousPageId&&document.getElementById(previousPageId)?previousPageId:'home';
+  const current=document.querySelector('.page.active')?.id||'home';
+  previousPageId='home';
+  go(target,null,true);
+  if(target!=='home')previousPageId=current==='report'?'home':previousPageId;
+}
+function openReportQuick(mode){
+  go('report');
+  setTimeout(()=>{
+    const el=mode==='question'?document.getElementById('helpSection'):document.querySelector('#report .section');
+    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+    if(mode==='question'){const q=document.getElementById('help');if(q)q.focus()}
+    else{const r=document.getElementById('reportText');if(r)r.focus()}
+  },120);
+}
 function applyStore(){const s=document.getElementById('store').value;document.getElementById('homeTitle').textContent=s+'の今日';document.getElementById('guideBanner').style.display=s==='西口店'?'none':'block';refreshUserWatermark()}
 function applyRole(){const r=currentAccountRole;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';const rn=document.getElementById('roleName');if(rn)rn.textContent=(roleLabels[r]||r)+'（アカウント登録）';const ms=document.getElementById('managerShiftSection');if(ms)ms.style.display=roleRank[r]>=roleRank.manager?'block':'none';refreshUserWatermark()}
 function urgency(btn,l){currentUrgency=l;document.querySelectorAll('.urg button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('urgNote').textContent={
@@ -931,7 +973,7 @@ function openAdminCenter(){
       '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>規約・プライバシー</h3><small>Draft</small></div><div class="card">'+legalDocs.map(d=>'<div class="controlrow legalbtn" onclick="openLegal(\''+d.id+'\')"><div><div class="title">'+d.title+'</div><div class="sub">'+d.version+'</div></div><span>›</span></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 1.8 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 1.9 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
     auditSection;
   document.getElementById('modal').classList.add('open');
   enableConfidentialWatermark();
