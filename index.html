@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: metric-drilldown-skill-auto-v12 -->
+<!-- build: capture-protection-v13 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -258,7 +258,7 @@ const adminAccounts=[
  {id:5,name:'山本直樹',role:'manager',store:'西口店',active:true},
  {id:6,name:'藤田一真',role:'regular',store:'中央店',active:false}
 ];
-let securityState={mfa:true,sessionLock:true,exportApproval:true,externalShareBlock:true};
+let securityState={mfa:true,sessionLock:true,exportApproval:true,externalShareBlock:true,captureProtection:true,watermark:true};
 let retentionState={reports:'365日',media:'180日',audit:'3年',questions:'365日'};
 let lastBackup='本日 18:30';
 const auditLogs=[
@@ -393,6 +393,8 @@ function openAdminCenter(){
       secRow('sessionLock','自動セッションロック','一定時間操作がなければ再認証')+
       secRow('exportApproval','データ書き出し承認','エクスポートは権限者の承認が必要')+
       secRow('externalShareBlock','外部共有ブロック','会社データを外部URLへ公開しない')+
+      secRow('captureProtection','画面キャプチャ保護（本番アプリ）','録画・ミラーリング検知時に機密画面を隠す。Webデモでは実動作しません')+
+      secRow('watermark','機密画面ウォーターマーク','ユーザー名・時刻を透かし表示し、情報持ち出しを抑止')+
     '</div></section>'+
     '<section class="section"><div class="head"><h3>バックアップ</h3><small>復旧対策</small></div>'+
       '<div class="card"><div class="title">最終バックアップ</div><div class="sub" id="backupTime">'+lastBackup+' ・ 正常</div><button class="btn blue full" style="margin-top:8px" onclick="runBackup()">今すぐバックアップ（デモ）</button></div>'+
@@ -401,6 +403,7 @@ function openAdminCenter(){
       '<div class="card"><div class="title">会社データ</div><div class="sub">店舗名・スタッフ情報・業務映像・報告内容は組織管理データとして扱い、承認前の外部持ち出しを禁止する想定。</div></div>'+
       '<div class="card"><div class="title">マニュアル・映像の権利</div><div class="sub">作成主体と利用範囲を組織ポリシーで明記。外部配布や転用は権限者承認を前提とする想定。</div></div>'+
       '<div class="card"><div class="title">デモ環境</div><div class="sub">現在の公開デモには架空データのみを使用。実在の店舗・スタッフ・機密情報は入れない前提。</div></div>'+
+      '<div class="card"><div class="title">画面キャプチャ対策</div><div class="sub">本番アプリでは、Androidは画面キャプチャ制限、iPhoneは録画・ミラーリング検知時の黒画面化を想定。通常のiPhoneスクリーンショットはOS仕様上、完全禁止を保証できないため、機密画面にはユーザー名・時刻の透かしも併用する。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>パイロット導入チェック</h3><small>本番前</small></div>'+
       '<div class="card">'+pilotChecklist.map(x=>'<div class="controlrow"><div><div class="title">'+x.label+'</div><div class="sub">'+(x.done?'準備済み':'未完了')+'</div></div><div class="switch '+(x.done?'on':'')+'" onclick="togglePilot(\''+x.id+'\')"></div></div>').join('')+'</div>'+
