@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "SHIFT NOTE",
-  "short_name": "SHIFT NOTE",
-  "description": "店舗業務・引き継ぎ・シフト・マニュアルを一つにまとめる社内業務PWA",
+  "name": "SKILL PASSPORT",
+  "short_name": "SKILL PASSPORT",
+  "description": "スキル・店舗業務・引き継ぎ・シフト・マニュアルを一つにまとめる社内業務PWA",
   "lang": "ja",
   "start_url": "./",
   "scope": "./",
