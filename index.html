@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: role-routing-images-v2 -->
+<!-- build: ack-random-demo-v4 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -38,6 +38,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 .attach{display:flex;align-items:center;justify-content:center;gap:7px;border:1px dashed #b9c2cf;background:#fbfcfd;border-radius:13px;padding:12px;margin-top:9px;font-size:12px;font-weight:800;color:#475467;cursor:pointer}
 .preview{display:none;margin-top:9px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#fff}
 .preview.show{display:block}.preview img{display:block;width:100%;max-height:220px;object-fit:cover}.previewbar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;font-size:10px;color:var(--muted)}
+.ackline{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #eef1f4}.ackline:last-child{border-bottom:0}.person{font-size:12px;font-weight:800}.personmeta{font-size:10px;color:var(--muted);margin-top:2px}.acksummary{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 </style>
 </head>
 <body>
@@ -48,16 +49,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
     <button class="profilebtn" id="profileBtn" onclick="openProfile()" aria-label="プロフィール"><span id="profileInitial">渡</span><span class="plus">＋</span></button>
   </div>
   <input type="file" id="profileImageInput" accept="image/*" hidden onchange="setProfileImage(event)">
-  <div class="ctx">
-    <select id="role" onchange="applyRole()">
-      <option value="regular">レギュラークルー</option>
-      <option value="leader" selected>リーダー</option>
-      <option value="manager">店長</option>
-      <option value="mg">MG</option>
-      <option value="toukatsu">統括</option>
-      <option value="owner">オーナー</option>
-      <option value="hq">本部</option>
-    </select>
+  <div class="ctx" style="grid-template-columns:1fr">
     <select id="store" onchange="applyStore()">
       <option>西口店</option><option>駅前店</option><option>中央店</option>
     </select>
@@ -71,7 +63,13 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
   <div id="guideBanner" class="banner" style="display:none"><b>📍 この店舗は初めてです</b><p>いつもの店舗との違いだけ確認。Skill Passportはそのまま引き継がれます。</p><button class="btn blue" onclick="openGuide()">Store Guideを開く</button></div>
   <section id="hqPanel" class="section" style="display:none"><div class="head"><h3>本部ダッシュボード</h3><small>全店舗</small></div><div class="hq"><div class="card"><strong>7</strong><span class="sub">未確認引き継ぎ</span></div><div class="card"><strong>2</strong><span class="sub">高・緊急報告</span></div><div class="card"><strong>5</strong><span class="sub">再確認待ち</span></div><div class="card"><strong>3</strong><span class="sub">未対応Help</span></div></div></section>
   <section class="section"><div class="head"><h3>今日の重要事項</h3><small>引き継ぎ</small></div>
-    <div class="card"><div class="row"><div class="grow"><div class="title">冷凍ケース右側の温度が高め</div><div class="sub">現在7℃。継続監視してください。</div></div><span class="tag red">高</span></div><button class="btn blue full" style="margin-top:10px" onclick="toast('確認済みにしました')">確認しました</button></div>
+    <div class="card" id="sharedReportCard">
+      <div class="row"><div class="grow"><div class="title">共有報告：冷凍ケース右側の温度が高め</div><div class="sub">現在7℃。継続監視してください。</div></div><span class="tag amber">通常</span></div>
+      <div class="acksummary"><span class="tag blue" id="ackCount">確認 0/0</span><span class="tag red" id="unreadCount">未確認 0</span></div>
+      <div class="sub" id="sharedReportStatus">あなた：未確認 ・ 未確認のままの場合は再通知されます</div>
+      <button class="btn blue full" id="ackBtn" style="margin-top:10px" onclick="ackSharedReport()">確認しました</button>
+      <button class="btn ghost full" style="margin-top:7px" onclick="openAckList()">確認状況を見る <span class="tiny">（店長以上）</span></button>
+    </div>
     <div class="card"><div class="row"><div class="grow"><div class="title">公共料金控えの手順変更</div><div class="sub">最新版マニュアルの再確認が必要です。</div></div><span class="tag amber">再確認</span></div></div>
   </section>
   <section class="section"><div class="head"><h3>自分の状態</h3><small>プロフィールに集約</small></div><div class="quick">
@@ -116,6 +114,10 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
     <div class="preview" id="reportPreview"></div>
     <button class="btn primary full" style="margin-top:8px" onclick="submitReport()">この内容で報告</button>
   </div>
+  <div class="card">
+    <div class="title">全体向け報告の確認管理</div>
+    <div class="sub">全クルー共有の報告は「確認しました」で既読を記録。未確認者には再通知し、店長以上は誰が確認済み／未確認かを閲覧できます。</div>
+  </div>
 </section>
 
 <section class="section"><div class="head"><h3>質問 / Help</h3><small>公開範囲を選べる</small></div>
@@ -149,7 +151,8 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 </main>
 
 <main id="settings" class="page">
-<section class="section role-list"><div class="head"><h3>権限と運用</h3><small id="roleName">リーダー</small></div>
+<section class="section role-list"><div class="head"><h3>権限と運用</h3><small id="roleName">リーダー（アカウント登録）</small></div>
+  <div class="card"><div class="title">役職はアカウント作成時に登録</div><div class="sub">ホームでは切り替えません。役職変更は管理側で更新する想定です。</div></div>
   <div class="card"><div class="title">レギュラークルー</div><div class="sub">閲覧・確認・完了・報告</div></div>
   <div class="card"><div class="title">リーダー</div><div class="sub">＋店舗内編集・報告一次対応</div></div>
   <div class="card"><div class="title">店長</div><div class="sub">＋公開・権限管理・高緊急度対応</div></div>
@@ -174,6 +177,29 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 
 <script>
 let currentUrgency='通常',helpVisibility='public',profileImageData='';
+const currentAccountRole='leader';
+const roleRank={regular:0,leader:1,manager:2,mg:3,toukatsu:4,owner:5,hq:6};
+let sharedReportAcknowledged=false;
+const demoPeople=[
+  {name:'渡邉友介',role:'leader',store:'西口店',self:true},
+  {name:'佐藤美咲',role:'regular',store:'西口店'},
+  {name:'鈴木蓮',role:'regular',store:'西口店'},
+  {name:'高橋彩乃',role:'regular',store:'西口店'},
+  {name:'伊藤拓海',role:'regular',store:'駅前店'},
+  {name:'小林結衣',role:'leader',store:'駅前店'},
+  {name:'田中悠真',role:'regular',store:'中央店'},
+  {name:'吉田葵',role:'regular',store:'中央店'},
+  {name:'山本直樹',role:'manager',store:'西口店'},
+  {name:'中村玲奈',role:'mg',store:'複数店舗'},
+  {name:'加藤颯太',role:'toukatsu',store:'エリア'},
+  {name:'森川真央',role:'owner',store:'複数店舗'}
+];
+const ackState=demoPeople.map((p,i)=>({
+  ...p,
+  ack:p.self?sharedReportAcknowledged:(Math.random()<0.62),
+  time:null
+}));
+ackState.forEach((p,i)=>{if(p.ack&&!p.self){const h=17+Math.floor(Math.random()*3),m=String(Math.floor(Math.random()*60)).padStart(2,'0');p.time=h+':'+m}});
 const roleLabels={regular:'レギュラークルー',leader:'リーダー',manager:'店長',owner:'オーナー',toukatsu:'統括',mg:'MG',hq:'本部'};
 const guides={
  '駅前店':[['バックヤード','入口から右奥・スタッフ扉の先'],['コピー用紙','事務所右棚・上段'],['ごみ庫','搬入口横。廃棄登録は22時まで'],['休憩・打刻','休憩室2階、打刻は事務所入口横']],
@@ -181,9 +207,17 @@ const guides={
 };
 function go(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active')}
 function applyStore(){const s=document.getElementById('store').value;document.getElementById('homeTitle').textContent=s+'の今日';document.getElementById('guideBanner').style.display=s==='西口店'?'none':'block'}
-function applyRole(){const r=document.getElementById('role').value;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';document.getElementById('roleName').textContent=roleLabels[r]||r}
-function urgency(btn,l){currentUrgency=l;document.querySelectorAll('.urg button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('urgNote').textContent={低:'低：記録のみ。リーダーが一覧で確認。',通常:'通常：リーダーへ通知。',高:'高：店長＋MGへ即時通知。',緊急:'緊急：店長＋MG＋統括＋オーナー＋本部へ即時通知・エスカレーション。'}[l]}
-function submitReport(){const t=document.getElementById('reportText').value.trim();if(!t)return toast('状況を入力してください');const msg={低:'低緊急度として記録しました',通常:'リーダーへ通知しました',高:'店長・MGへ即時通知しました',緊急:'店長・MG・統括・オーナー・本部へ緊急通知しました'}[currentUrgency];toast(msg);document.getElementById('reportText').value='';clearPreview('reportPreview')}
+function applyRole(){const r=currentAccountRole;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';const rn=document.getElementById('roleName');if(rn)rn.textContent=(roleLabels[r]||r)+'（アカウント登録）'}
+function urgency(btn,l){currentUrgency=l;document.querySelectorAll('.urg button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('urgNote').textContent={
+低:'低：全クルー共有＋本部以外のリーダー以上へ通知。',
+通常:'通常：全クルー共有＋本部以外のリーダー以上へ通知。',
+高:'高：店長以上へ通知。',
+緊急:'緊急：店長以上へ即時通知・エスカレーション。'}[l]}
+function submitReport(){const t=document.getElementById('reportText').value.trim();if(!t)return toast('状況を入力してください');const msg={
+低:'全クルー共有＋本部以外のリーダー以上へ通知しました',
+通常:'全クルー共有＋本部以外のリーダー以上へ通知しました',
+高:'店長以上へ通知しました',
+緊急:'店長以上へ緊急通知・エスカレーションしました'}[currentUrgency];toast(msg);document.getElementById('reportText').value='';clearPreview('reportPreview')}
 function setHelpVisibility(v){
   helpVisibility=v;
   document.getElementById('helpPublicBtn').classList.toggle('active',v==='public');
@@ -210,8 +244,35 @@ function previewAttachment(e,id){
   reader.readAsDataURL(file)
 }
 function clearPreview(id){const box=document.getElementById(id);if(box){box.innerHTML='';box.classList.remove('show')}}
+function refreshAckSummary(){
+  const self=ackState.find(x=>x.self);if(self)self.ack=sharedReportAcknowledged;
+  const total=ackState.length,done=ackState.filter(x=>x.ack).length;
+  const c1=document.getElementById('ackCount'),c2=document.getElementById('unreadCount');
+  if(c1)c1.textContent='確認 '+done+'/'+total;
+  if(c2)c2.textContent='未確認 '+(total-done);
+}
+function ackSharedReport(){
+  sharedReportAcknowledged=true;
+  const self=ackState.find(x=>x.self);if(self){self.ack=true;self.time='19:42'}
+  const b=document.getElementById('ackBtn'),s=document.getElementById('sharedReportStatus');
+  if(b){b.textContent='確認済み';b.disabled=true;b.style.opacity='.55'}
+  if(s)s.textContent='あなた：確認済み ・ 19:42';
+  refreshAckSummary();toast('確認を記録しました');
+}
+function openAckList(){
+  if(roleRank[currentAccountRole]<roleRank.manager){toast('確認者一覧は店長以上のみ閲覧できます');return}
+  const done=ackState.filter(x=>x.ack),todo=ackState.filter(x=>!x.ack);
+  const personRow=(p,ok)=>'<div class="ackline"><div><div class="person">'+p.name+'</div><div class="personmeta">'+roleLabels[p.role]+' ・ '+p.store+'</div></div><span class="tag '+(ok?'green':'red')+'">'+(ok?(p.time||'確認済み'):'未確認')+'</span></div>';
+  document.getElementById('modalBody').innerHTML=
+    '<h3>確認状況</h3><div class="sub">デモ用の架空スタッフです。確認状況はランダム表示。</div>'+
+    '<div class="card"><div class="title">確認済み '+done.length+'名</div>'+done.map(p=>personRow(p,true)).join('')+'</div>'+
+    '<div class="card"><div class="title">未確認 '+todo.length+'名</div>'+todo.map(p=>personRow(p,false)).join('')+'</div>'+
+    '<button class="btn primary full" onclick="resendUnread()">未確認者へ再通知</button>';
+  document.getElementById('modal').classList.add('open');
+}
+function resendUnread(){const n=ackState.filter(x=>!x.ack).length;toast('未確認 '+n+'名へ再通知しました')}
 function openProfile(){
-  const r=document.getElementById('role').value;
+  const r=currentAccountRole;
   const imgStyle=profileImageData?'background-image:url('+profileImageData+')':'';
   const imgClass=profileImageData?'profileavatar has-image':'profileavatar';
   document.getElementById('modalBody').innerHTML=
@@ -235,7 +296,7 @@ function openGuide(){const s=document.getElementById('store').value,rows=guides[
 function openManual(){document.getElementById('modalBody').innerHTML='<h3>📄 コピー機の用紙補充</h3><div class="sub">v1.3・最終更新 2026/09/20</div><div class="card"><div class="title">1. 側面カバーを開く</div></div><div class="card"><div class="title">2. 用紙をそろえてセット</div></div><div class="card"><div class="title">3. 紙詰まり表示がないか確認</div></div><button class="btn primary full" onclick="closeModal();toast(\'最新版の確認を記録しました\')">最新版を確認しました</button>';document.getElementById('modal').classList.add('open')}
 function closeModal(){document.getElementById('modal').classList.remove('open')}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
-applyRole();applyStore();setHelpVisibility('public');
+applyRole();applyStore();setHelpVisibility('public');refreshAckSummary();
 </script>
 </body>
 </html>
