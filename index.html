@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: handover-history-qr-video-v5 -->
+<!-- build: workflow-assignee-deadline-notifications-v6 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -12,7 +12,7 @@
 .app{max-width:430px;min-height:100vh;margin:auto;background:var(--bg);padding-bottom:78px}
 .top{position:sticky;top:0;z-index:10;background:#f4f6f8ee;backdrop-filter:blur(15px);padding:14px;border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;justify-content:space-between}.brand h1{font-size:18px;margin:0}.tiny{font-size:10px;color:var(--muted)}
-.profilebtn{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid #d7dde6;background:linear-gradient(145deg,#1d2939,#344054);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:visible;cursor:pointer;box-shadow:0 3px 10px #10182814}
+.topactions{display:flex;align-items:center;gap:8px}.notifbtn{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid #d7dde6;background:#fff;color:#101828;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px #1018280d}.notifbadge{position:absolute;right:-3px;top:-3px;min-width:18px;height:18px;border-radius:999px;background:#c43232;color:#fff;border:2px solid var(--bg);font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 4px}.profilebtn{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid #d7dde6;background:linear-gradient(145deg,#1d2939,#344054);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:visible;cursor:pointer;box-shadow:0 3px 10px #10182814}
 .profilebtn .plus{position:absolute;right:-2px;bottom:-2px;width:18px;height:18px;border-radius:50%;background:var(--blue);color:#fff;border:2px solid var(--bg);font-size:12px;line-height:14px;display:flex;align-items:center;justify-content:center}
 .profilebtn.has-image{background-size:cover;background-position:center;color:transparent}
 .ctx{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.ctx select{width:100%;padding:9px;border:1px solid var(--line);border-radius:12px;background:#fff}
@@ -40,7 +40,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 .preview.show{display:block}.preview img{display:block;width:100%;max-height:220px;object-fit:cover}.previewbar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;font-size:10px;color:var(--muted)}
 .ackline{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #eef1f4}.ackline:last-child{border-bottom:0}.person{font-size:12px;font-weight:800}.personmeta{font-size:10px;color:var(--muted);margin-top:2px}.acksummary{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .tapcard{cursor:pointer;transition:.15s}.tapcard:active{transform:scale(.99);background:#f9fafb}.historycard{opacity:.78}.empty{border:1px dashed #cfd6df;border-radius:15px;padding:18px;text-align:center;color:var(--muted);font-size:12px;background:#fafbfc}
-.qrhero{background:linear-gradient(135deg,#0e1726,#263750);color:#fff;border-radius:18px;padding:16px;margin-bottom:10px}.qrhero .sub{color:#d2dae6}.qrbox{width:116px;height:116px;margin:14px auto;border-radius:14px;background:#fff;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(7,1fr);gap:3px;padding:10px}.qrbox i{background:#101828;border-radius:1px}.scanview{position:relative;background:#111827;border-radius:18px;overflow:hidden;aspect-ratio:3/4;margin:12px 0}.scanview video{width:100%;height:100%;object-fit:cover}.scanframe{position:absolute;inset:19%;border:3px solid #fff;border-radius:18px;box-shadow:0 0 0 999px #0005}.scanline{position:absolute;left:20%;right:20%;top:50%;height:2px;background:#8ef0c0;box-shadow:0 0 10px #8ef0c0}.videoplayer{background:#0c1320;color:#fff;border-radius:18px;padding:16px;margin-top:12px}.videoframe{aspect-ratio:16/9;background:linear-gradient(135deg,#1f2937,#101828);border-radius:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}.playbtn{width:62px;height:62px;border-radius:50%;border:0;background:#fff;color:#101828;font-size:24px;font-weight:900}.timeline{height:4px;background:#ffffff33;border-radius:99px;margin-top:12px;overflow:hidden}.timeline span{display:block;width:36%;height:100%;background:#fff}.videometa{display:flex;justify-content:space-between;margin-top:7px;font-size:10px;color:#cbd5e1}
+.qrhero{background:linear-gradient(135deg,#0e1726,#263750);color:#fff;border-radius:18px;padding:16px;margin-bottom:10px}.qrhero .sub{color:#d2dae6}.qrbox{width:116px;height:116px;margin:14px auto;border-radius:14px;background:#fff;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(7,1fr);gap:3px;padding:10px}.qrbox i{background:#101828;border-radius:1px}.scanview{position:relative;background:#111827;border-radius:18px;overflow:hidden;aspect-ratio:3/4;margin:12px 0}.scanview video{width:100%;height:100%;object-fit:cover}.scanframe{position:absolute;inset:19%;border:3px solid #fff;border-radius:18px;box-shadow:0 0 0 999px #0005}.scanline{position:absolute;left:20%;right:20%;top:50%;height:2px;background:#8ef0c0;box-shadow:0 0 10px #8ef0c0}.videoplayer{background:#0c1320;color:#fff;border-radius:18px;padding:16px;margin-top:12px}.videoframe{aspect-ratio:16/9;background:linear-gradient(135deg,#1f2937,#101828);border-radius:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}.playbtn{width:62px;height:62px;border-radius:50%;border:0;background:#fff;color:#101828;font-size:24px;font-weight:900}.timeline{height:4px;background:#ffffff33;border-radius:99px;margin-top:12px;overflow:hidden}.timeline span{display:block;width:36%;height:100%;background:#fff}.videometa{display:flex;justify-content:space-between;margin-top:7px;font-size:10px;color:#cbd5e1}.flow{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}.flow span{font-size:9px;font-weight:800;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 7px;color:#98a2b3}.flow span.on{background:#101828;color:#fff;border-color:#101828}.deadline{font-size:11px;font-weight:800;margin-top:6px}.deadline.overdue{color:var(--red)}.noteitem{cursor:pointer}.noteitem.unread{border-left:4px solid var(--blue)}
 </style>
 </head>
 <body>
@@ -48,7 +48,10 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 <header class="top">
   <div class="brand">
     <div><h1>SHIFT NOTE</h1><div class="tiny">第2版軸・最新統合デモ</div></div>
-    <button class="profilebtn" id="profileBtn" onclick="openProfile()" aria-label="プロフィール"><span id="profileInitial">渡</span><span class="plus">＋</span></button>
+    <div class="topactions">
+      <button class="notifbtn" onclick="openNotifications()" aria-label="通知">🔔<span class="notifbadge" id="notifBadge">0</span></button>
+      <button class="profilebtn" id="profileBtn" onclick="openProfile()" aria-label="プロフィール"><span id="profileInitial">渡</span><span class="plus">＋</span></button>
+    </div>
   </div>
   <input type="file" id="profileImageInput" accept="image/*" hidden onchange="setProfileImage(event)">
   <div class="ctx" style="grid-template-columns:1fr">
@@ -60,7 +63,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 
 <main id="home" class="page active">
   <div class="hero"><div class="tiny" style="color:#fff">2026年9月20日</div><h2 id="homeTitle">西口店の今日</h2><p>必要な人に、必要な情報を、必要な瞬間に。</p>
-    <div class="metrics"><div class="metric"><strong>3</strong><span>未確認</span></div><div class="metric"><strong>1</strong><span>期限超過</span></div><div class="metric"><strong>72%</strong><span>習得率</span></div></div>
+    <div class="metrics"><div class="metric"><strong id="homeUnconfirmed">0</strong><span>未確認</span></div><div class="metric"><strong id="homeOverdue">0</strong><span>期限超過</span></div><div class="metric"><strong>72%</strong><span>習得率</span></div></div>
   </div>
   <div id="guideBanner" class="banner" style="display:none"><b>📍 この店舗は初めてです</b><p>いつもの店舗との違いだけ確認。Skill Passportはそのまま引き継がれます。</p><button class="btn blue" onclick="openGuide()">Store Guideを開く</button></div>
   <section id="hqPanel" class="section" style="display:none"><div class="head"><h3>本部ダッシュボード</h3><small>全店舗</small></div><div class="hq"><div class="card"><strong>7</strong><span class="sub">未確認引き継ぎ</span></div><div class="card"><strong>2</strong><span class="sub">高・緊急報告</span></div><div class="card"><strong>5</strong><span class="sub">再確認待ち</span></div><div class="card"><strong>3</strong><span class="sub">未対応Help</span></div></div></section>
@@ -218,9 +221,15 @@ const guides={
 };
 let qrStream=null,qrTimer=null,videoDemoPlaying=false;
 const handovers=[
- {id:1,title:'フライヤー油を交換しました',level:'通常',author:'渡邉友介',time:'14:00',store:'西口店',detail:'酸化度確認後に油を交換しました。次回は3日後を目安に確認してください。',action:'次回シフトで酸化度シートを確認',done:false},
- {id:2,title:'冷凍ケース右側の温度上昇',level:'高',author:'佐藤美咲',time:'15:28',store:'西口店',detail:'冷凍ケース右側が7℃まで上昇。対象商品は退避し、販売停止しています。',action:'設備業者の到着まで30分ごとに温度記録',done:false},
- {id:3,title:'宅配便伝票の保管場所変更',level:'低',author:'小林結衣',time:'昨日 21:10',store:'駅前店',detail:'宅配便伝票をレジ下から事務所の青ファイルへ移動しました。',action:'次回勤務者へ周知済み',done:true,resolvedBy:'山本直樹',resolvedAt:'昨日 22:05'}
+ {id:1,title:'フライヤー油を交換しました',level:'通常',author:'渡邉友介',time:'14:00',store:'西口店',detail:'酸化度確認後に油を交換しました。次回は3日後を目安に確認してください。',action:'次回シフトで酸化度シートを確認',status:'未確認',assignee:'渡邉友介',deadline:'本日 21:00',overdue:false},
+ {id:2,title:'冷凍ケース右側の温度上昇',level:'高',author:'佐藤美咲',time:'15:28',store:'西口店',detail:'冷凍ケース右側が7℃まで上昇。対象商品は退避し、販売停止しています。',action:'設備業者の到着まで30分ごとに温度記録',status:'対応中',assignee:'山本直樹',deadline:'本日 19:30',overdue:true},
+ {id:3,title:'宅配便伝票の保管場所変更',level:'低',author:'小林結衣',time:'昨日 21:10',store:'駅前店',detail:'宅配便伝票をレジ下から事務所の青ファイルへ移動しました。',action:'次回勤務者へ周知済み',status:'完了',assignee:'小林結衣',deadline:'昨日 22:00',overdue:false,resolvedBy:'山本直樹',resolvedAt:'昨日 22:05'}
+];
+const notifications=[
+ {id:1,type:'再通知',title:'共有報告が未確認です',body:'「冷凍ケース右側の温度が高め」を確認してください。',read:false},
+ {id:2,type:'期限超過',title:'引き継ぎの期限を超過',body:'「冷凍ケース右側の温度上昇」・担当 山本直樹・期限 19:30',read:false},
+ {id:3,type:'マニュアル更新',title:'コピー機マニュアル v1.3',body:'本部が更新しました。再確認が必要です。',read:false},
+ {id:4,type:'非公開質問',title:'店長宛の質問',body:'レギュラークルーから非公開質問が届いています。',read:true}
 ];
 function go(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active')}
 function applyStore(){const s=document.getElementById('store').value;document.getElementById('homeTitle').textContent=s+'の今日';document.getElementById('guideBanner').style.display=s==='西口店'?'none':'block'}
@@ -309,32 +318,80 @@ function setProfileImage(e){
   reader.onload=()=>{profileImageData=reader.result;const b=document.getElementById('profileBtn');b.style.backgroundImage='url('+profileImageData+')';b.classList.add('has-image');document.getElementById('profileInitial').style.visibility='hidden';toast('プロフィール画像を設定しました（デモ）');if(document.getElementById('modal').classList.contains('open'))openProfile()};
   reader.readAsDataURL(file)
 }
+function statusRank(s){return {'未確認':0,'確認済み':1,'対応中':2,'完了':3}[s]??0}
+function statusClass(s){return s==='完了'?'green':s==='対応中'?'amber':s==='確認済み'?'blue':'red'}
 function renderHandovers(){
-  const active=handovers.filter(x=>!x.done),history=handovers.filter(x=>x.done);
-  const tagClass=l=>l==='高'||l==='緊急'?'red':l==='通常'?'amber':'blue';
-  const card=h=>'<div class="card tapcard '+(h.done?'historycard':'')+'" onclick="openHandover('+h.id+')"><div class="row"><div class="grow"><div class="title">'+h.title+'</div><div class="sub">'+h.store+' ・ '+h.author+' ・ '+h.time+'</div></div><span class="tag '+tagClass(h.level)+'">'+h.level+'</span></div>'+(h.done?'<div class="sub">確認済み：'+h.resolvedBy+' ・ '+h.resolvedAt+'</div>':'<div class="sub">タップして詳細・対応内容を確認</div>')+'</div>';
+  const active=handovers.filter(x=>x.status!=='完了'),history=handovers.filter(x=>x.status==='完了');
+  const levelClass=l=>l==='高'||l==='緊急'?'red':l==='通常'?'amber':'blue';
+  const card=h=>'<div class="card tapcard '+(h.status==='完了'?'historycard':'')+'" onclick="openHandover('+h.id+')">'+
+    '<div class="row"><div class="grow"><div class="title">'+h.title+'</div><div class="sub">'+h.store+' ・ '+h.author+' ・ '+h.time+'</div></div><span class="tag '+levelClass(h.level)+'">'+h.level+'</span></div>'+
+    '<div class="acksummary"><span class="tag '+statusClass(h.status)+'">'+h.status+'</span><span class="tag">担当 '+h.assignee+'</span></div>'+
+    '<div class="deadline '+(h.overdue&&h.status!=='完了'?'overdue':'')+'">期限：'+h.deadline+(h.overdue&&h.status!=='完了'?' ・ 期限超過':'')+'</div>'+
+    (h.status==='完了'?'<div class="sub">完了：'+h.resolvedBy+' ・ '+h.resolvedAt+' ／ 履歴として保存</div>':'<div class="sub">タップして詳細・進捗を確認</div>')+
+    '</div>';
   document.getElementById('handoverActive').innerHTML=active.length?active.map(card).join(''):'<div class="empty">進行中の引き継ぎはありません</div>';
   document.getElementById('handoverHistory').innerHTML=history.length?history.map(card).join(''):'<div class="empty">履歴はまだありません</div>';
+  refreshOperationalMetrics();
+}
+function flowHTML(status){
+  return '<div class="flow">'+['未確認','確認済み','対応中','完了'].map(x=>'<span class="'+(statusRank(x)<=statusRank(status)?'on':'')+'">'+x+'</span>').join('')+'</div>';
 }
 function openHandover(id){
   const h=handovers.find(x=>x.id===id);if(!h)return;
-  const canResolve=roleRank[currentAccountRole]>=roleRank.manager;
+  const canManage=roleRank[currentAccountRole]>=roleRank.manager;
+  const staff=demoPeople.filter(p=>p.role!=='hq').map(p=>'<option '+(p.name===h.assignee?'selected':'')+'>'+p.name+'</option>').join('');
+  let next='';
+  if(h.status==='未確認')next='<button class="btn primary full" onclick="advanceHandover('+h.id+',\'確認済み\')">確認済みにする</button>';
+  if(h.status==='確認済み')next='<button class="btn primary full" onclick="advanceHandover('+h.id+',\'対応中\')">対応を開始</button>';
+  if(h.status==='対応中')next='<button class="btn primary full" onclick="advanceHandover('+h.id+',\'完了\')">対応完了にする</button>';
   document.getElementById('modalBody').innerHTML=
-    '<h3>'+h.title+'</h3>'+
-    '<div class="acksummary"><span class="tag '+(h.level==='高'||h.level==='緊急'?'red':h.level==='通常'?'amber':'blue')+'">'+h.level+'</span><span class="tag">'+h.store+'</span></div>'+
+    '<h3>'+h.title+'</h3>'+flowHTML(h.status)+
+    '<div class="acksummary"><span class="tag '+statusClass(h.status)+'">'+h.status+'</span><span class="tag">'+h.store+'</span></div>'+
     '<div class="card"><div class="title">詳細</div><div class="sub">'+h.detail+'</div></div>'+
     '<div class="card"><div class="title">必要な対応</div><div class="sub">'+h.action+'</div></div>'+
-    '<div class="card"><div class="title">投稿者</div><div class="sub">'+h.author+' ・ '+h.time+'</div></div>'+
-    (h.done?'<div class="card"><div class="title">確認済み</div><div class="sub">'+h.resolvedBy+' ・ '+h.resolvedAt+'。この引き継ぎは履歴として保存されています。</div></div>':
-      (canResolve?'<button class="btn primary full" onclick="resolveHandover('+h.id+')">店長以上：確認済みにする</button>':'<div class="sub">確認済みへの変更は店長以上のみ可能です。</div>'));
+    '<div class="card"><div class="title">担当・期限</div><div class="sub">担当：'+h.assignee+'</div><div class="deadline '+(h.overdue&&h.status!=='完了'?'overdue':'')+'">期限：'+h.deadline+(h.overdue&&h.status!=='完了'?' ・ 期限超過':'')+'</div></div>'+
+    (h.status==='完了'?'<div class="card"><div class="title">完了記録</div><div class="sub">'+h.resolvedBy+' ・ '+h.resolvedAt+'。履歴として保存されています。</div></div>':
+      (canManage?
+        '<div class="card"><div class="title">担当者・期限を変更</div><select id="assigneeEdit" class="input">'+staff+'</select><input id="deadlineEdit" class="input" value="'+h.deadline+'"><button class="btn ghost full" style="margin-top:8px" onclick="saveAssignment('+h.id+')">担当・期限を保存</button></div>'+next
+        :'<div class="sub">進捗変更と担当設定は店長以上のみ可能です。</div>'));
   document.getElementById('modal').classList.add('open');
 }
-function resolveHandover(id){
+function saveAssignment(id){
+  if(roleRank[currentAccountRole]<roleRank.manager)return toast('店長以上のみ操作できます');
   const h=handovers.find(x=>x.id===id);if(!h)return;
-  if(roleRank[currentAccountRole]<roleRank.manager){toast('店長以上のみ操作できます');return}
-  h.done=true;h.resolvedBy='渡邉友介';h.resolvedAt='19:45';
-  closeModal();renderHandovers();toast('確認済みにして履歴へ移動しました');
+  h.assignee=document.getElementById('assigneeEdit').value;
+  h.deadline=document.getElementById('deadlineEdit').value||h.deadline;
+  h.overdue=false;
+  toast('担当者と期限を更新しました');renderHandovers();openHandover(id);
 }
+function advanceHandover(id,next){
+  if(roleRank[currentAccountRole]<roleRank.manager)return toast('店長以上のみ操作できます');
+  const h=handovers.find(x=>x.id===id);if(!h)return;
+  h.status=next;
+  if(next==='完了'){h.resolvedBy='渡邉友介';h.resolvedAt='19:48';h.overdue=false}
+  closeModal();renderHandovers();
+  toast(next==='完了'?'対応完了。履歴へ移動しました':'ステータスを「'+next+'」に更新しました');
+}
+function refreshOperationalMetrics(){
+  const u=handovers.filter(x=>x.status==='未確認').length;
+  const o=handovers.filter(x=>x.status!=='完了'&&x.overdue).length;
+  const ue=document.getElementById('homeUnconfirmed'),oe=document.getElementById('homeOverdue');
+  if(ue)ue.textContent=u;if(oe)oe.textContent=o;
+}
+function updateNotificationBadge(){
+  const n=notifications.filter(x=>!x.read).length,b=document.getElementById('notifBadge');
+  if(b){b.textContent=n;b.style.display=n?'flex':'none'}
+}
+function openNotifications(){
+  const rows=notifications.map(n=>'<div class="card noteitem '+(!n.read?'unread':'')+'" onclick="readNotification('+n.id+')"><div class="row"><div class="grow"><div class="title">'+n.title+'</div><div class="sub">'+n.body+'</div></div><span class="tag '+(!n.read?'red':'')+'">'+n.type+'</span></div></div>').join('');
+  document.getElementById('modalBody').innerHTML=
+    '<div class="head"><h3>🔔 通知センター</h3><small>未読 '+notifications.filter(x=>!x.read).length+'</small></div>'+
+    rows+
+    '<button class="btn ghost full" onclick="markAllNotificationsRead()">すべて既読にする</button>';
+  document.getElementById('modal').classList.add('open');
+}
+function readNotification(id){const n=notifications.find(x=>x.id===id);if(n)n.read=true;updateNotificationBadge();openNotifications()}
+function markAllNotificationsRead(){notifications.forEach(x=>x.read=true);updateNotificationBadge();toast('すべて既読にしました');openNotifications()}
 function qrPattern(){
   const bits=[1,1,1,0,1,1,1,1,0,1,0,1,0,1,1,1,1,0,1,1,1,0,1,0,1,0,1,0,1,1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1];
   return bits.map(b=>b?'<i></i>':'<i style="background:transparent"></i>').join('');
@@ -386,7 +443,7 @@ function openGuide(){const s=document.getElementById('store').value,rows=guides[
 function openManual(){document.getElementById('modalBody').innerHTML='<h3>📄 コピー機の用紙補充</h3><div class="sub">v1.3・最終更新 2026/09/20</div><div class="card"><div class="title">1. 側面カバーを開く</div></div><div class="card"><div class="title">2. 用紙をそろえてセット</div></div><div class="card"><div class="title">3. 紙詰まり表示がないか確認</div></div><button class="btn primary full" onclick="closeModal();toast(\'最新版の確認を記録しました\')">最新版を確認しました</button>';document.getElementById('modal').classList.add('open')}
 function closeModal(){stopQR();document.getElementById('modal').classList.remove('open')}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
-applyRole();applyStore();setHelpVisibility('public');refreshAckSummary();renderHandovers();
+applyRole();applyStore();setHelpVisibility('public');refreshAckSummary();renderHandovers();updateNotificationBadge();
 </script>
 </body>
 </html>
