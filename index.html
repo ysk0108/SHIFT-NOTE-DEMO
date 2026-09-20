@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: capture-protection-v13 -->
+<!-- build: visible-confidential-watermark-v14 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -29,7 +29,10 @@
 input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px;margin-top:6px}textarea.input{min-height:90px}
 .skill{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #eef1f4}.skill:last-child{border-bottom:0}
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:68px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);z-index:20}.nav button{border:0;background:#fff;font-size:9px;color:#7b8494}.nav button span{display:block;font-size:18px}.nav button.active{color:#101828;font-weight:800}
-.modalbg{display:none;position:fixed;inset:0;background:#10182866;z-index:30;align-items:flex-end;justify-content:center}.modalbg.open{display:flex}.modal{width:min(430px,100%);max-height:88vh;overflow:auto;background:#f8fafb;border-radius:24px 24px 0 0;padding:16px 16px 28px}.close{float:right;border:0;background:#e9edf1;border-radius:10px;padding:8px}
+.modalbg{display:none;position:fixed;inset:0;background:#10182866;z-index:30;align-items:flex-end;justify-content:center}.modalbg.open{display:flex}.modal{position:relative;width:min(430px,100%);max-height:88vh;overflow:auto;background:#f8fafb;border-radius:24px 24px 0 0;padding:16px 16px 38px}.close{position:relative;z-index:8;float:right;border:0;background:#e9edf1;border-radius:10px;padding:8px}
+.wm-layer{display:none;position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden;padding:76px 0 90px;grid-template-columns:1fr 1fr;align-content:start;gap:92px 6px}
+.modalbg.confidential .wm-layer{display:grid}.wm-layer span{font-size:10px;font-weight:900;letter-spacing:.35px;color:#101828;opacity:.07;white-space:nowrap;transform:rotate(-29deg);transform-origin:center}
+.wm-footer{display:none}.modalbg.confidential .wm-footer{display:block;position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(430px,100%);z-index:38;background:#101828e8;color:#fff;text-align:center;padding:7px 10px calc(7px + env(safe-area-inset-bottom));font-size:9px;font-weight:800;letter-spacing:.35px;pointer-events:none}
 .hq{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hq .card strong{font-size:22px;display:block}
 .profilehead{display:flex;align-items:center;gap:13px;margin:4px 0 16px}.profileavatar{width:68px;height:68px;border-radius:50%;background:linear-gradient(145deg,#1d2939,#344054);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;background-size:cover;background-position:center}.profileavatar.has-image{color:transparent}
 .segment{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#edf0f4;border-radius:13px;padding:4px;margin-top:8px}.segment button{border:0;border-radius:10px;background:transparent;padding:9px;font-size:11px;font-weight:800;color:#667085}.segment button.active{background:#fff;color:#101828;box-shadow:0 1px 4px #10182812}
@@ -198,7 +201,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 </nav>
 </div>
 
-<div class="modalbg" id="modal"><div class="modal"><button class="close" onclick="closeModal()">✕</button><div id="modalBody"></div></div></div>
+<div class="modalbg" id="modal"><div class="modal"><button class="close" onclick="closeModal()">✕</button><div id="wmLayer" class="wm-layer"></div><div id="modalBody"></div><div id="wmFooter" class="wm-footer"></div></div></div>
 <div id="toast" style="position:fixed;left:50%;bottom:82px;transform:translateX(-50%);background:#101828;color:#fff;padding:10px 14px;border-radius:999px;font-size:11px;display:none;z-index:99"></div>
 
 <script>
@@ -336,6 +339,26 @@ function ackSharedReport(){
   if(s)s.textContent='あなた：確認済み ・ 19:42';
   refreshAckSummary();refreshOperationalMetrics();toast('確認を記録しました');
 }
+function watermarkStamp(){
+  const d=new Date();
+  const date=d.toLocaleDateString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit'});
+  const time=d.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
+  const store=document.getElementById('store')?.value||'西口店';
+  return '渡邉友介 / '+store+' / '+roleLabels[currentAccountRole]+' / '+date+' '+time+' / SHIFT NOTE CONFIDENTIAL';
+}
+function enableConfidentialWatermark(){
+  if(!securityState.watermark)return;
+  const modal=document.getElementById('modal'),layer=document.getElementById('wmLayer'),footer=document.getElementById('wmFooter');
+  if(!modal||!layer||!footer)return;
+  modal.classList.add('confidential');
+  const stamp=watermarkStamp();
+  layer.innerHTML=Array.from({length:18},()=>'<span>'+stamp+'</span>').join('');
+  footer.textContent='SHIFT NOTE CONFIDENTIAL ・ 渡邉友介 ・ Session SN-8F21';
+}
+function disableConfidentialWatermark(){
+  const modal=document.getElementById('modal');
+  if(modal)modal.classList.remove('confidential');
+}
 function openAckList(){
   if(roleRank[currentAccountRole]<roleRank.manager){toast('確認者一覧は店長以上のみ閲覧できます');return}
   const done=ackState.filter(x=>x.ack),todo=ackState.filter(x=>!x.ack);
@@ -346,6 +369,7 @@ function openAckList(){
     '<div class="card"><div class="title">未確認 '+todo.length+'名</div>'+todo.map(p=>personRow(p,false)).join('')+'</div>'+
     '<button class="btn primary full" onclick="resendUnread()">未確認者へ再通知</button>';
   document.getElementById('modal').classList.add('open');
+  enableConfidentialWatermark();
 }
 function resendUnread(){const n=ackState.filter(x=>!x.ack).length;toast('未確認 '+n+'名へ再通知しました')}
 function openAdminCenter(){
@@ -425,6 +449,7 @@ function openAdminCenter(){
     '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 0.9 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
     '<section class="section"><div class="head"><h3>操作ログ</h3><small>誰が・いつ・何を</small></div><div class="card">'+logs+'</div></section>';
   document.getElementById('modal').classList.add('open');
+  enableConfidentialWatermark();
 }
 function retentionRow(key,label){
   const opts=['30日','90日','180日','365日','3年'].map(v=>'<option '+(retentionState[key]===v?'selected':'')+'>'+v+'</option>').join('');
@@ -626,6 +651,7 @@ function openPrivateQuestion(){
     '<div class="card"><div class="title">佐藤美咲 ・ レギュラークルー</div><div class="sub">廃棄登録を修正したい場合は、どの手順で対応すればいいですか？</div><div class="sub">西口店 ・ 18:55</div></div>'+
     '<button class="btn primary full" onclick="closeModal();toast(\'回答画面を開きました（デモ）\')">回答する</button>';
   document.getElementById('modal').classList.add('open');
+  enableConfidentialWatermark();
 }
 function navigateNotification(id){
   closeModal();
@@ -704,7 +730,7 @@ function toggleVideoDemo(){
 }
 function openGuide(){const s=document.getElementById('store').value,rows=guides[s]||[];document.getElementById('modalBody').innerHTML='<h3>📍 '+s+' Store Guide</h3><div class="sub">この店舗だけの違いを確認</div>'+rows.map((r,i)=>'<div class="card"><div class="title">'+(i+1)+'. '+r[0]+'</div><div class="sub">'+r[1]+'</div></div>').join('')+'<button class="btn primary full" onclick="closeModal();toast(\''+s+'の初回確認を保存しました\')">確認しました</button>';document.getElementById('modal').classList.add('open')}
 function openManual(){document.getElementById('modalBody').innerHTML='<h3>📄 コピー機の用紙補充</h3><div class="sub">v1.3・最終更新 2026/09/20</div><div class="card"><div class="title">1. 側面カバーを開く</div></div><div class="card"><div class="title">2. 用紙をそろえてセット</div></div><div class="card"><div class="title">3. 紙詰まり表示がないか確認</div></div><button class="btn primary full" onclick="closeModal();toast(\'最新版の確認を記録しました\')">最新版を確認しました</button>';document.getElementById('modal').classList.add('open')}
-function closeModal(){stopQR();document.getElementById('modal').classList.remove('open')}
+function closeModal(){stopQR();disableConfidentialWatermark();document.getElementById('modal').classList.remove('open')}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
 applyRole();applyStore();setHelpVisibility('public');refreshAckSummary();renderHandovers();updateNotificationBadge();
 </script>
