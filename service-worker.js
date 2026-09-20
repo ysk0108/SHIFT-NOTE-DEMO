@@ -65,7 +65,7 @@ self.addEventListener('push', event => {
     data = { body: event.data ? event.data.text() : '' };
   }
 
-  const title = data.title || 'SHIFT NOTE';
+  const title = data.title || 'SKILL PASSPORT';
   const options = {
     body: data.body || '新しい通知があります',
     icon: './pwa-icon.svg',
@@ -100,7 +100,7 @@ self.addEventListener('message', event => {
   if (event.data?.type === 'SHOW_LOCAL_NOTIFICATION') {
     const payload = event.data.payload || {};
     event.waitUntil(
-      self.registration.showNotification(payload.title || 'SHIFT NOTE', {
+      self.registration.showNotification(payload.title || 'SKILL PASSPORT', {
         body: payload.body || '通知テストです',
         icon: './pwa-icon.svg',
         badge: './pwa-icon.svg',
