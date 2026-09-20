@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: shift-management-v17 -->
+<!-- build: store-change-request-v18 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -329,6 +329,7 @@ const pilotChecklist=[
 ];
 let incidentStatus='平常';
 const changelog=[
+ {version:'1.2 Demo',date:'2026/09/20',text:'店舗追加・店舗名変更の申請フローを追加'},
  {version:'1.1 Demo',date:'2026/09/20',text:'シフト確認・希望提出・変更申請・応援募集・人員不足警告を追加'},
  {version:'1.0 Demo',date:'2026/09/20',text:'認証・テナント分離・権限表・オフライン同期・運用監視を統合'},
  {version:'0.9 Demo',date:'2026/09/20',text:'通知ディープリンク、担当・期限、管理センターを追加'},
@@ -352,6 +353,44 @@ const shiftDemo=[
 ];
 let shiftPreferenceState='未提出';
 let shiftChangeState='申請中';
+const storeChangeRequests=[];
+let storeRequestType='add';
+function openStoreRequest(){
+  if(roleRank[currentAccountRole]<roleRank.manager){denyAccess();return}
+  document.getElementById('modalBody').innerHTML=
+    '<h3>店舗管理の要請</h3><div class="sub">公開デモでは実店舗名を固定保存しません。入力内容はこのデモセッション内だけの扱いです。</div>'+
+    '<div class="segment"><button id="storeReqAdd" class="active" onclick="setStoreRequestType(\'add\')">店舗追加</button><button id="storeReqRename" onclick="setStoreRequestType(\'rename\')">名称変更</button></div>'+
+    '<div id="storeRequestForm" class="card" style="margin-top:10px"></div>'+
+    '<button class="btn primary full" onclick="submitStoreRequest()">要請を送る</button>';
+  document.getElementById('modal').classList.add('open');
+  enableConfidentialWatermark();
+  setStoreRequestType(storeRequestType);
+}
+function setStoreRequestType(type){
+  storeRequestType=type;
+  const a=document.getElementById('storeReqAdd'),b=document.getElementById('storeReqRename'),box=document.getElementById('storeRequestForm');
+  if(a)a.classList.toggle('active',type==='add');
+  if(b)b.classList.toggle('active',type==='rename');
+  if(!box)return;
+  if(type==='add'){
+    box.innerHTML='<div class="title">新しい店舗を追加</div><label class="tiny">店舗名</label><input id="storeReqName" class="input" placeholder="店舗名を入力"><label class="tiny">備考</label><textarea id="storeReqNote" class="input" placeholder="開店日、管轄、補足など（任意）"></textarea>';
+  }else{
+    const opts=Array.from(document.getElementById('store').options).map(o=>'<option>'+o.value+'</option>').join('');
+    box.innerHTML='<div class="title">既存店舗の名称変更</div><label class="tiny">現在の店舗名</label><select id="storeReqOld" class="input">'+opts+'</select><label class="tiny">新しい店舗名</label><input id="storeReqName" class="input" placeholder="変更後の店舗名"><label class="tiny">変更理由</label><textarea id="storeReqNote" class="input" placeholder="名称変更の理由（任意）"></textarea>';
+  }
+}
+function submitStoreRequest(){
+  const name=(document.getElementById('storeReqName')?.value||'').trim();
+  if(!name)return toast('店舗名を入力してください');
+  const note=(document.getElementById('storeReqNote')?.value||'').trim();
+  const old=storeRequestType==='rename'?(document.getElementById('storeReqOld')?.value||''):'';
+  storeChangeRequests.unshift({id:Date.now(),type:storeRequestType,name,old,note,status:'承認待ち'});
+  auditLogs.unshift({time:'23:15',text:'渡邉友介が '+(storeRequestType==='add'?'店舗追加':'店舗名変更')+' を申請'});
+  notifications.unshift({id:Date.now()+1,type:'店舗管理',title:'店舗変更申請を送信',body:'承認権限者の確認待ちです。',read:false});
+  updateNotificationBadge();
+  closeModal();
+  toast((storeRequestType==='add'?'店舗追加':'名称変更')+'の要請を送りました（デモ）');
+}
 function openShiftDetail(id){
   const s=shiftDemo.find(x=>x.id===id);if(!s)return;
   const skillMap=Object.fromEntries(skillPassport.map(x=>[x.name,x]));
@@ -530,6 +569,8 @@ function openAdminCenter(){
     ['店舗の公開マニュアル',['✓','✓','✓','✓','✓','✓','✓']],
     ['自分のシフト・希望提出',['✓','✓','✓','✓','✓','✓','✓']],
     ['シフト作成・承認',['—','—','✓','✓','✓','✓','✓']],
+    ['店舗追加・名称変更の申請',['—','—','✓','✓','✓','✓','✓']],
+    ['店舗マスタの承認・反映',['—','—','—','—','—','✓','✓']],
     ['確認状況一覧',['—','—','✓','✓','✓','✓','✓']],
     ['アカウント管理',['—','—','✓','✓','✓','✓','✓']],
     ['監査ログ',['—','—','✓','✓','✓','✓','✓']],
@@ -556,6 +597,10 @@ function openAdminCenter(){
         '<div class="card"><strong>--</strong><div class="sub">FAQ化できた質問数</div><div class="kpidown">パイロット中に集計</div></div>'+
       '</div>'+
       '<div class="card"><div class="title">パイロット計測</div><div class="sub">'+(pilotKpiState.baseline?'導入前ベースライン：記録済み':'導入前ベースライン：未記録')+'</div><div class="sub">'+(pilotKpiState.started?'パイロット：計測中':'パイロット：未開始')+'</div><div style="display:flex;gap:7px;margin-top:8px"><button class="btn ghost grow" onclick="recordBaseline()">導入前を記録</button><button class="btn blue grow" onclick="startPilotKpi()">計測開始</button></div></div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>店舗管理</h3><small>追加・名称変更の申請</small></div>'+
+      '<div class="card"><div class="title">店舗情報の変更は申請制</div><div class="sub">店長以上が申請し、承認権限者の確認後に組織全体へ反映する想定。直接編集はしません。</div><button class="btn blue full" style="margin-top:8px" onclick="openStoreRequest()">店舗追加・名称変更を要請</button></div>'+
+      '<div class="card"><div class="title">申請フロー</div><div class="sub">要請 → 承認確認 → 店舗マスタ更新 → 対象者へ通知 → シフト/Store Guide/権限へ反映</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>招待・入社・退職</h3><small>Account Lifecycle</small></div>'+
       '<div class="card"><div class="sub">利用中 '+activeCount+'名 / 停止 '+inactiveCount+'名</div><button class="btn blue full" style="margin:8px 0" onclick="openInviteDemo()">＋ 新しいクルーを招待</button>'+accountRows+'</div>'+
@@ -626,7 +671,7 @@ function openAdminCenter(){
       '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>規約・プライバシー</h3><small>Draft</small></div><div class="card">'+legalDocs.map(d=>'<div class="controlrow legalbtn" onclick="openLegal(\''+d.id+'\')"><div><div class="title">'+d.title+'</div><div class="sub">'+d.version+'</div></div><span>›</span></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 1.1 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 1.2 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
     '<section class="section"><div class="head"><h3>操作ログ</h3><small>改ざん防止</small></div><div class="card"><div class="sub">監査ログは追記のみ。管理者でも既存記録を編集・削除できない想定。</div>'+logs+'</div></section>';
   document.getElementById('modal').classList.add('open');
   enableConfidentialWatermark();
