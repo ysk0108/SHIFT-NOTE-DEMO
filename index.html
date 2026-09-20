@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: account-delete-v10 -->
+<!-- build: admin-visibility-v11 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -466,6 +466,9 @@ function openProfile(){
   const r=currentAccountRole;
   const imgStyle=profileImageData?'background-image:url('+profileImageData+')':'';
   const imgClass=profileImageData?'profileavatar has-image':'profileavatar';
+  const adminButton=roleRank[r]>=roleRank.manager
+    ?'<button class="btn primary full" onclick="closeModal();openAdminCenter()">管理センターを開く</button>'
+    :'';
   document.getElementById('modalBody').innerHTML=
     '<div class="profilehead"><div id="modalAvatar" class="'+imgClass+'" style="'+imgStyle+'">渡</div><div><h3 style="margin:0">渡邉友介</h3><div class="sub">'+roleLabels[r]+'・'+document.getElementById('store').value+'</div></div></div>'+
     '<button class="btn ghost full" onclick="document.getElementById(\'profileImageInput\').click()">📷 プロフィール画像を追加・変更</button>'+
@@ -474,7 +477,7 @@ function openProfile(){
     '<div class="skill"><div><b>公共料金</b><div class="sub">受付</div></div><span class="tag blue">実施経験あり</span></div>'+
     '<div class="skill"><div><b>コピー機対応</b><div class="sub">v1.3更新</div></div><span class="tag red">再確認必要</span></div>'+
     '<div class="skill"><div><b>宅配便受付</b><div class="sub">受付</div></div><span class="tag green">単独対応可</span></div></div></section>'+
-    '<button class="btn primary full" onclick="closeModal();openAdminCenter()">管理センターを開く</button>'+
+    adminButton+
     '<button class="btn blue full" style="margin-top:8px" onclick="closeModal();go(\'settings\')">役職・権限を見る</button>';
   document.getElementById('modal').classList.add('open')
 }
