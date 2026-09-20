@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: language-settings-srilanka-v29 -->
+<!-- build: full-ui-post-translation-demo-v30 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -49,7 +49,8 @@
 .urg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.urg button{border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px 2px;font-size:11px;font-weight:800}.urg button.active[data-l="緊急"]{background:#8f1d1d;color:#fff}.urg button.active[data-l="高"]{background:#fff0f0;color:var(--red)}.urg button.active[data-l="通常"]{background:#fff6e8;color:var(--amber)}.urg button.active[data-l="低"]{background:#edf2ff;color:var(--blue)}
 input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px;margin-top:6px}textarea.input{min-height:90px}
 .skill{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #eef1f4}.skill:last-child{border-bottom:0}
-.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:68px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);z-index:20}.nav button{border:0;background:#fff;font-size:8px;color:#7b8494;padding:5px 2px}.nav button span{display:block;font-size:17px}.navlabel{display:block;font-style:normal;line-height:1.15}.nav button.active{color:#101828;font-weight:800}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:68px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);z-index:20}.nav button{border:0;background:#fff;font-size:8px;color:#7b8494;padding:5px 2px}.nav button span{display:block;font-size:17px}.navlabel{display:block;font-style:normal;line-height:1.15}
+.translated-badge{display:inline-flex;align-items:center;gap:4px;font-size:8px;font-weight:900;padding:4px 6px;border-radius:999px;background:#eef4ff;color:#315fd3;margin-top:6px}.original-toggle{border:0;background:transparent;color:#315fd3;font-size:9px;font-weight:900;padding:4px 0;cursor:pointer}.translation-note{font-size:9px;line-height:1.5;color:#667085;margin-top:8px;padding:8px;border-radius:10px;background:#f7f9fc;border:1px solid var(--line)}.nav button.active{color:#101828;font-weight:800}
 .modalbg{display:none;position:fixed;inset:0;background:#10182866;z-index:30;align-items:flex-end;justify-content:center}.modalbg.open{display:flex}.modal{position:relative;width:min(430px,100%);max-height:88vh;overflow:auto;background:#f8fafb;border-radius:24px 24px 0 0;padding:16px 16px 38px}.close{position:relative;z-index:8;float:right;border:0;background:#e9edf1;border-radius:10px;padding:8px}
 .wm-layer{display:none;position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden;padding:76px 0 90px;grid-template-columns:1fr 1fr;align-content:start;gap:92px 6px}
 .modalbg.confidential .wm-layer{display:grid}.wm-layer span{font-size:10px;font-weight:900;letter-spacing:.35px;color:#101828;opacity:.07;white-space:nowrap;transform:rotate(-29deg);transform-origin:center}
@@ -212,7 +213,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
     <div class="preview" id="helpPreview"></div>
     <button id="helpSendBtn" class="btn blue full" style="margin-top:8px" onclick="sendHelp()">質問を公開する</button>
   </div>
-  <div class="card"><div class="title">公共料金の控えはどこ？</div><div class="sub">西口店：レジ裏の青ファイル。</div></div>
+  <div class="card" id="translatedQuestionSample"><div class="title" id="questionSampleTitle">公共料金の控えはどこ？</div><div class="sub" id="questionSampleDetail">西口店：レジ裏の青ファイル。</div><div id="questionSampleTranslation"></div></div>
 </section>
 </main>
 
@@ -331,15 +332,15 @@ const languageOptions=[
 ];
 let currentLanguage=localStorage.getItem('shiftNoteLanguage')||'ja';
 const uiLang={
- ja:{home:'ホーム',handover:'引き継ぎ',tasks:'業務',shift:'シフト',manuals:'マニュアル',report:'報告・質問',back:'戻る',language:'言語設定',choose:'表示言語を選択',save:'この言語に変更'},
- en:{home:'Home',handover:'Handover',tasks:'Tasks',shift:'Shift',manuals:'Manuals',report:'Report / Ask',back:'Back',language:'Language',choose:'Choose display language',save:'Use this language'},
- 'zh-CN':{home:'首页',handover:'交接',tasks:'业务',shift:'排班',manuals:'手册',report:'报告/提问',back:'返回',language:'语言设置',choose:'选择显示语言',save:'使用此语言'},
- ko:{home:'홈',handover:'인수인계',tasks:'업무',shift:'시프트',manuals:'매뉴얼',report:'보고/질문',back:'뒤로',language:'언어 설정',choose:'표시 언어 선택',save:'이 언어 사용'},
- vi:{home:'Trang chủ',handover:'Bàn giao',tasks:'Công việc',shift:'Ca làm',manuals:'Hướng dẫn',report:'Báo cáo/Hỏi',back:'Quay lại',language:'Ngôn ngữ',choose:'Chọn ngôn ngữ hiển thị',save:'Dùng ngôn ngữ này'},
- ne:{home:'होम',handover:'हस्तान्तरण',tasks:'काम',shift:'सिफ्ट',manuals:'म्यानुअल',report:'रिपोर्ट/प्रश्न',back:'फर्कनुहोस्',language:'भाषा सेटिङ',choose:'प्रदर्शन भाषा छान्नुहोस्',save:'यो भाषा प्रयोग गर्नुहोस्'},
- pt:{home:'Início',handover:'Passagem',tasks:'Tarefas',shift:'Escala',manuals:'Manuais',report:'Relatar/Perguntar',back:'Voltar',language:'Idioma',choose:'Escolha o idioma',save:'Usar este idioma'},
- si:{home:'මුල් පිටුව',handover:'භාරදීම',tasks:'කාර්යයන්',shift:'වැඩ මුර',manuals:'අත්පොත්',report:'වාර්තා/ප්‍රශ්න',back:'ආපසු',language:'භාෂා සැකසුම්',choose:'පෙන්වීමේ භාෂාව තෝරන්න',save:'මෙම භාෂාව භාවිත කරන්න'},
- ta:{home:'முகப்பு',handover:'ஒப்படைப்பு',tasks:'பணிகள்',shift:'பணி நேரம்',manuals:'கையேடுகள்',report:'அறிக்கை/கேள்வி',back:'பின்',language:'மொழி அமைப்புகள்',choose:'காட்சி மொழியைத் தேர்ந்தெடுக்கவும்',save:'இந்த மொழியைப் பயன்படுத்தவும்'}
+ ja:{home:'ホーム',handover:'引き継ぎ',tasks:'業務',shift:'シフト',manuals:'マニュアル',report:'報告・質問',back:'戻る',language:'言語設定',choose:'表示言語を選択',save:'この言語に変更',auto:'自動翻訳',original:'原文を見る',translated:'翻訳文に戻す',translation_note:'投稿は選択言語に自動翻訳されます。必要な場合は原文を確認できます。',active_handover:'進行中の引き継ぎ',history:'履歴',today_tasks:'今日の業務',work_manuals:'業務マニュアル',incident_report:'異常・事故・設備報告',questions:'質問 / Help',my_shift:'シフト'},
+ en:{home:'Home',handover:'Handover',tasks:'Tasks',shift:'Shift',manuals:'Manuals',report:'Report / Ask',back:'Back',language:'Language',choose:'Choose display language',save:'Use this language',auto:'Auto-translated',original:'View original',translated:'Back to translation',translation_note:'Posts are automatically translated into your selected language. You can view the original when needed.',active_handover:'Active handovers',history:'History',today_tasks:"Today's tasks",work_manuals:'Work manuals',incident_report:'Incident / accident / equipment report',questions:'Questions / Help',my_shift:'Shift'},
+ 'zh-CN':{home:'首页',handover:'交接',tasks:'业务',shift:'排班',manuals:'手册',report:'报告/提问',back:'返回',language:'语言设置',choose:'选择显示语言',save:'使用此语言',auto:'自动翻译',original:'查看原文',translated:'返回译文',translation_note:'帖子会自动翻译为您选择的语言，必要时可查看原文。',active_handover:'进行中的交接',history:'记录',today_tasks:'今日业务',work_manuals:'业务手册',incident_report:'异常/事故/设备报告',questions:'提问 / 帮助',my_shift:'排班'},
+ ko:{home:'홈',handover:'인수인계',tasks:'업무',shift:'시프트',manuals:'매뉴얼',report:'보고/질문',back:'뒤로',language:'언어 설정',choose:'표시 언어 선택',save:'이 언어 사용',auto:'자동 번역',original:'원문 보기',translated:'번역문으로 돌아가기',translation_note:'게시물은 선택한 언어로 자동 번역됩니다. 필요하면 원문을 볼 수 있습니다.',active_handover:'진행 중 인수인계',history:'기록',today_tasks:'오늘의 업무',work_manuals:'업무 매뉴얼',incident_report:'이상/사고/설비 보고',questions:'질문 / 도움말',my_shift:'시프트'},
+ vi:{home:'Trang chủ',handover:'Bàn giao',tasks:'Công việc',shift:'Ca làm',manuals:'Hướng dẫn',report:'Báo cáo/Hỏi',back:'Quay lại',language:'Ngôn ngữ',choose:'Chọn ngôn ngữ hiển thị',save:'Dùng ngôn ngữ này',auto:'Tự động dịch',original:'Xem nguyên văn',translated:'Quay lại bản dịch',translation_note:'Bài đăng được tự động dịch sang ngôn ngữ đã chọn. Có thể xem nguyên văn khi cần.',active_handover:'Bàn giao đang xử lý',history:'Lịch sử',today_tasks:'Công việc hôm nay',work_manuals:'Hướng dẫn công việc',incident_report:'Báo cáo sự cố / thiết bị',questions:'Câu hỏi / Trợ giúp',my_shift:'Ca làm'},
+ ne:{home:'होम',handover:'हस्तान्तरण',tasks:'काम',shift:'सिफ्ट',manuals:'म्यानुअल',report:'रिपोर्ट/प्रश्न',back:'फर्कनुहोस्',language:'भाषा सेटिङ',choose:'प्रदर्शन भाषा छान्नुहोस्',save:'यो भाषा प्रयोग गर्नुहोस्',auto:'स्वचालित अनुवाद',original:'मूल पाठ हेर्नुहोस्',translated:'अनुवादमा फर्कनुहोस्',translation_note:'पोस्टहरू तपाईंले छानेको भाषामा स्वचालित रूपमा अनुवाद हुन्छन्। आवश्यक परे मूल पाठ हेर्न सकिन्छ।',active_handover:'चलिरहेको हस्तान्तरण',history:'इतिहास',today_tasks:'आजका काम',work_manuals:'कार्य म्यानुअल',incident_report:'घटना / उपकरण रिपोर्ट',questions:'प्रश्न / सहायता',my_shift:'सिफ्ट'},
+ pt:{home:'Início',handover:'Passagem',tasks:'Tarefas',shift:'Escala',manuals:'Manuais',report:'Relatar/Perguntar',back:'Voltar',language:'Idioma',choose:'Escolha o idioma',save:'Usar este idioma',auto:'Tradução automática',original:'Ver original',translated:'Voltar à tradução',translation_note:'As publicações são traduzidas automaticamente para o idioma selecionado. O original pode ser exibido quando necessário.',active_handover:'Passagens em andamento',history:'Histórico',today_tasks:'Tarefas de hoje',work_manuals:'Manuais de trabalho',incident_report:'Relatório de incidente / equipamento',questions:'Perguntas / Ajuda',my_shift:'Escala'},
+ si:{home:'මුල් පිටුව',handover:'භාරදීම',tasks:'කාර්යයන්',shift:'වැඩ මුර',manuals:'අත්පොත්',report:'වාර්තා/ප්‍රශ්න',back:'ආපසු',language:'භාෂා සැකසුම්',choose:'පෙන්වීමේ භාෂාව තෝරන්න',save:'මෙම භාෂාව භාවිත කරන්න',auto:'ස්වයංක්‍රීය පරිවර්තනය',original:'මුල් පෙළ බලන්න',translated:'පරිවර්තනයට ආපසු',translation_note:'පළ කිරීම් ඔබ තෝරාගත් භාෂාවට ස්වයංක්‍රීයව පරිවර්තනය වේ. අවශ්‍ය නම් මුල් පෙළ බැලිය හැක.',active_handover:'ක්‍රියාත්මක භාරදීම්',history:'ඉතිහාසය',today_tasks:'අද කාර්යයන්',work_manuals:'වැඩ අත්පොත්',incident_report:'සිද්ධි / උපකරණ වාර්තාව',questions:'ප්‍රශ්න / උදව්',my_shift:'වැඩ මුර'},
+ ta:{home:'முகப்பு',handover:'ஒப்படைப்பு',tasks:'பணிகள்',shift:'பணி நேரம்',manuals:'கையேடுகள்',report:'அறிக்கை/கேள்வி',back:'பின்',language:'மொழி அமைப்புகள்',choose:'காட்சி மொழியைத் தேர்ந்தெடுக்கவும்',save:'இந்த மொழியைப் பயன்படுத்தவும்',auto:'தானியங்கி மொழிபெயர்ப்பு',original:'மூலத்தை பார்க்க',translated:'மொழிபெயர்ப்புக்கு திரும்ப',translation_note:'பதிவுகள் தேர்ந்தெடுத்த மொழிக்கு தானாக மொழிபெயர்க்கப்படும். தேவையெனில் மூல உரையை பார்க்கலாம்.',active_handover:'செயலில் உள்ள ஒப்படைப்புகள்',history:'வரலாறு',today_tasks:'இன்றைய பணிகள்',work_manuals:'பணி கையேடுகள்',incident_report:'சம்பவ / உபகரண அறிக்கை',questions:'கேள்விகள் / உதவி',my_shift:'பணி நேரம்'}
 };
 function currentLanguageLabel(){return (languageOptions.find(x=>x.code===currentLanguage)||languageOptions[0]).label}
 function applyLanguage(){
@@ -348,12 +349,22 @@ function applyLanguage(){
   document.querySelectorAll('[data-langkey]').forEach(el=>{const k=el.dataset.langkey;if(d[k])el.textContent=d[k]});
   document.querySelectorAll('.pageback').forEach(el=>el.textContent='← '+d.back);
   const p=document.getElementById('profileLangLabel');if(p)p.textContent=currentLanguageLabel();
+  const headingMap=[['#handover .head h3','active_handover'],['#handover .section:nth-of-type(2) .head h3','history'],['#tasks .head h3','today_tasks'],['#manuals .head h3','work_manuals'],['#report .section:first-of-type .head h3','incident_report'],['#helpSection .head h3','questions'],['#shift .head h3','my_shift']];
+  headingMap.forEach(([sel,key])=>{const el=document.querySelector(sel);if(el&&d[key])el.textContent=d[key]});
+  renderHandovers();
+  refreshTranslationSamples();
+}
+function refreshTranslationSamples(){
+  const t1=document.getElementById('questionSampleTitle'),t2=document.getElementById('questionSampleDetail'),tb=document.getElementById('questionSampleTranslation');
+  if(t1)t1.textContent=translatedPost('questionSample','title','公共料金の控えはどこ？');
+  if(t2)t2.textContent=translatedPost('questionSample','detail','西口店：レジ裏の青ファイル。');
+  if(tb)tb.innerHTML=translationBadge('questionSample');
 }
 function openLanguageSettings(){
   const d=uiLang[currentLanguage]||uiLang.ja;
   const opts=languageOptions.map(x=>'<option value="'+x.code+'" '+(x.code===currentLanguage?'selected':'')+'>'+x.label+'</option>').join('');
   document.getElementById('modalBody').innerHTML=
-    '<h3>'+d.language+'</h3><div class="card"><div class="title">'+d.choose+'</div><select id="languageSelect" class="input" style="margin-top:8px">'+opts+'</select></div>'+
+    '<h3>'+d.language+'</h3><div class="card"><div class="title">'+d.choose+'</div><select id="languageSelect" class="input" style="margin-top:8px">'+opts+'</select><div class="translation-note">'+(d.translation_note||uiLang.en.translation_note)+'</div></div>'+
     '<button class="btn blue full" onclick="saveLanguageSetting()">'+d.save+'</button>';
   document.getElementById('modal').classList.add('open');
 }
@@ -363,6 +374,64 @@ function saveLanguageSetting(){
   applyLanguage();
   closeModal();
   toast(currentLanguageLabel()+' に変更しました');
+}
+const postTranslations={
+  handover1:{
+    en:{title:'Fryer oil replaced',detail:'The oil was replaced after checking the oxidation level. Please check again in about three days.',action:'Check the oxidation sheet on the next shift'},
+    'zh-CN':{title:'已更换炸锅油',detail:'确认氧化程度后已更换油。请在约3天后再次确认。',action:'下次上班时确认氧化检查表'},
+    ko:{title:'튀김기 오일 교체 완료',detail:'산화도를 확인한 후 오일을 교체했습니다. 약 3일 후 다시 확인해 주세요.',action:'다음 근무 때 산화도 시트 확인'},
+    vi:{title:'Đã thay dầu chiên',detail:'Đã thay dầu sau khi kiểm tra mức oxy hóa. Vui lòng kiểm tra lại sau khoảng 3 ngày.',action:'Kiểm tra phiếu oxy hóa ở ca tiếp theo'},
+    ne:{title:'फ्रायरको तेल फेरियो',detail:'अक्सिडेसन स्तर जाँचपछि तेल फेरिएको छ। करिब ३ दिनपछि फेरि जाँच गर्नुहोस्।',action:'अर्को सिफ्टमा अक्सिडेसन सिट जाँच गर्नुहोस्'},
+    pt:{title:'Óleo da fritadeira substituído',detail:'O óleo foi trocado após verificar o nível de oxidação. Verifique novamente em cerca de 3 dias.',action:'Verificar a ficha de oxidação no próximo turno'},
+    si:{title:'ෆ්‍රයර් තෙල් මාරු කරන ලදී',detail:'ඔක්සිකරණ මට්ටම පරීක්ෂා කිරීමෙන් පසු තෙල් මාරු කරන ලදී. දින 3කට පමණ පසු නැවත පරීක්ෂා කරන්න.',action:'ඊළඟ වැඩ මුරයේ ඔක්සිකරණ පත්‍රය පරීක්ෂා කරන්න'},
+    ta:{title:'ஃப்ரையர் எண்ணெய் மாற்றப்பட்டது',detail:'ஆக்சிடேஷன் அளவை சரிபார்த்த பிறகு எண்ணெய் மாற்றப்பட்டது. சுமார் 3 நாட்களில் மீண்டும் சரிபார்க்கவும்.',action:'அடுத்த பணி நேரத்தில் ஆக்சிடேஷன் தாளை சரிபார்க்கவும்'}
+  },
+  handover2:{
+    en:{title:'Temperature rise on right side of freezer case',detail:'The right side of the freezer case rose to 7°C. Affected products have been moved and sales stopped.',action:'Record the temperature every 30 minutes until maintenance arrives'},
+    'zh-CN':{title:'冷冻柜右侧温度升高',detail:'冷冻柜右侧温度升至7°C。相关商品已转移并暂停销售。',action:'在维修人员到达前每30分钟记录一次温度'},
+    ko:{title:'냉동 쇼케이스 오른쪽 온도 상승',detail:'냉동 쇼케이스 오른쪽이 7°C까지 상승했습니다. 해당 상품은 이동하고 판매를 중지했습니다.',action:'설비 업체 도착 전까지 30분마다 온도 기록'},
+    vi:{title:'Nhiệt độ bên phải tủ đông tăng',detail:'Bên phải tủ đông tăng lên 7°C. Hàng hóa liên quan đã được di chuyển và tạm ngừng bán.',action:'Ghi nhiệt độ mỗi 30 phút cho đến khi kỹ thuật đến'},
+    ne:{title:'फ्रिज केसको दायाँ भागको तापक्रम बढ्यो',detail:'फ्रिज केसको दायाँ भाग 7°C पुगेको छ। सम्बन्धित सामान हटाइएको र बिक्री रोकिएको छ।',action:'मर्मत टोली नआउन्जेल हरेक ३० मिनेटमा तापक्रम लेख्नुहोस्'},
+    pt:{title:'Aumento de temperatura no lado direito do freezer',detail:'O lado direito do freezer chegou a 7°C. Os produtos afetados foram retirados e a venda suspensa.',action:'Registrar a temperatura a cada 30 minutos até a manutenção chegar'},
+    si:{title:'ෆ්‍රීසර් කේස් දකුණු පැත්තේ උෂ්ණත්වය ඉහළ යාම',detail:'දකුණු පැත්ත 7°C දක්වා ඉහළ ගොස් ඇත. අදාළ භාණ්ඩ ඉවත් කර විකිණීම නතර කර ඇත.',action:'නඩත්තු කණ්ඩායම පැමිණෙන තුරු මිනිත්තු 30කට වරක් උෂ්ණත්වය සටහන් කරන්න'},
+    ta:{title:'ஃப்ரீசர் பெட்டியின் வலப்புற வெப்பநிலை உயர்வு',detail:'வலப்புறம் 7°C வரை உயர்ந்துள்ளது. பாதிக்கப்பட்ட பொருட்கள் மாற்றப்பட்டு விற்பனை நிறுத்தப்பட்டது.',action:'பராமரிப்பு வரும் வரை 30 நிமிடங்களுக்கு ஒருமுறை வெப்பநிலையை பதிவு செய்யவும்'}
+  },
+  handover3:{
+    en:{title:'Delivery slip storage location changed',detail:'Delivery slips were moved from under the register to the blue file in the office.',action:'Already shared with the next shift'},
+    'zh-CN':{title:'快递单保管位置已变更',detail:'快递单已从收银台下方移至办公室的蓝色文件夹。',action:'已通知下一班人员'},
+    ko:{title:'택배 전표 보관 위치 변경',detail:'택배 전표를 계산대 아래에서 사무실 파란 파일로 옮겼습니다.',action:'다음 근무자에게 전달 완료'},
+    vi:{title:'Đã đổi vị trí lưu phiếu giao hàng',detail:'Phiếu giao hàng đã được chuyển từ dưới quầy thu ngân sang hồ sơ màu xanh trong văn phòng.',action:'Đã thông báo cho ca tiếp theo'},
+    ne:{title:'डेलिभरी स्लिप राख्ने ठाउँ परिवर्तन',detail:'डेलिभरी स्लिप क्यासियरमुनिबाट अफिसको निलो फाइलमा सारिएको छ।',action:'अर्को सिफ्टलाई जानकारी दिइसकिएको छ'},
+    pt:{title:'Local das guias de entrega alterado',detail:'As guias foram movidas debaixo do caixa para o arquivo azul no escritório.',action:'Já informado ao próximo turno'},
+    si:{title:'බෙදාහැරීමේ පත්‍ර තැබීමේ ස්ථානය වෙනස් කළා',detail:'පත්‍ර කෑෂ් රෙජිස්ටරය යටින් කාර්යාලයේ නිල් ගොනුවට මාරු කර ඇත.',action:'ඊළඟ වැඩ මුරයට දැනුම් දී ඇත'},
+    ta:{title:'டெலிவரி சீட்டு வைக்கும் இடம் மாற்றப்பட்டது',detail:'சீட்டுகள் கவுன்டரின் கீழிருந்து அலுவலக நீல கோப்புக்கு மாற்றப்பட்டன.',action:'அடுத்த பணி நேரத்தினருக்கு தெரிவிக்கப்பட்டது'}
+  },
+  questionSample:{
+    en:{title:'Where do we keep the utility-payment copy?',detail:'West Exit Store: blue file behind the register.'},
+    'zh-CN':{title:'公共缴费回执放在哪里？',detail:'西口店：收银台后方的蓝色文件夹。'},
+    ko:{title:'공공요금 보관용 사본은 어디에 있나요?',detail:'서쪽 출구점: 계산대 뒤 파란 파일.'},
+    vi:{title:'Bản lưu thanh toán hóa đơn ở đâu?',detail:'Cửa hàng Cửa Tây: hồ sơ màu xanh phía sau quầy.'},
+    ne:{title:'सार्वजनिक बिलको प्रतिलिपि कहाँ राखिन्छ?',detail:'पश्चिम निकास स्टोर: काउन्टर पछाडिको निलो फाइल।'},
+    pt:{title:'Onde fica a via de contas públicas?',detail:'Loja Saída Oeste: arquivo azul atrás do caixa.'},
+    si:{title:'බිල්පත් පිටපත තබන්නේ කොහේද?',detail:'බටහිර පිටවීමේ ශාඛාව: කෑෂ් කවුන්ටරය පිටුපස නිල් ගොනුව.'},
+    ta:{title:'பொது கட்டண நகல் எங்கே வைக்கப்படுகிறது?',detail:'மேற்கு வெளியேறும் கடை: கவுன்டரின் பின்னால் உள்ள நீல கோப்பு.'}
+  }
+};
+let showOriginalPosts={};
+function translatedPost(key,field,original){
+  if(currentLanguage==='ja'||showOriginalPosts[key])return original;
+  return postTranslations[key]?.[currentLanguage]?.[field]||original;
+}
+function translationBadge(key){
+  if(currentLanguage==='ja')return '';
+  const d=uiLang[currentLanguage]||uiLang.en;
+  return '<div class="translated-badge">🌐 '+d.auto+'</div><br><button class="original-toggle" onclick="togglePostOriginal(\''+key+'\')">'+(showOriginalPosts[key]?d.translated:d.original)+'</button>';
+}
+function togglePostOriginal(key){
+  showOriginalPosts[key]=!showOriginalPosts[key];
+  renderHandovers();
+  refreshTranslationSamples();
+  if(document.getElementById('modal').classList.contains('open')&&key.startsWith('handover'))openHandover(Number(key.replace('handover','')));
 }
 const skillPassport=[
  {name:'レジ接客',category:'接客',status:'単独対応可',score:100,reconfirm:false},
@@ -415,6 +484,7 @@ const pilotChecklist=[
 ];
 let incidentStatus='平常';
 const changelog=[
+ {version:'2.2 Demo',date:'2026/09/21',text:'画面UIと投稿本文の翻訳デモ、原文切替を追加'},
  {version:'2.1 Demo',date:'2026/09/21',text:'言語設定を追加。シンハラ語・タミル語を含む9言語に対応'},
  {version:'2.0 Demo',date:'2026/09/21',text:'管理センターにプロフィールへ戻る導線を追加'},
  {version:'1.9 Demo',date:'2026/09/21',text:'引き継ぎ・業務・マニュアルに報告質問クイック窓と戻るナビを追加'},
@@ -1026,7 +1096,7 @@ function openAdminCenter(){
       '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>規約・プライバシー</h3><small>Draft</small></div><div class="card">'+legalDocs.map(d=>'<div class="controlrow legalbtn" onclick="openLegal(\''+d.id+'\')"><div><div class="title">'+d.title+'</div><div class="sub">'+d.version+'</div></div><span>›</span></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 2.1 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 2.2 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
     auditSection;
   document.getElementById('modal').classList.add('open');
   enableConfidentialWatermark();
@@ -1152,12 +1222,16 @@ function statusClass(s){return s==='完了'?'green':s==='対応中'?'amber':s===
 function renderHandovers(){
   const active=handovers.filter(x=>x.status!=='完了'),history=handovers.filter(x=>x.status==='完了');
   const levelClass=l=>l==='高'||l==='緊急'?'red':l==='通常'?'amber':'blue';
-  const card=h=>'<div class="card tapcard '+(h.status==='完了'?'historycard':'')+'" onclick="openHandover('+h.id+')">'+
-    '<div class="row"><div class="grow"><div class="title">'+h.title+'</div><div class="sub">'+h.store+' ・ '+h.author+' ・ '+h.time+'</div></div><span class="tag '+levelClass(h.level)+'">'+h.level+'</span></div>'+
-    '<div class="acksummary"><span class="tag '+statusClass(h.status)+'">'+h.status+'</span><span class="tag">担当 '+h.assignee+'</span></div>'+
-    '<div class="deadline '+(h.overdue&&h.status!=='完了'?'overdue':'')+'">期限：'+h.deadline+(h.overdue&&h.status!=='完了'?' ・ 期限超過':'')+'</div>'+
-    (h.status==='完了'?'<div class="sub">完了：'+h.resolvedBy+' ・ '+h.resolvedAt+' ／ 履歴として保存</div>':'<div class="sub">タップして詳細・進捗を確認</div>')+
-    '</div>';
+  const card=h=>{
+    const key='handover'+h.id;
+    const title=translatedPost(key,'title',h.title);
+    return '<div class="card tapcard '+(h.status==='完了'?'historycard':'')+'" onclick="openHandover('+h.id+')">'+
+      '<div class="row"><div class="grow"><div class="title">'+title+'</div><div class="sub">'+h.store+' ・ '+h.author+' ・ '+h.time+'</div>'+translationBadge(key)+'</div><span class="tag '+levelClass(h.level)+'">'+h.level+'</span></div>'+
+      '<div class="acksummary"><span class="tag '+statusClass(h.status)+'">'+h.status+'</span><span class="tag">担当 '+h.assignee+'</span></div>'+
+      '<div class="deadline '+(h.overdue&&h.status!=='完了'?'overdue':'')+'">期限：'+h.deadline+(h.overdue&&h.status!=='完了'?' ・ 期限超過':'')+'</div>'+
+      (h.status==='完了'?'<div class="sub">完了：'+h.resolvedBy+' ・ '+h.resolvedAt+' ／ 履歴として保存</div>':'<div class="sub">タップして詳細・進捗を確認</div>')+
+      '</div>';
+  };
   document.getElementById('handoverActive').innerHTML=active.length?active.map(card).join(''):'<div class="empty">進行中の引き継ぎはありません</div>';
   document.getElementById('handoverHistory').innerHTML=history.length?history.map(card).join(''):'<div class="empty">履歴はまだありません</div>';
   refreshOperationalMetrics();
@@ -1173,11 +1247,15 @@ function openHandover(id){
   if(h.status==='未確認')next='<button class="btn primary full" onclick="advanceHandover('+h.id+',\'確認済み\')">確認済みにする</button>';
   if(h.status==='確認済み')next='<button class="btn primary full" onclick="advanceHandover('+h.id+',\'対応中\')">対応を開始</button>';
   if(h.status==='対応中')next='<button class="btn primary full" onclick="advanceHandover('+h.id+',\'完了\')">対応完了にする</button>';
+  const postKey='handover'+h.id;
+  const displayTitle=translatedPost(postKey,'title',h.title);
+  const displayDetail=translatedPost(postKey,'detail',h.detail);
+  const displayAction=translatedPost(postKey,'action',h.action);
   document.getElementById('modalBody').innerHTML=
-    '<h3>'+h.title+'</h3>'+flowHTML(h.status)+
+    '<h3>'+displayTitle+'</h3>'+translationBadge(postKey)+flowHTML(h.status)+
     '<div class="acksummary"><span class="tag '+statusClass(h.status)+'">'+h.status+'</span><span class="tag">'+h.store+'</span></div>'+
-    '<div class="card"><div class="title">詳細</div><div class="sub">'+h.detail+'</div></div>'+
-    '<div class="card"><div class="title">必要な対応</div><div class="sub">'+h.action+'</div></div>'+
+    '<div class="card"><div class="title">詳細</div><div class="sub">'+displayDetail+'</div></div>'+
+    '<div class="card"><div class="title">必要な対応</div><div class="sub">'+displayAction+'</div></div>'+
     '<div class="card"><div class="title">担当・期限</div><div class="sub">担当：'+h.assignee+'</div><div class="deadline '+(h.overdue&&h.status!=='完了'?'overdue':'')+'">期限：'+h.deadline+(h.overdue&&h.status!=='完了'?' ・ 期限超過':'')+'</div></div>'+
     (h.status==='完了'?'<div class="card"><div class="title">完了記録</div><div class="sub">'+h.resolvedBy+' ・ '+h.resolvedAt+'。履歴として保存されています。</div></div>':
       (canManage?
