@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: quick-report-back-navigation-v27 -->
+<!-- build: admin-center-back-v28 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -369,6 +369,7 @@ const pilotChecklist=[
 ];
 let incidentStatus='平常';
 const changelog=[
+ {version:'2.0 Demo',date:'2026/09/21',text:'管理センターにプロフィールへ戻る導線を追加'},
  {version:'1.9 Demo',date:'2026/09/21',text:'引き継ぎ・業務・マニュアルに報告質問クイック窓と戻るナビを追加'},
  {version:'1.8 Demo',date:'2026/09/21',text:'店舗マスタ承認を店長以上、監査ログをオーナー以上に権限変更'},
  {version:'1.7 Demo',date:'2026/09/21',text:'カレンダー内の時間を開始・終了の2段表示に変更'},
@@ -847,6 +848,10 @@ function openAckList(){
   enableConfidentialWatermark();
 }
 function resendUnread(){const n=ackState.filter(x=>!x.ack).length;toast('未確認 '+n+'名へ再通知しました')}
+function backToProfile(){
+  disableConfidentialWatermark();
+  openProfile();
+}
 function openAdminCenter(){
   if(!canOpen('admin')){denyAccess();return}
   const activeCount=adminAccounts.filter(x=>x.active).length;
@@ -880,6 +885,7 @@ function openAdminCenter(){
     ?'<section class="section"><div class="head"><h3>操作ログ</h3><small>オーナー以上</small></div><div class="card"><div class="sub">監査ログは追記のみ。既存記録を編集・削除できない想定。</div>'+logs+'</div></section>'
     :'';
   document.getElementById('modalBody').innerHTML=
+    '<button class="pageback" onclick="backToProfile()">← プロフィールへ戻る</button>'+
     '<div class="head"><h3>管理センター</h3><small>企業導入デモ</small></div>'+
     '<div class="demobadge">この画面の数値・人物・ログはすべてデモデータ</div>'+
     '<section class="section"><div class="head"><h3>認証・ログイン</h3><small>本人確認</small></div>'+
@@ -973,7 +979,7 @@ function openAdminCenter(){
       '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>規約・プライバシー</h3><small>Draft</small></div><div class="card">'+legalDocs.map(d=>'<div class="controlrow legalbtn" onclick="openLegal(\''+d.id+'\')"><div><div class="title">'+d.title+'</div><div class="sub">'+d.version+'</div></div><span>›</span></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 1.9 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 2.0 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
     auditSection;
   document.getElementById('modal').classList.add('open');
   enableConfidentialWatermark();
