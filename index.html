@@ -11,6 +11,9 @@
 .app{max-width:430px;min-height:100vh;margin:auto;background:var(--bg);padding-bottom:78px}
 .top{position:sticky;top:0;z-index:10;background:#f4f6f8ee;backdrop-filter:blur(15px);padding:14px;border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;justify-content:space-between}.brand h1{font-size:18px;margin:0}.tiny{font-size:10px;color:var(--muted)}
+.profilebtn{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid #d7dde6;background:linear-gradient(145deg,#1d2939,#344054);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:visible;cursor:pointer;box-shadow:0 3px 10px #10182814}
+.profilebtn .plus{position:absolute;right:-2px;bottom:-2px;width:18px;height:18px;border-radius:50%;background:var(--blue);color:#fff;border:2px solid var(--bg);font-size:12px;line-height:14px;display:flex;align-items:center;justify-content:center}
+.profilebtn.has-image{background-size:cover;background-position:center;color:transparent}
 .ctx{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.ctx select{width:100%;padding:9px;border:1px solid var(--line);border-radius:12px;background:#fff}
 .page{display:none;padding:14px}.page.active{display:block}
 .hero{background:linear-gradient(135deg,#101828,#23324b);color:#fff;border-radius:22px;padding:18px}.hero h2{font-size:24px;margin:6px 0}.hero p{font-size:13px;opacity:.8}
@@ -18,26 +21,37 @@
 .section{margin:16px 0}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.head h3{font-size:15px;margin:0}.head small{font-size:11px;color:var(--muted)}
 .card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px;margin-bottom:10px}.title{font-size:14px;font-weight:800}.sub{font-size:12px;color:var(--muted);line-height:1.5;margin-top:4px}
 .row{display:flex;gap:10px;align-items:flex-start}.grow{flex:1}.tag{display:inline-block;font-size:10px;font-weight:800;border-radius:999px;padding:5px 7px;background:#eff2f5;color:#475467}.tag.green{background:#e9f7f1;color:var(--green)}.tag.red{background:#fff0f0;color:var(--red)}.tag.blue{background:#edf2ff;color:var(--blue)}.tag.amber{background:#fff6e8;color:var(--amber)}
-.btn{border:0;border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer}.btn.primary{background:#101828;color:#fff}.btn.blue{background:#edf2ff;color:var(--blue)}.btn.full{width:100%}
+.btn{border:0;border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer}.btn.primary{background:#101828;color:#fff}.btn.blue{background:#edf2ff;color:var(--blue)}.btn.full{width:100%}.btn.ghost{background:#fff;color:#475467;border:1px solid var(--line)}
 .banner{border:1px solid #c9d8ff;background:#eef4ff;border-radius:17px;padding:13px;margin-top:12px}.banner p{font-size:12px;color:#4c5d84}
 .quick{display:grid;grid-template-columns:1fr 1fr;gap:8px}.quick .card{margin:0;cursor:pointer}
 .urg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.urg button{border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px 2px;font-size:11px;font-weight:800}.urg button.active[data-l="緊急"]{background:#8f1d1d;color:#fff}.urg button.active[data-l="高"]{background:#fff0f0;color:var(--red)}.urg button.active[data-l="通常"]{background:#fff6e8;color:var(--amber)}.urg button.active[data-l="低"]{background:#edf2ff;color:var(--blue)}
 input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px;margin-top:6px}textarea.input{min-height:90px}
-.skill{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #eef1f4}
-.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:68px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);z-index:20}.nav button{border:0;background:#fff;font-size:9px;color:#7b8494}.nav button span{display:block;font-size:18px}.nav button.active{color:#101828;font-weight:800}
-.modalbg{display:none;position:fixed;inset:0;background:#10182866;z-index:30;align-items:flex-end;justify-content:center}.modalbg.open{display:flex}.modal{width:min(430px,100%);max-height:85vh;overflow:auto;background:#f8fafb;border-radius:24px 24px 0 0;padding:16px 16px 28px}.close{float:right;border:0;background:#e9edf1;border-radius:10px;padding:8px}
+.skill{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #eef1f4}.skill:last-child{border-bottom:0}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:68px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);z-index:20}.nav button{border:0;background:#fff;font-size:9px;color:#7b8494}.nav button span{display:block;font-size:18px}.nav button.active{color:#101828;font-weight:800}
+.modalbg{display:none;position:fixed;inset:0;background:#10182866;z-index:30;align-items:flex-end;justify-content:center}.modalbg.open{display:flex}.modal{width:min(430px,100%);max-height:88vh;overflow:auto;background:#f8fafb;border-radius:24px 24px 0 0;padding:16px 16px 28px}.close{float:right;border:0;background:#e9edf1;border-radius:10px;padding:8px}
 .hq{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hq .card strong{font-size:22px;display:block}
+.profilehead{display:flex;align-items:center;gap:13px;margin:4px 0 16px}.profileavatar{width:68px;height:68px;border-radius:50%;background:linear-gradient(145deg,#1d2939,#344054);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;background-size:cover;background-position:center}.profileavatar.has-image{color:transparent}
+.segment{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#edf0f4;border-radius:13px;padding:4px;margin-top:8px}.segment button{border:0;border-radius:10px;background:transparent;padding:9px;font-size:11px;font-weight:800;color:#667085}.segment button.active{background:#fff;color:#101828;box-shadow:0 1px 4px #10182812}
+.recipient{display:none;margin-top:10px}.recipient.show{display:block}
+.role-list .card{padding:12px}
 </style>
 </head>
 <body>
 <div class="app">
 <header class="top">
-  <div class="brand"><div><h1>SHIFT NOTE</h1><div class="tiny">第2版軸・最新統合デモ</div></div><div class="tiny">渡邉友介</div></div>
+  <div class="brand">
+    <div><h1>SHIFT NOTE</h1><div class="tiny">第2版軸・最新統合デモ</div></div>
+    <button class="profilebtn" id="profileBtn" onclick="openProfile()" aria-label="プロフィール"><span id="profileInitial">渡</span><span class="plus">＋</span></button>
+  </div>
+  <input type="file" id="profileImageInput" accept="image/*" hidden onchange="setProfileImage(event)">
   <div class="ctx">
     <select id="role" onchange="applyRole()">
-      <option value="crew">一般クルー</option>
+      <option value="regular">レギュラークルー</option>
       <option value="leader" selected>リーダー</option>
       <option value="manager">店長</option>
+      <option value="owner">オーナー</option>
+      <option value="toukatsu">統括</option>
+      <option value="mg">MG</option>
       <option value="hq">本部</option>
     </select>
     <select id="store" onchange="applyStore()">
@@ -56,9 +70,9 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
     <div class="card"><div class="row"><div class="grow"><div class="title">冷凍ケース右側の温度が高め</div><div class="sub">現在7℃。継続監視してください。</div></div><span class="tag red">高</span></div><button class="btn blue full" style="margin-top:10px" onclick="toast('確認済みにしました')">確認しました</button></div>
     <div class="card"><div class="row"><div class="grow"><div class="title">公共料金控えの手順変更</div><div class="sub">最新版マニュアルの再確認が必要です。</div></div><span class="tag amber">再確認</span></div></div>
   </section>
-  <section class="section"><div class="head"><h3>自分の状態</h3><small>店舗をまたいで保持</small></div><div class="quick">
-    <div class="card" onclick="go('skills')"><div class="title">🎖 Skill Passport</div><div class="sub">できることを持ち歩く</div></div>
-    <div class="card" onclick="go('report')"><div class="title">？ わからない</div><div class="sub">Help / FAQへ</div></div>
+  <section class="section"><div class="head"><h3>自分の状態</h3><small>プロフィールに集約</small></div><div class="quick">
+    <div class="card" onclick="openProfile()"><div class="title">👤 プロフィール</div><div class="sub">Skill Passport・役職・習得状況</div></div>
+    <div class="card" onclick="go('report')"><div class="title">？ わからない</div><div class="sub">公開 / 非公開で質問</div></div>
   </div></section>
 </main>
 
@@ -85,17 +99,6 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 </section>
 </main>
 
-<main id="skills" class="page">
-<section class="section"><div class="head"><h3>Skill Passport</h3><small>本人に紐づく</small></div>
-  <div class="card"><div class="title">渡邉友介 <span class="tag blue">全店舗共通</span></div><div class="sub">他店舗勤務でも新人に戻りません。</div>
-    <div class="skill"><div><b>レジ接客</b><div class="sub">接客</div></div><span class="tag green">単独対応可</span></div>
-    <div class="skill"><div><b>公共料金</b><div class="sub">受付</div></div><span class="tag blue">実施経験あり</span></div>
-    <div class="skill"><div><b>コピー機対応</b><div class="sub">v1.3更新</div></div><span class="tag red">再確認必要</span></div>
-    <div class="skill"><div><b>宅配便受付</b><div class="sub">受付</div></div><span class="tag green">単独対応可</span></div>
-  </div>
-</section>
-</main>
-
 <main id="report" class="page">
 <section class="section"><div class="head"><h3>異常・事故・設備報告</h3><small>緊急度で通知先を変える</small></div>
   <div class="card">
@@ -106,18 +109,42 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
     <button class="btn primary full" style="margin-top:8px" onclick="submitReport()">この内容で報告</button>
   </div>
 </section>
-<section class="section"><div class="head"><h3>Help / FAQ</h3><small>今わからないこと</small></div>
-  <div class="card"><textarea id="help" class="input" placeholder="質問を入力"></textarea><button class="btn blue full" style="margin-top:8px" onclick="toast('Helpを送信しました')">質問を送る</button></div>
+
+<section class="section"><div class="head"><h3>質問 / Help</h3><small>公開範囲を選べる</small></div>
+  <div class="card">
+    <div class="tiny">公開設定</div>
+    <div class="segment">
+      <button id="helpPublicBtn" class="active" onclick="setHelpVisibility('public')">公開</button>
+      <button id="helpPrivateBtn" onclick="setHelpVisibility('private')">非公開</button>
+    </div>
+    <div id="helpVisibilityNote" class="sub">公開：店舗内で共有され、FAQ候補にもできます。</div>
+    <div id="recipientBox" class="recipient">
+      <label class="tiny">宛先（店長以上）</label>
+      <select id="helpRecipient" class="input">
+        <option>店長</option>
+        <option>オーナー</option>
+        <option>統括</option>
+        <option>MG</option>
+        <option>本部</option>
+      </select>
+      <div class="sub">レギュラークルー／リーダーは宛先に表示しません。</div>
+    </div>
+    <textarea id="help" class="input" placeholder="質問を入力"></textarea>
+    <button id="helpSendBtn" class="btn blue full" style="margin-top:8px" onclick="sendHelp()">質問を公開する</button>
+  </div>
   <div class="card"><div class="title">公共料金の控えはどこ？</div><div class="sub">西口店：レジ裏の青ファイル。</div></div>
 </section>
 </main>
 
 <main id="settings" class="page">
-<section class="section"><div class="head"><h3>権限と運用</h3><small id="roleName">リーダー</small></div>
-  <div class="card"><div class="title">一般クルー</div><div class="sub">閲覧・確認・完了・報告</div></div>
+<section class="section role-list"><div class="head"><h3>権限と運用</h3><small id="roleName">リーダー</small></div>
+  <div class="card"><div class="title">レギュラークルー</div><div class="sub">閲覧・確認・完了・報告</div></div>
   <div class="card"><div class="title">リーダー</div><div class="sub">＋店舗内編集・報告一次対応</div></div>
   <div class="card"><div class="title">店長</div><div class="sub">＋公開・権限管理・高緊急度対応</div></div>
-  <div class="card"><div class="title">本部</div><div class="sub">＋全店共通マニュアル・全店舗監視</div></div>
+  <div class="card"><div class="title">オーナー</div><div class="sub">複数店舗の確認・承認</div></div>
+  <div class="card"><div class="title">統括</div><div class="sub">管轄店舗を横断して管理</div></div>
+  <div class="card"><div class="title">MG</div><div class="sub">管轄全体の管理・本部連携</div></div>
+  <div class="card"><div class="title">本部</div><div class="sub">全店共通マニュアル・全店舗監視</div></div>
 </section>
 </main>
 
@@ -126,8 +153,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 <button onclick="go('handover',this)"><span>📝</span>引き継ぎ</button>
 <button onclick="go('tasks',this)"><span>✓</span>業務</button>
 <button onclick="go('manuals',this)"><span>📖</span>マニュアル</button>
-<button onclick="go('skills',this)"><span>🎖</span>スキル</button>
-<button onclick="go('report',this)"><span>!</span>報告</button>
+<button onclick="go('report',this)"><span>!</span>報告・質問</button>
 </nav>
 </div>
 
@@ -135,21 +161,62 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 <div id="toast" style="position:fixed;left:50%;bottom:82px;transform:translateX(-50%);background:#101828;color:#fff;padding:10px 14px;border-radius:999px;font-size:11px;display:none;z-index:99"></div>
 
 <script>
-let currentUrgency='通常';
+let currentUrgency='通常',helpVisibility='public',profileImageData='';
+const roleLabels={regular:'レギュラークルー',leader:'リーダー',manager:'店長',owner:'オーナー',toukatsu:'統括',mg:'MG',hq:'本部'};
 const guides={
  '駅前店':[['バックヤード','入口から右奥・スタッフ扉の先'],['コピー用紙','事務所右棚・上段'],['ごみ庫','搬入口横。廃棄登録は22時まで'],['休憩・打刻','休憩室2階、打刻は事務所入口横']],
  '中央店':[['バックヤード','レジ奥のスタッフ扉'],['コピー用紙','事務所キャビネット下段'],['宅配便伝票','左棚の青ファイル'],['ごみ庫','店舗裏手']]
 };
 function go(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active')}
 function applyStore(){const s=document.getElementById('store').value;document.getElementById('homeTitle').textContent=s+'の今日';document.getElementById('guideBanner').style.display=s==='西口店'?'none':'block'}
-function applyRole(){const r=document.getElementById('role').value;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';document.getElementById('roleName').textContent={crew:'一般クルー',leader:'リーダー',manager:'店長',hq:'本部'}[r]}
+function applyRole(){const r=document.getElementById('role').value;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';document.getElementById('roleName').textContent=roleLabels[r]||r}
 function urgency(btn,l){currentUrgency=l;document.querySelectorAll('.urg button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('urgNote').textContent={低:'低：一覧へ記録。',通常:'通常：リーダーへ通知。',高:'高：リーダー＋店長へ即時通知。',緊急:'緊急：店長＋本部へ即時通知・エスカレーション。'}[l]}
 function submitReport(){const t=document.getElementById('reportText').value.trim();if(!t)return toast('状況を入力してください');toast(currentUrgency==='緊急'?'緊急報告を店長・本部へ通知しました':'報告しました');document.getElementById('reportText').value=''}
+function setHelpVisibility(v){
+  helpVisibility=v;
+  document.getElementById('helpPublicBtn').classList.toggle('active',v==='public');
+  document.getElementById('helpPrivateBtn').classList.toggle('active',v==='private');
+  document.getElementById('recipientBox').classList.toggle('show',v==='private');
+  document.getElementById('helpVisibilityNote').textContent=v==='public'?'公開：店舗内で共有され、FAQ候補にもできます。':'非公開：選んだ店長以上の役職だけに送ります。';
+  document.getElementById('helpSendBtn').textContent=v==='public'?'質問を公開する':'非公開で送る';
+}
+function sendHelp(){
+  const q=document.getElementById('help').value.trim();
+  if(!q)return toast('質問を入力してください');
+  if(helpVisibility==='private'){
+    const to=document.getElementById('helpRecipient').value;
+    toast('非公開で'+to+'宛に送信しました');
+  }else{
+    toast('質問を公開しました');
+  }
+  document.getElementById('help').value='';
+}
+function openProfile(){
+  const r=document.getElementById('role').value;
+  const imgStyle=profileImageData?'background-image:url('+profileImageData+')':'';
+  const imgClass=profileImageData?'profileavatar has-image':'profileavatar';
+  document.getElementById('modalBody').innerHTML=
+    '<div class="profilehead"><div id="modalAvatar" class="'+imgClass+'" style="'+imgStyle+'">渡</div><div><h3 style="margin:0">渡邉友介</h3><div class="sub">'+roleLabels[r]+'・'+document.getElementById('store').value+'</div></div></div>'+
+    '<button class="btn ghost full" onclick="document.getElementById(\'profileImageInput\').click()">📷 プロフィール画像を追加・変更</button>'+
+    '<section class="section"><div class="head"><h3>Skill Passport</h3><small>店舗をまたいで保持</small></div>'+
+    '<div class="card"><div class="skill"><div><b>レジ接客</b><div class="sub">接客</div></div><span class="tag green">単独対応可</span></div>'+
+    '<div class="skill"><div><b>公共料金</b><div class="sub">受付</div></div><span class="tag blue">実施経験あり</span></div>'+
+    '<div class="skill"><div><b>コピー機対応</b><div class="sub">v1.3更新</div></div><span class="tag red">再確認必要</span></div>'+
+    '<div class="skill"><div><b>宅配便受付</b><div class="sub">受付</div></div><span class="tag green">単独対応可</span></div></div></section>'+
+    '<button class="btn blue full" onclick="closeModal();go(\'settings\')">役職・権限を見る</button>';
+  document.getElementById('modal').classList.add('open')
+}
+function setProfileImage(e){
+  const file=e.target.files&&e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{profileImageData=reader.result;const b=document.getElementById('profileBtn');b.style.backgroundImage='url('+profileImageData+')';b.classList.add('has-image');document.getElementById('profileInitial').style.visibility='hidden';toast('プロフィール画像を設定しました（デモ）');if(document.getElementById('modal').classList.contains('open'))openProfile()};
+  reader.readAsDataURL(file)
+}
 function openGuide(){const s=document.getElementById('store').value,rows=guides[s]||[];document.getElementById('modalBody').innerHTML='<h3>📍 '+s+' Store Guide</h3><div class="sub">この店舗だけの違いを確認</div>'+rows.map((r,i)=>'<div class="card"><div class="title">'+(i+1)+'. '+r[0]+'</div><div class="sub">'+r[1]+'</div></div>').join('')+'<button class="btn primary full" onclick="closeModal();toast(\''+s+'の初回確認を保存しました\')">確認しました</button>';document.getElementById('modal').classList.add('open')}
 function openManual(){document.getElementById('modalBody').innerHTML='<h3>📄 コピー機の用紙補充</h3><div class="sub">v1.3・最終更新 2026/09/20</div><div class="card"><div class="title">1. 側面カバーを開く</div></div><div class="card"><div class="title">2. 用紙をそろえてセット</div></div><div class="card"><div class="title">3. 紙詰まり表示がないか確認</div></div><button class="btn primary full" onclick="closeModal();toast(\'最新版の確認を記録しました\')">最新版を確認しました</button>';document.getElementById('modal').classList.add('open')}
 function closeModal(){document.getElementById('modal').classList.remove('open')}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
-applyRole();applyStore();
+applyRole();applyStore();setHelpVisibility('public');
 </script>
 </body>
 </html>
