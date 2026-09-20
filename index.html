@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: visible-confidential-watermark-v14 -->
+<!-- build: all-user-leak-prevention-v15 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -9,7 +9,11 @@
 <style>
 :root{--bg:#f4f6f8;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--green:#157f5b;--red:#c43232;--blue:#315fd3;--amber:#a65d0b}
 *{box-sizing:border-box}body{margin:0;background:#dde3ea;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI",Meiryo,sans-serif;color:var(--ink)}
-.app{max-width:430px;min-height:100vh;margin:auto;background:var(--bg);padding-bottom:78px}
+.app{position:relative;max-width:430px;min-height:100vh;margin:auto;background:var(--bg);padding-bottom:78px;overflow:hidden}
+.app>.top,.app>main,.app>.nav{position:relative;z-index:2}
+.userwm-layer{position:fixed;inset:0;max-width:430px;margin:auto;z-index:1;pointer-events:none;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:115px 8px;padding:120px 0 110px}
+.userwm-layer span{font-size:9px;font-weight:900;letter-spacing:.3px;color:#101828;opacity:.025;white-space:nowrap;transform:rotate(-28deg);transform-origin:center}
+.userwm-session{position:fixed;right:max(calc((100vw - 430px)/2 + 8px),8px);bottom:76px;z-index:3;pointer-events:none;font-size:7px;font-weight:800;color:#667085;opacity:.34;background:#f4f6f8cc;padding:3px 5px;border-radius:5px}
 .top{position:sticky;top:0;z-index:10;background:#f4f6f8ee;backdrop-filter:blur(15px);padding:14px;border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;justify-content:space-between}.brand h1{font-size:18px;margin:0}.tiny{font-size:10px;color:var(--muted)}
 .topactions{display:flex;align-items:center;gap:8px}.notifbtn{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid #d7dde6;background:#fff;color:#101828;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px #1018280d}.notifbadge{position:absolute;right:-3px;top:-3px;min-width:18px;height:18px;border-radius:999px;background:#c43232;color:#fff;border:2px solid var(--bg);font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 4px}.profilebtn{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid #d7dde6;background:linear-gradient(145deg,#1d2939,#344054);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:visible;cursor:pointer;box-shadow:0 3px 10px #10182814}
@@ -55,6 +59,8 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 </head>
 <body>
 <div class="app">
+<div id="userWmLayer" class="userwm-layer"></div>
+<div id="userWmSession" class="userwm-session"></div>
 <header class="top">
   <div class="brand">
     <div><h1>SHIFT NOTE</h1><div class="tiny">第2版軸・最新統合デモ</div></div>
@@ -261,7 +267,7 @@ const adminAccounts=[
  {id:5,name:'山本直樹',role:'manager',store:'西口店',active:true},
  {id:6,name:'藤田一真',role:'regular',store:'中央店',active:false}
 ];
-let securityState={mfa:true,sessionLock:true,exportApproval:true,externalShareBlock:true,captureProtection:true,watermark:true};
+let securityState={mfa:true,sessionLock:true,exportApproval:true,externalShareBlock:true,captureProtection:true,watermark:true,universalWatermark:true,leastPrivilege:true,dataMinimize:true,routeAuthorization:true};
 let retentionState={reports:'365日',media:'180日',audit:'3年',questions:'365日'};
 let lastBackup='本日 18:30';
 const auditLogs=[
@@ -285,9 +291,33 @@ const changelog=[
  {version:'0.8 Demo',date:'2026/09/20',text:'QR映像マニュアル、引き継ぎ履歴を追加'},
  {version:'0.7 Demo',date:'2026/09/20',text:'確認者一覧、再通知、画像添付を追加'}
 ];
+function currentUserStamp(){
+  const d=new Date();
+  const date=d.toLocaleDateString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit'});
+  const time=d.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
+  const store=document.getElementById('store')?.value||'西口店';
+  return '渡邉友介 / '+store+' / '+roleLabels[currentAccountRole]+' / '+date+' '+time+' / SHIFT NOTE';
+}
+function refreshUserWatermark(){
+  const layer=document.getElementById('userWmLayer'),session=document.getElementById('userWmSession');
+  if(!layer||!session)return;
+  const on=securityState.universalWatermark!==false;
+  layer.style.display=on?'grid':'none';
+  session.style.display=on?'block':'none';
+  if(!on)return;
+  const stamp=currentUserStamp();
+  layer.innerHTML=Array.from({length:16},()=>'<span>'+stamp+'</span>').join('');
+  session.textContent='User: 渡邉友介 ・ Session SN-8F21';
+}
+function canOpen(scope){
+  if(scope==='admin'||scope==='ack'||scope==='privateQuestion')return roleRank[currentAccountRole]>=roleRank.manager;
+  if(scope==='hq')return currentAccountRole==='hq';
+  return true;
+}
+function denyAccess(){toast('このアカウントには閲覧権限がありません')}
 function go(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active')}
-function applyStore(){const s=document.getElementById('store').value;document.getElementById('homeTitle').textContent=s+'の今日';document.getElementById('guideBanner').style.display=s==='西口店'?'none':'block'}
-function applyRole(){const r=currentAccountRole;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';const rn=document.getElementById('roleName');if(rn)rn.textContent=(roleLabels[r]||r)+'（アカウント登録）'}
+function applyStore(){const s=document.getElementById('store').value;document.getElementById('homeTitle').textContent=s+'の今日';document.getElementById('guideBanner').style.display=s==='西口店'?'none':'block';refreshUserWatermark()}
+function applyRole(){const r=currentAccountRole;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';const rn=document.getElementById('roleName');if(rn)rn.textContent=(roleLabels[r]||r)+'（アカウント登録）';refreshUserWatermark()}
 function urgency(btn,l){currentUrgency=l;document.querySelectorAll('.urg button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('urgNote').textContent={
 低:'低：全クルー共有＋本部以外のリーダー以上へ通知。',
 通常:'通常：全クルー共有＋本部以外のリーダー以上へ通知。',
@@ -360,7 +390,7 @@ function disableConfidentialWatermark(){
   if(modal)modal.classList.remove('confidential');
 }
 function openAckList(){
-  if(roleRank[currentAccountRole]<roleRank.manager){toast('確認者一覧は店長以上のみ閲覧できます');return}
+  if(!canOpen('ack')){denyAccess();return}
   const done=ackState.filter(x=>x.ack),todo=ackState.filter(x=>!x.ack);
   const personRow=(p,ok)=>'<div class="ackline"><div><div class="person">'+p.name+'</div><div class="personmeta">'+roleLabels[p.role]+' ・ '+p.store+'</div></div><span class="tag '+(ok?'green':'red')+'">'+(ok?(p.time||'確認済み'):'未確認')+'</span></div>';
   document.getElementById('modalBody').innerHTML=
@@ -373,7 +403,7 @@ function openAckList(){
 }
 function resendUnread(){const n=ackState.filter(x=>!x.ack).length;toast('未確認 '+n+'名へ再通知しました')}
 function openAdminCenter(){
-  if(roleRank[currentAccountRole]<roleRank.manager){toast('管理センターは店長以上のみ利用できます');return}
+  if(!canOpen('admin')){denyAccess();return}
   const activeCount=adminAccounts.filter(x=>x.active).length;
   const inactiveCount=adminAccounts.filter(x=>!x.active).length;
   const accountRows=adminAccounts.map(a=>
@@ -417,8 +447,12 @@ function openAdminCenter(){
       secRow('sessionLock','自動セッションロック','一定時間操作がなければ再認証')+
       secRow('exportApproval','データ書き出し承認','エクスポートは権限者の承認が必要')+
       secRow('externalShareBlock','外部共有ブロック','会社データを外部URLへ公開しない')+
+      secRow('leastPrivilege','最小権限アクセス','役職・所属・担当業務に必要な情報だけを表示')+
+      secRow('dataMinimize','個人情報の最小化','電話番号・住所・個人メールなど不要な個人情報は原則保持しない')+
+      secRow('routeAuthorization','画面ごとの権限再確認','通知や直リンクから開く場合も毎回アクセス権を確認')+
+      secRow('universalWatermark','全ユーザー個人別ウォーターマーク','レギュラークルーを含む全アカウントの画面にユーザー情報とSession IDを表示')+
       secRow('captureProtection','画面キャプチャ保護（本番アプリ）','録画・ミラーリング検知時に機密画面を隠す。Webデモでは実動作しません')+
-      secRow('watermark','機密画面ウォーターマーク','ユーザー名・時刻を透かし表示し、情報持ち出しを抑止')+
+      secRow('watermark','機密画面の強化ウォーターマーク','管理画面・非公開質問などは通常画面より強い透かしを重ねる')+
     '</div></section>'+
     '<section class="section"><div class="head"><h3>バックアップ</h3><small>復旧対策</small></div>'+
       '<div class="card"><div class="title">最終バックアップ</div><div class="sub" id="backupTime">'+lastBackup+' ・ 正常</div><button class="btn blue full" style="margin-top:8px" onclick="runBackup()">今すぐバックアップ（デモ）</button></div>'+
@@ -428,6 +462,8 @@ function openAdminCenter(){
       '<div class="card"><div class="title">マニュアル・映像の権利</div><div class="sub">作成主体と利用範囲を組織ポリシーで明記。外部配布や転用は権限者承認を前提とする想定。</div></div>'+
       '<div class="card"><div class="title">デモ環境</div><div class="sub">現在の公開デモには架空データのみを使用。実在の店舗・スタッフ・機密情報は入れない前提。</div></div>'+
       '<div class="card"><div class="title">画面キャプチャ対策</div><div class="sub">本番アプリでは、Androidは画面キャプチャ制限、iPhoneは録画・ミラーリング検知時の黒画面化を想定。通常のiPhoneスクリーンショットはOS仕様上、完全禁止を保証できないため、機密画面にはユーザー名・時刻の透かしも併用する。</div></div>'+
+      '<div class="card"><div class="title">レギュラークルーを含む最小権限</div><div class="sub">本人のSkill Passport、所属・応援先で必要な引き継ぎ、公開済みマニュアル、自分宛通知を中心に表示。他人のSkill Passport、アカウント管理、監査ログ、権限外店舗だけの情報、他人宛の非公開質問は表示しない想定。</div></div>'+
+      '<div class="card"><div class="title">保持しない情報</div><div class="sub">業務上不要な電話番号、住所、個人メールなどは原則としてSHIFT NOTEに保存しない設計。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>パイロット導入チェック</h3><small>本番前</small></div>'+
       '<div class="card">'+pilotChecklist.map(x=>'<div class="controlrow"><div><div class="title">'+x.label+'</div><div class="sub">'+(x.done?'準備済み':'未完了')+'</div></div><div class="switch '+(x.done?'on':'')+'" onclick="togglePilot(\''+x.id+'\')"></div></div>').join('')+'</div>'+
@@ -456,7 +492,7 @@ function retentionRow(key,label){
   return '<div class="controlrow"><div><div class="title">'+label+'</div><div class="sub">保存期間</div></div><select style="max-width:110px;padding:7px;border:1px solid var(--line);border-radius:9px;background:#fff" onchange="setRetention(\''+key+'\',this.value)">'+opts+'</select></div>';
 }
 function setRetention(key,val){retentionState[key]=val;toast('保存期間を '+val+' に変更しました（デモ）')}
-function toggleSecurity(key){securityState[key]=!securityState[key];openAdminCenter();toast('セキュリティ設定を更新しました（デモ）')}
+function toggleSecurity(key){securityState[key]=!securityState[key];refreshUserWatermark();openAdminCenter();toast('セキュリティ設定を更新しました（デモ）')}
 function toggleAccount(id){
   const a=adminAccounts.find(x=>x.id===id);if(!a)return;
   a.active=!a.active;
@@ -513,6 +549,8 @@ function openProfile(){
     '<button class="btn ghost full" onclick="document.getElementById(\'profileImageInput\').click()">📷 プロフィール画像を追加・変更</button>'+
     '<section class="section"><div class="head"><h3>Skill Passport</h3><small>習得率 '+skillRate()+'%</small></div>'+
     '<div class="card">'+skillRowsHTML()+'</div></section>'+
+    '<section class="section"><div class="head"><h3>自分の閲覧範囲</h3><small>最小権限</small></div>'+
+    '<div class="card"><div class="sub">自分のSkill Passport / 選択中店舗で必要な業務情報 / 公開済みマニュアル / 自分宛の通知を中心に表示。役職外の管理情報や他人の非公開情報は表示しません。</div></div></section>'+
     adminButton+
     '<button class="btn blue full" style="margin-top:8px" onclick="closeModal();go(\'settings\')">役職・権限を見る</button>';
   document.getElementById('modal').classList.add('open')
@@ -646,6 +684,7 @@ function flashTarget(id){
   setTimeout(()=>{el.style.boxShadow=old;el.style.borderColor=oldBorder},1800);
 }
 function openPrivateQuestion(){
+  if(!canOpen('privateQuestion')){denyAccess();return}
   document.getElementById('modalBody').innerHTML=
     '<h3>非公開質問</h3><div class="sub">店長以上のみ閲覧</div>'+
     '<div class="card"><div class="title">佐藤美咲 ・ レギュラークルー</div><div class="sub">廃棄登録を修正したい場合は、どの手順で対応すればいいですか？</div><div class="sub">西口店 ・ 18:55</div></div>'+
@@ -732,7 +771,7 @@ function openGuide(){const s=document.getElementById('store').value,rows=guides[
 function openManual(){document.getElementById('modalBody').innerHTML='<h3>📄 コピー機の用紙補充</h3><div class="sub">v1.3・最終更新 2026/09/20</div><div class="card"><div class="title">1. 側面カバーを開く</div></div><div class="card"><div class="title">2. 用紙をそろえてセット</div></div><div class="card"><div class="title">3. 紙詰まり表示がないか確認</div></div><button class="btn primary full" onclick="closeModal();toast(\'最新版の確認を記録しました\')">最新版を確認しました</button>';document.getElementById('modal').classList.add('open')}
 function closeModal(){stopQR();disableConfidentialWatermark();document.getElementById('modal').classList.remove('open')}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
-applyRole();applyStore();setHelpVisibility('public');refreshAckSummary();renderHandovers();updateNotificationBadge();
+applyRole();applyStore();setHelpVisibility('public');refreshAckSummary();renderHandovers();updateNotificationBadge();refreshUserWatermark();setInterval(refreshUserWatermark,60000);
 </script>
 </body>
 </html>
