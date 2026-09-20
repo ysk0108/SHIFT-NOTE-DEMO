@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: store-change-request-v18 -->
+<!-- build: shift-request-deadline-candidates-v19 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -17,6 +17,7 @@
 .syncbar{margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:#fff;font-size:10px;cursor:pointer}.syncbar b{font-size:10px}.syncpill{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:900;color:#157f5b}.syncpill.off{color:#a65d0b}.syncdot{width:7px;height:7px;border-radius:50%;background:#12b76a}.syncpill.off .syncdot{background:#f79009}
 .permtable{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff}.permtable table{border-collapse:collapse;min-width:560px;width:100%;font-size:9px}.permtable th,.permtable td{padding:8px;border-bottom:1px solid #eef1f4;text-align:center;white-space:nowrap}.permtable th:first-child,.permtable td:first-child{text-align:left;position:sticky;left:0;background:#fff;z-index:1}.permok{color:#157f5b;font-weight:900}.permno{color:#98a2b3}.healthrow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eef1f4}.healthrow:last-child{border-bottom:0}.healthok{font-size:9px;font-weight:900;color:#157f5b}.storagebar{height:8px;background:#e9edf2;border-radius:999px;overflow:hidden;margin-top:7px}.storagebar i{display:block;height:100%;width:12%;background:#667085;border-radius:999px}.authbadge{display:inline-flex;align-items:center;gap:5px;background:#ecfdf3;color:#067647;border:1px solid #abefc6;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:900}.legalbtn{cursor:pointer}.invitepending{opacity:.72}
 .shiftday{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:start;padding:10px 0;border-bottom:1px solid #eef1f4}.shiftday:last-child{border-bottom:0}.shiftdate{font-size:10px;font-weight:900;text-align:center;padding-top:3px}.shiftdate strong{font-size:18px;display:block}.shiftbox{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}.shiftbox.support{border-color:#b9c9ff;background:#f6f8ff}.shiftwarn{margin-top:7px;padding:8px 9px;border-radius:10px;background:#fff4e5;color:#8a4b08;font-size:10px;font-weight:800}.shiftok{margin-top:7px;padding:8px 9px;border-radius:10px;background:#ecfdf3;color:#067647;font-size:10px;font-weight:800}.staffing{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eef1f4}.staffing:last-child{border-bottom:0}.coverage{height:7px;background:#eef1f4;border-radius:999px;overflow:hidden;margin-top:5px}.coverage i{display:block;height:100%;border-radius:999px;background:#667085}.coverage i.low{background:#c43232}.shiftstatus{display:inline-flex;align-items:center;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:900;background:#eef2ff;color:#315fd3}
+.deadlinecard{border:1px solid #ffd7a8;background:#fffaf3}.deadlinebig{font-size:22px;font-weight:900;margin-top:4px}.candidate{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eef1f4}.candidate:last-child{border-bottom:0}.candidate .name{font-size:11px;font-weight:900}.candidate .meta{font-size:9px;color:var(--muted);margin-top:2px}
 .top{position:sticky;top:0;z-index:10;background:#f4f6f8ee;backdrop-filter:blur(15px);padding:14px;border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;justify-content:space-between}.brand h1{font-size:18px;margin:0}.tiny{font-size:10px;color:var(--muted)}
 .topactions{display:flex;align-items:center;gap:8px}.notifbtn{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid #d7dde6;background:#fff;color:#101828;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px #1018280d}.notifbadge{position:absolute;right:-3px;top:-3px;min-width:18px;height:18px;border-radius:999px;background:#c43232;color:#fff;border:2px solid var(--bg);font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 4px}.profilebtn{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid #d7dde6;background:linear-gradient(145deg,#1d2939,#344054);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:visible;cursor:pointer;box-shadow:0 3px 10px #10182814}
@@ -198,6 +199,12 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 <main id="shift" class="page">
 <section class="section">
   <div class="head"><h3>シフト</h3><small>2026年9月</small></div>
+  <div class="card deadlinecard" id="shiftCycleCard">
+    <div class="row"><div class="grow"><div class="title">📣 10月前半シフトを作成します</div><div class="sub">対象期間：10/1〜10/15</div></div><span class="tag amber">希望受付中</span></div>
+    <div class="deadlinebig">締切 9/24 23:59</div>
+    <div class="sub">出勤できる日・時間、休み希望を締切までに提出してください。未提出の場合は締切前に再通知されます。</div>
+    <button class="btn blue full" style="margin-top:9px" onclick="openShiftPreference()">希望日を提出する</button>
+  </div>
   <div class="card">
     <div class="row"><div><div class="title">自分の勤務予定</div><div class="sub">確定済み 4件 / 変更申請 1件</div></div><span class="shiftstatus">公開済み</span></div>
     <div class="shiftday"><div class="shiftdate"><strong>21</strong>月</div><div class="shiftbox support"><div class="title">17:00〜22:00 ・ 駅前店</div><div class="sub">応援勤務 / 初勤務</div><div class="shiftwarn">Store Guide確認推奨 ・ 発注は未習得</div><button class="btn blue full" style="margin-top:8px" onclick="openShiftDetail(1)">詳細を見る</button></div></div>
@@ -217,6 +224,15 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 
 <section class="section" id="managerShiftSection">
   <div class="head"><h3>店舗の人員状況</h3><small>店長以上</small></div>
+  <div class="card">
+    <div class="title">シフト作成の案内</div>
+    <div class="sub">10月前半 / 希望締切 9/24 23:59</div>
+    <div style="display:flex;gap:7px;margin-top:8px">
+      <button class="btn ghost grow" onclick="openShiftCycleNotice()">全体通知を作成</button>
+      <button class="btn blue grow" onclick="openAvailableCandidates()">出勤可能者を見る</button>
+    </div>
+    <div class="sub" style="margin-top:7px">提出 7名 / 未提出 3名 ・ 未提出者は締切前に自動再通知</div>
+  </div>
   <div class="card">
     <div class="staffing"><div><div class="title">9/21 17:00〜22:00</div><div class="sub">必要4名 / 配置4名</div><div class="coverage"><i style="width:100%"></i></div></div><span class="tag green">充足</span></div>
     <div class="staffing"><div><div class="title">9/22 18:00〜22:00</div><div class="sub">必要4名 / 配置3名</div><div class="coverage"><i class="low" style="width:75%"></i></div></div><span class="tag red">1名不足</span></div>
@@ -329,6 +345,7 @@ const pilotChecklist=[
 ];
 let incidentStatus='平常';
 const changelog=[
+ {version:'1.3 Demo',date:'2026/09/20',text:'シフト作成の全体通知・希望締切・出勤可能者の自動候補を追加'},
  {version:'1.2 Demo',date:'2026/09/20',text:'店舗追加・店舗名変更の申請フローを追加'},
  {version:'1.1 Demo',date:'2026/09/20',text:'シフト確認・希望提出・変更申請・応援募集・人員不足警告を追加'},
  {version:'1.0 Demo',date:'2026/09/20',text:'認証・テナント分離・権限表・オフライン同期・運用監視を統合'},
@@ -353,6 +370,18 @@ const shiftDemo=[
 ];
 let shiftPreferenceState='未提出';
 let shiftChangeState='申請中';
+let shiftCycle={title:'10月前半シフト',period:'10/1〜10/15',deadline:'9/24 23:59',active:true};
+const shiftPreferences=[
+ {name:'渡邉友介',store:'西口店',submitted:false,availability:[]},
+ {name:'佐藤美咲',store:'西口店',submitted:true,availability:['10/2 17:00〜22:00','10/4 13:00〜22:00','10/6 17:00〜22:00']},
+ {name:'鈴木蓮',store:'西口店',submitted:true,availability:['10/2 17:00〜22:00','10/3 17:00〜22:00']},
+ {name:'高橋彩乃',store:'西口店',submitted:true,availability:['10/2 17:00〜22:00','10/4 13:00〜18:00']},
+ {name:'小林結衣',store:'駅前店',submitted:true,availability:['10/2 17:00〜22:00']},
+ {name:'田中悠真',store:'中央店',submitted:false,availability:[]},
+ {name:'吉田葵',store:'中央店',submitted:true,availability:['10/2 18:00〜22:00']},
+ {name:'伊藤拓海',store:'駅前店',submitted:false,availability:[]},
+ {name:'山本直樹',store:'西口店',submitted:true,availability:['10/2 13:00〜22:00']}
+];
 const storeChangeRequests=[];
 let storeRequestType='add';
 function openStoreRequest(){
@@ -406,12 +435,29 @@ function openShiftDetail(id){
 }
 function openShiftPreference(){
   document.getElementById('modalBody').innerHTML=
-    '<h3>シフト希望を提出</h3><div class="card"><label class="tiny">対象週</label><div class="title">9/28〜10/4</div></div>'+
-    '<div class="card"><label class="tiny">出勤可能時間</label><select class="input"><option>月 17:00〜22:00</option><option>水 13:00〜22:00</option><option>金 17:00〜22:00</option></select><textarea class="input" placeholder="休み希望・補足"></textarea></div>'+
+    '<h3>シフト希望を提出</h3>'+
+    '<div class="card deadlinecard"><div class="title">'+shiftCycle.title+'</div><div class="sub">対象 '+shiftCycle.period+'</div><div class="deadlinebig">締切 '+shiftCycle.deadline+'</div></div>'+
+    '<div class="card"><label class="tiny">出勤可能日時</label>'+
+      '<label class="controlrow"><span>10/2 17:00〜22:00</span><input type="checkbox" class="shiftAvail" value="10/2 17:00〜22:00" checked></label>'+
+      '<label class="controlrow"><span>10/4 13:00〜22:00</span><input type="checkbox" class="shiftAvail" value="10/4 13:00〜22:00"></label>'+
+      '<label class="controlrow"><span>10/6 17:00〜22:00</span><input type="checkbox" class="shiftAvail" value="10/6 17:00〜22:00"></label>'+
+      '<label class="controlrow"><span>10/8 13:00〜22:00</span><input type="checkbox" class="shiftAvail" value="10/8 13:00〜22:00"></label>'+
+      '<textarea id="shiftPrefNote" class="input" placeholder="休み希望・補足"></textarea></div>'+
     '<button class="btn blue full" onclick="submitShiftPreference()">この内容で提出</button>';
   document.getElementById('modal').classList.add('open');
 }
-function submitShiftPreference(){shiftPreferenceState='提出済み';auditLogs.unshift({time:'23:05',text:'渡邉友介がシフト希望を提出'});closeModal();toast('シフト希望を提出しました（デモ）')}
+function submitShiftPreference(){
+  const availability=Array.from(document.querySelectorAll('.shiftAvail:checked')).map(x=>x.value);
+  if(!availability.length)return toast('出勤可能日時を1つ以上選んでください');
+  shiftPreferenceState='提出済み';
+  const me=shiftPreferences.find(x=>x.name==='渡邉友介');
+  if(me){me.submitted=true;me.availability=availability}
+  auditLogs.unshift({time:'23:05',text:'渡邉友介が '+shiftCycle.title+' の希望日を提出'});
+  notifications.unshift({id:Date.now(),type:'シフト',title:'希望日を提出しました',body:shiftCycle.title+' / '+availability.length+'件の出勤可能日時を登録',read:false});
+  updateNotificationBadge();
+  closeModal();
+  toast('シフト希望を提出しました（デモ）');
+}
 function openShiftChange(){
   document.getElementById('modalBody').innerHTML=
     '<h3>シフト変更申請</h3><select class="input"><option>9/21 17:00〜22:00 駅前店</option><option>9/23 13:00〜22:00 西口店</option></select>'+
@@ -428,10 +474,47 @@ function openSupportRequest(){
   document.getElementById('modal').classList.add('open');
 }
 function applySupportShift(){closeModal();toast('応援勤務に応募しました（デモ）')}
+function openShiftCycleNotice(){
+  if(roleRank[currentAccountRole]<roleRank.manager){denyAccess();return}
+  document.getElementById('modalBody').innerHTML=
+    '<h3>シフト作成の全体通知</h3>'+
+    '<div class="card"><label class="tiny">タイトル</label><input id="cycleTitle" class="input" value="'+shiftCycle.title+'"><label class="tiny">対象期間</label><input id="cyclePeriod" class="input" value="'+shiftCycle.period+'"><label class="tiny">希望提出の締切</label><input id="cycleDeadline" class="input" value="'+shiftCycle.deadline+'"></div>'+
+    '<div class="card"><div class="title">通知内容</div><div class="sub">対象クルー全員へ「シフトを作成します。締切までに希望日を提出してください」と通知。未提出者には締切前に自動再通知します。</div></div>'+
+    '<button class="btn primary full" onclick="sendShiftCycleNotice()">全体へ通知する</button>';
+  document.getElementById('modal').classList.add('open');enableConfidentialWatermark();
+}
+function sendShiftCycleNotice(){
+  shiftCycle.title=(document.getElementById('cycleTitle')?.value||shiftCycle.title).trim()||shiftCycle.title;
+  shiftCycle.period=(document.getElementById('cyclePeriod')?.value||shiftCycle.period).trim()||shiftCycle.period;
+  shiftCycle.deadline=(document.getElementById('cycleDeadline')?.value||shiftCycle.deadline).trim()||shiftCycle.deadline;
+  shiftCycle.active=true;
+  auditLogs.unshift({time:'23:18',text:'渡邉友介が '+shiftCycle.title+' の希望提出依頼を全体通知'});
+  notifications.unshift({id:Date.now(),type:'シフト',title:shiftCycle.title+'を作成します',body:'希望提出締切 '+shiftCycle.deadline,read:false});
+  updateNotificationBadge();closeModal();toast('シフト作成案内を全体へ通知しました（デモ）');
+}
+function openAvailableCandidates(){
+  if(roleRank[currentAccountRole]<roleRank.manager){denyAccess();return}
+  const target='10/2 17:00〜22:00';
+  const candidates=shiftPreferences.filter(p=>p.submitted&&p.availability.includes(target));
+  const rows=candidates.map(p=>'<div class="candidate"><div><div class="name">'+p.name+'</div><div class="meta">'+p.store+' ・ '+target+' 出勤可能</div></div><span class="tag green">候補</span></div>').join('');
+  const missing=shiftPreferences.filter(p=>!p.submitted);
+  document.getElementById('modalBody').innerHTML=
+    '<h3>出勤可能者の自動候補</h3><div class="sub">対象：10/2 17:00〜22:00</div>'+
+    '<div class="card"><div class="title">出勤可能 '+candidates.length+'名</div>'+rows+'</div>'+
+    '<div class="card"><div class="title">未提出 '+missing.length+'名</div><div class="sub">'+missing.map(p=>p.name).join(' / ')+'</div><button class="btn ghost full" style="margin-top:8px" onclick="remindUnsubmittedShift()">未提出者へ再通知</button></div>'+
+    '<div class="card"><div class="title">自動判定</div><div class="sub">希望日時だけでなく、所属店舗・既存シフトとの重複・必要スキル・初勤務店舗も確認して候補表示する想定。</div></div>';
+  document.getElementById('modal').classList.add('open');enableConfidentialWatermark();
+}
+function remindUnsubmittedShift(){
+  const n=shiftPreferences.filter(p=>!p.submitted).length;
+  auditLogs.unshift({time:'23:19',text:'シフト希望未提出 '+n+'名へ再通知'});
+  toast('未提出 '+n+'名へ再通知しました（デモ）');
+}
 function openShiftBuilder(){
   if(roleRank[currentAccountRole]<roleRank.manager){denyAccess();return}
   document.getElementById('modalBody').innerHTML=
     '<h3>シフト作成・調整</h3><div class="card"><div class="title">9/22 18:00〜22:00</div><div class="sub">必要4名 / 配置3名</div><div class="shiftwarn">1名不足。応援募集を公開中。</div></div>'+
+    '<div class="card"><div class="title">希望提出からの自動候補</div><div class="sub">10/2 17:00〜22:00：佐藤美咲 / 鈴木蓮 / 高橋彩乃 / 小林結衣 / 山本直樹</div><button class="btn ghost full" style="margin-top:8px" onclick="openAvailableCandidates()">候補者の詳細を見る</button></div>'+
     '<div class="card"><div class="title">配置チェック</div><div class="sub">鈴木蓮：レジ接客 ○ / 宅配便 ○</div><div class="sub">高橋彩乃：レジ接客 ○ / 宅配便 △</div><div class="sub">田中悠真：他店舗と時間重複なし</div></div>'+
     '<div class="card"><div class="title">自動警告</div><div class="sub">ダブルブッキング / 必要人数不足 / 必要スキル不足 / 初勤務店舗をチェックする想定。</div></div>'+
     '<button class="btn primary full" onclick="toast(\'シフトを確定し、対象者へ通知しました（デモ）\')">確定して通知</button>';
@@ -671,7 +754,7 @@ function openAdminCenter(){
       '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>規約・プライバシー</h3><small>Draft</small></div><div class="card">'+legalDocs.map(d=>'<div class="controlrow legalbtn" onclick="openLegal(\''+d.id+'\')"><div><div class="title">'+d.title+'</div><div class="sub">'+d.version+'</div></div><span>›</span></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 1.2 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 1.3 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
     '<section class="section"><div class="head"><h3>操作ログ</h3><small>改ざん防止</small></div><div class="card"><div class="sub">監査ログは追記のみ。管理者でも既存記録を編集・削除できない想定。</div>'+logs+'</div></section>';
   document.getElementById('modal').classList.add('open');
   enableConfidentialWatermark();
