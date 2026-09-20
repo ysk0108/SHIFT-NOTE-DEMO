@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101828">
+<title>SHIFT NOTE Demo</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--green:#157f5b;--red:#c43232;--blue:#315fd3;--amber:#a65d0b}
+*{box-sizing:border-box}body{margin:0;background:#dde3ea;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI",Meiryo,sans-serif;color:var(--ink)}
+.app{max-width:430px;min-height:100vh;margin:auto;background:var(--bg);padding-bottom:78px}
+.top{position:sticky;top:0;z-index:10;background:#f4f6f8ee;backdrop-filter:blur(15px);padding:14px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;justify-content:space-between}.brand h1{font-size:18px;margin:0}.tiny{font-size:10px;color:var(--muted)}
+.ctx{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.ctx select{width:100%;padding:9px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.page{display:none;padding:14px}.page.active{display:block}
+.hero{background:linear-gradient(135deg,#101828,#23324b);color:#fff;border-radius:22px;padding:18px}.hero h2{font-size:24px;margin:6px 0}.hero p{font-size:13px;opacity:.8}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.metric{background:#ffffff12;border:1px solid #ffffff1f;border-radius:14px;padding:10px}.metric strong{display:block;font-size:20px}.metric span{font-size:10px;opacity:.7}
+.section{margin:16px 0}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.head h3{font-size:15px;margin:0}.head small{font-size:11px;color:var(--muted)}
+.card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px;margin-bottom:10px}.title{font-size:14px;font-weight:800}.sub{font-size:12px;color:var(--muted);line-height:1.5;margin-top:4px}
+.row{display:flex;gap:10px;align-items:flex-start}.grow{flex:1}.tag{display:inline-block;font-size:10px;font-weight:800;border-radius:999px;padding:5px 7px;background:#eff2f5;color:#475467}.tag.green{background:#e9f7f1;color:var(--green)}.tag.red{background:#fff0f0;color:var(--red)}.tag.blue{background:#edf2ff;color:var(--blue)}.tag.amber{background:#fff6e8;color:var(--amber)}
+.btn{border:0;border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer}.btn.primary{background:#101828;color:#fff}.btn.blue{background:#edf2ff;color:var(--blue)}.btn.full{width:100%}
+.banner{border:1px solid #c9d8ff;background:#eef4ff;border-radius:17px;padding:13px;margin-top:12px}.banner p{font-size:12px;color:#4c5d84}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:8px}.quick .card{margin:0;cursor:pointer}
+.urg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.urg button{border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px 2px;font-size:11px;font-weight:800}.urg button.active[data-l="緊急"]{background:#8f1d1d;color:#fff}.urg button.active[data-l="高"]{background:#fff0f0;color:var(--red)}.urg button.active[data-l="通常"]{background:#fff6e8;color:var(--amber)}.urg button.active[data-l="低"]{background:#edf2ff;color:var(--blue)}
+input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px;margin-top:6px}textarea.input{min-height:90px}
+.skill{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #eef1f4}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:68px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);z-index:20}.nav button{border:0;background:#fff;font-size:9px;color:#7b8494}.nav button span{display:block;font-size:18px}.nav button.active{color:#101828;font-weight:800}
+.modalbg{display:none;position:fixed;inset:0;background:#10182866;z-index:30;align-items:flex-end;justify-content:center}.modalbg.open{display:flex}.modal{width:min(430px,100%);max-height:85vh;overflow:auto;background:#f8fafb;border-radius:24px 24px 0 0;padding:16px 16px 28px}.close{float:right;border:0;background:#e9edf1;border-radius:10px;padding:8px}
+.hq{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hq .card strong{font-size:22px;display:block}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="brand"><div><h1>SHIFT NOTE</h1><div class="tiny">第2版軸・最新統合デモ</div></div><div class="tiny">渡邉友介</div></div>
+  <div class="ctx">
+    <select id="role" onchange="applyRole()">
+      <option value="crew">一般クルー</option>
+      <option value="leader" selected>リーダー</option>
+      <option value="manager">店長</option>
+      <option value="hq">本部</option>
+    </select>
+    <select id="store" onchange="applyStore()">
+      <option>西口店</option><option>駅前店</option><option>中央店</option>
+    </select>
+  </div>
+</header>
+
+<main id="home" class="page active">
+  <div class="hero"><div class="tiny" style="color:#fff">2026年9月20日</div><h2 id="homeTitle">西口店の今日</h2><p>必要な人に、必要な情報を、必要な瞬間に。</p>
+    <div class="metrics"><div class="metric"><strong>3</strong><span>未確認</span></div><div class="metric"><strong>1</strong><span>期限超過</span></div><div class="metric"><strong>72%</strong><span>習得率</span></div></div>
+  </div>
+  <div id="guideBanner" class="banner" style="display:none"><b>📍 この店舗は初めてです</b><p>いつもの店舗との違いだけ確認。Skill Passportはそのまま引き継がれます。</p><button class="btn blue" onclick="openGuide()">Store Guideを開く</button></div>
+  <section id="hqPanel" class="section" style="display:none"><div class="head"><h3>本部ダッシュボード</h3><small>全店舗</small></div><div class="hq"><div class="card"><strong>7</strong><span class="sub">未確認引き継ぎ</span></div><div class="card"><strong>2</strong><span class="sub">高・緊急報告</span></div><div class="card"><strong>5</strong><span class="sub">再確認待ち</span></div><div class="card"><strong>3</strong><span class="sub">未対応Help</span></div></div></section>
+  <section class="section"><div class="head"><h3>今日の重要事項</h3><small>引き継ぎ</small></div>
+    <div class="card"><div class="row"><div class="grow"><div class="title">冷凍ケース右側の温度が高め</div><div class="sub">現在7℃。継続監視してください。</div></div><span class="tag red">高</span></div><button class="btn blue full" style="margin-top:10px" onclick="toast('確認済みにしました')">確認しました</button></div>
+    <div class="card"><div class="row"><div class="grow"><div class="title">公共料金控えの手順変更</div><div class="sub">最新版マニュアルの再確認が必要です。</div></div><span class="tag amber">再確認</span></div></div>
+  </section>
+  <section class="section"><div class="head"><h3>自分の状態</h3><small>店舗をまたいで保持</small></div><div class="quick">
+    <div class="card" onclick="go('skills')"><div class="title">🎖 Skill Passport</div><div class="sub">できることを持ち歩く</div></div>
+    <div class="card" onclick="go('report')"><div class="title">？ わからない</div><div class="sub">Help / FAQへ</div></div>
+  </div></section>
+</main>
+
+<main id="handover" class="page">
+<section class="section"><div class="head"><h3>引き継ぎ</h3><small>未確認を見える化</small></div>
+  <div class="card"><div class="row"><div class="grow"><div class="title">フライヤー油を交換しました</div><div class="sub">次回は3日後を目安。渡邉友介・14:00</div></div><span class="tag green">通常</span></div></div>
+  <div class="card"><div class="row"><div class="grow"><div class="title">冷凍ケース右側の温度上昇</div><div class="sub">7℃。販売停止・商品退避済み。</div></div><span class="tag red">高</span></div></div>
+</section>
+</main>
+
+<main id="tasks" class="page">
+<section class="section"><div class="head"><h3>今日の業務</h3><small>新人モード対応</small></div>
+  <div class="card"><div class="title">今日必要な5つだけ表示</div><div class="sub">レジ・公共料金・宅配便・フライヤー・締め作業など、シフトに応じて絞り込み。</div></div>
+  <div class="card"><div class="title">✓ レジ周辺補充</div><div class="sub">完了</div></div>
+  <div class="card"><div class="title">○ コピー機用紙確認</div><div class="sub">未着手</div></div>
+</section>
+</main>
+
+<main id="manuals" class="page">
+<section class="section"><div class="head"><h3>業務マニュアル</h3><small>更新・再確認</small></div>
+  <input class="input" placeholder="業務を検索">
+  <div class="card"><div class="row"><div class="grow"><div class="title">📄 コピー機の用紙補充</div><div class="sub">全店共通・v1.3・2026/09/20更新</div></div><span class="tag red">再確認必要</span></div><button class="btn blue full" style="margin-top:10px" onclick="openManual()">開く</button></div>
+  <div class="card"><div class="title">🧾 公共料金受付</div><div class="sub">全店共通・v2.0・最新版確認済み</div></div>
+</section>
+</main>
+
+<main id="skills" class="page">
+<section class="section"><div class="head"><h3>Skill Passport</h3><small>本人に紐づく</small></div>
+  <div class="card"><div class="title">渡邉友介 <span class="tag blue">全店舗共通</span></div><div class="sub">他店舗勤務でも新人に戻りません。</div>
+    <div class="skill"><div><b>レジ接客</b><div class="sub">接客</div></div><span class="tag green">単独対応可</span></div>
+    <div class="skill"><div><b>公共料金</b><div class="sub">受付</div></div><span class="tag blue">実施経験あり</span></div>
+    <div class="skill"><div><b>コピー機対応</b><div class="sub">v1.3更新</div></div><span class="tag red">再確認必要</span></div>
+    <div class="skill"><div><b>宅配便受付</b><div class="sub">受付</div></div><span class="tag green">単独対応可</span></div>
+  </div>
+</section>
+</main>
+
+<main id="report" class="page">
+<section class="section"><div class="head"><h3>異常・事故・設備報告</h3><small>緊急度で通知先を変える</small></div>
+  <div class="card">
+    <label class="tiny">緊急度</label>
+    <div class="urg" style="margin-top:7px"><button data-l="低" onclick="urgency(this,'低')">低</button><button data-l="通常" class="active" onclick="urgency(this,'通常')">通常</button><button data-l="高" onclick="urgency(this,'高')">高</button><button data-l="緊急" onclick="urgency(this,'緊急')">緊急</button></div>
+    <div id="urgNote" class="sub">通常：リーダーへ通知。</div>
+    <textarea id="reportText" class="input" placeholder="状況を入力"></textarea>
+    <button class="btn primary full" style="margin-top:8px" onclick="submitReport()">この内容で報告</button>
+  </div>
+</section>
+<section class="section"><div class="head"><h3>Help / FAQ</h3><small>今わからないこと</small></div>
+  <div class="card"><textarea id="help" class="input" placeholder="質問を入力"></textarea><button class="btn blue full" style="margin-top:8px" onclick="toast('Helpを送信しました')">質問を送る</button></div>
+  <div class="card"><div class="title">公共料金の控えはどこ？</div><div class="sub">西口店：レジ裏の青ファイル。</div></div>
+</section>
+</main>
+
+<main id="settings" class="page">
+<section class="section"><div class="head"><h3>権限と運用</h3><small id="roleName">リーダー</small></div>
+  <div class="card"><div class="title">一般クルー</div><div class="sub">閲覧・確認・完了・報告</div></div>
+  <div class="card"><div class="title">リーダー</div><div class="sub">＋店舗内編集・報告一次対応</div></div>
+  <div class="card"><div class="title">店長</div><div class="sub">＋公開・権限管理・高緊急度対応</div></div>
+  <div class="card"><div class="title">本部</div><div class="sub">＋全店共通マニュアル・全店舗監視</div></div>
+</section>
+</main>
+
+<nav class="nav">
+<button class="active" onclick="go('home',this)"><span>⌂</span>ホーム</button>
+<button onclick="go('handover',this)"><span>📝</span>引き継ぎ</button>
+<button onclick="go('tasks',this)"><span>✓</span>業務</button>
+<button onclick="go('manuals',this)"><span>📖</span>マニュアル</button>
+<button onclick="go('skills',this)"><span>🎖</span>スキル</button>
+<button onclick="go('report',this)"><span>!</span>報告</button>
+</nav>
+</div>
+
+<div class="modalbg" id="modal"><div class="modal"><button class="close" onclick="closeModal()">✕</button><div id="modalBody"></div></div></div>
+<div id="toast" style="position:fixed;left:50%;bottom:82px;transform:translateX(-50%);background:#101828;color:#fff;padding:10px 14px;border-radius:999px;font-size:11px;display:none;z-index:99"></div>
+
+<script>
+let currentUrgency='通常';
+const guides={
+ '駅前店':[['バックヤード','入口から右奥・スタッフ扉の先'],['コピー用紙','事務所右棚・上段'],['ごみ庫','搬入口横。廃棄登録は22時まで'],['休憩・打刻','休憩室2階、打刻は事務所入口横']],
+ '中央店':[['バックヤード','レジ奥のスタッフ扉'],['コピー用紙','事務所キャビネット下段'],['宅配便伝票','左棚の青ファイル'],['ごみ庫','店舗裏手']]
+};
+function go(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active')}
+function applyStore(){const s=document.getElementById('store').value;document.getElementById('homeTitle').textContent=s+'の今日';document.getElementById('guideBanner').style.display=s==='西口店'?'none':'block'}
+function applyRole(){const r=document.getElementById('role').value;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';document.getElementById('roleName').textContent={crew:'一般クルー',leader:'リーダー',manager:'店長',hq:'本部'}[r]}
+function urgency(btn,l){currentUrgency=l;document.querySelectorAll('.urg button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('urgNote').textContent={低:'低：一覧へ記録。',通常:'通常：リーダーへ通知。',高:'高：リーダー＋店長へ即時通知。',緊急:'緊急：店長＋本部へ即時通知・エスカレーション。'}[l]}
+function submitReport(){const t=document.getElementById('reportText').value.trim();if(!t)return toast('状況を入力してください');toast(currentUrgency==='緊急'?'緊急報告を店長・本部へ通知しました':'報告しました');document.getElementById('reportText').value=''}
+function openGuide(){const s=document.getElementById('store').value,rows=guides[s]||[];document.getElementById('modalBody').innerHTML='<h3>📍 '+s+' Store Guide</h3><div class="sub">この店舗だけの違いを確認</div>'+rows.map((r,i)=>'<div class="card"><div class="title">'+(i+1)+'. '+r[0]+'</div><div class="sub">'+r[1]+'</div></div>').join('')+'<button class="btn primary full" onclick="closeModal();toast(\''+s+'の初回確認を保存しました\')">確認しました</button>';document.getElementById('modal').classList.add('open')}
+function openManual(){document.getElementById('modalBody').innerHTML='<h3>📄 コピー機の用紙補充</h3><div class="sub">v1.3・最終更新 2026/09/20</div><div class="card"><div class="title">1. 側面カバーを開く</div></div><div class="card"><div class="title">2. 用紙をそろえてセット</div></div><div class="card"><div class="title">3. 紙詰まり表示がないか確認</div></div><button class="btn primary full" onclick="closeModal();toast(\'最新版の確認を記録しました\')">最新版を確認しました</button>';document.getElementById('modal').classList.add('open')}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
+applyRole();applyStore();
+</script>
+</body>
+</html>
