@@ -1,10 +1,15 @@
 <!doctype html>
-<!-- build: maximal-translation-coverage-v33 -->
+<!-- build: pwa-ios-android-ops-v34 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#101828">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SHIFT NOTE">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./pwa-icon.svg" type="image/svg+xml">
 <title>SHIFT NOTE Demo</title>
 <style>
 :root{--bg:#f4f6f8;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--green:#157f5b;--red:#c43232;--blue:#315fd3;--amber:#a65d0b}
@@ -73,7 +78,9 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 .switch{width:44px;height:26px;border-radius:999px;background:#d0d5dd;position:relative;flex:0 0 auto;cursor:pointer}.switch::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;box-shadow:0 1px 4px #0002;transition:.15s}.switch.on{background:#157f5b}.switch.on::after{left:21px}
 .logline{padding:10px 0;border-bottom:1px solid #eef1f4}.logline:last-child{border-bottom:0}.logtime{font-size:9px;color:var(--muted)}.logtext{font-size:11px;font-weight:700;margin-top:3px}
 .kpiup{font-size:10px;font-weight:800;color:var(--green);margin-top:3px}.kpidown{font-size:10px;font-weight:800;color:var(--blue);margin-top:3px}
+.pwaops{margin-top:10px;padding:10px;border:1px solid var(--line);background:#fff;border-radius:13px}.pwaops .opsrow{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}.pwaops .opsrow .btn{flex:1;min-width:120px}.pwastatus{font-size:9px;color:var(--muted);margin-top:5px}
 </style>
+<script src="./pwa-client.js" defer></script>
 </head>
 <body>
 <div class="app">
@@ -95,6 +102,14 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
     </select>
   </div>
   <div class="syncbar" onclick="openSyncStatus()"><div><b>端末同期</b><div class="tiny" id="syncText">最終同期：たった今</div></div><span class="syncpill" id="syncPill"><span class="syncdot"></span><span id="syncLabel">同期済み</span></span></div>
+  <div class="pwaops" id="pwaOps">
+    <div class="title">端末アプリ設定</div>
+    <div class="pwastatus" id="pwaStatus">端末機能を確認中…</div>
+    <div class="opsrow">
+      <button class="btn blue" id="installPwaBtn" onclick="installShiftNotePWA()">ホーム画面に追加</button>
+      <button class="btn ghost" id="notifyPwaBtn" onclick="enableShiftNoteNotifications()">通知を有効化</button>
+    </div>
+  </div>
 </header>
 
 <main id="home" class="page active">
@@ -857,6 +872,7 @@ const pilotChecklist=[
 ];
 let incidentStatus='平常';
 const changelog=[
+ {version:'2.6 Demo',date:'2026/09/21',text:'iPhone・Android対応PWA、ホーム画面追加、オフラインキャッシュ、端末通知テスト、更新基盤を追加'},
  {version:'2.5 Demo',date:'2026/09/21',text:'翻訳辞書を最大拡張し、店舗管理・Store Guide・シフト作成・法務・エラー・操作文まで対応。未翻訳監査も追加'},
  {version:'2.4 Demo',date:'2026/09/21',text:'文章内の部分翻訳、Toast・確認ダイアログ・シフト・通知・Skill・管理系の翻訳範囲を拡大'},
  {version:'2.3 Demo',date:'2026/09/21',text:'画面内の全日本語UIを自動検出し翻訳対象へ登録する共通レイヤーを追加'},
@@ -1472,7 +1488,7 @@ function openAdminCenter(){
       '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>規約・プライバシー</h3><small>Draft</small></div><div class="card">'+legalDocs.map(d=>'<div class="controlrow legalbtn" onclick="openLegal(\''+d.id+'\')"><div><div class="title">'+d.title+'</div><div class="sub">'+d.version+'</div></div><span>›</span></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 2.5 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 2.6 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
     auditSection;
   document.getElementById('modal').classList.add('open');
   enableConfidentialWatermark();
@@ -1815,6 +1831,47 @@ function toast(m){const t=document.getElementById('toast');t.textContent=runtime
 const nativeConfirm=window.confirm.bind(window),nativePrompt=window.prompt.bind(window);
 window.confirm=(m)=>nativeConfirm(runtimeTranslateJapanese(m));
 window.prompt=(m,d)=>nativePrompt(runtimeTranslateJapanese(m),d);
+function refreshPwaStatus(state){
+  const s=state||window.ShiftNotePWA?.state;
+  if(!s)return;
+  const el=document.getElementById('pwaStatus');
+  const install=document.getElementById('installPwaBtn');
+  const notify=document.getElementById('notifyPwaBtn');
+  const platform=s.platform==='ios'?'iPhone / iPad':s.platform==='android'?'Android':'Web';
+  const installed=s.installed?'インストール済み':'ブラウザ利用';
+  const online=s.online?'オンライン':'オフライン';
+  const notifyText=s.notificationPermission==='granted'?'通知ON':s.notificationPermission==='denied'?'通知OFF':'通知未設定';
+  if(el)el.textContent=platform+' ・ '+installed+' ・ '+online+' ・ '+notifyText;
+  if(install)install.textContent=s.installed?'ホーム画面に追加済み':'ホーム画面に追加';
+  if(notify)notify.textContent=s.notificationPermission==='granted'?'通知ON':'通知を有効化';
+}
+async function installShiftNotePWA(){
+  if(!window.ShiftNotePWA)return toast('端末機能の準備中です');
+  const r=await ShiftNotePWA.install();
+  if(r.reason==='ios-manual'){
+    alert('iPhone / iPadでは Safari の共有ボタン →「ホーム画面に追加」→「追加」でインストールできます。');
+  }else if(r.reason==='not-available'){
+    alert('このブラウザでは自動インストールが使えません。ブラウザのメニューから「ホーム画面に追加」または「アプリをインストール」を選んでください。');
+  }else if(r.ok){
+    toast('SHIFT NOTEをホーム画面に追加しました');
+  }
+  refreshPwaStatus();
+}
+async function enableShiftNoteNotifications(){
+  if(!window.ShiftNotePWA)return toast('通知機能の準備中です');
+  try{
+    const r=await ShiftNotePWA.enableNotifications();
+    if(r.ok)toast('端末通知を有効にしました');
+    else if(r.reason==='denied')alert('通知が拒否されています。端末の通知設定からSHIFT NOTEを許可してください。');
+    else if(r.reason==='unsupported')alert('このブラウザでは通知に対応していません。');
+  }catch(e){toast('通知設定に失敗しました')}
+  refreshPwaStatus();
+}
+window.addEventListener('load',()=>{
+  if(window.ShiftNotePWA)ShiftNotePWA.onState(refreshPwaStatus);
+  const params=new URLSearchParams(location.search);
+  if(params.get('open')==='notifications')setTimeout(()=>openNotifications(),300);
+});
 applyRole();applyStore();setHelpVisibility('public');refreshAckSummary();renderHandovers();updateNotificationBadge();refreshUserWatermark();refreshSyncBar();updateAdvancePrefCount();applyLanguage();setInterval(refreshUserWatermark,60000);
 </script>
 </body>
