@@ -10,7 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="SHIFT NOTE">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./pwa-icon.svg" type="image/svg+xml">
-<title>SHIFT NOTE Demo</title>
+<title>SKILL PASSPORT Demo</title>
 <style>
 :root{--bg:#f4f6f8;--card:#fff;--ink:#101828;--muted:#667085;--line:#e4e7ec;--green:#157f5b;--red:#c43232;--blue:#315fd3;--amber:#a65d0b}
 *{box-sizing:border-box}body{margin:0;background:#dde3ea;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Yu Gothic UI",Meiryo,sans-serif;color:var(--ink)}
@@ -88,7 +88,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 <div id="userWmSession" class="userwm-session"></div>
 <header class="top">
   <div class="brand">
-    <div><h1>SHIFT NOTE</h1><div class="tiny">第2版軸・最新統合デモ</div></div>
+    <div><h1>SKILL PASSPORT</h1><div class="tiny">第2版軸・最新統合デモ</div></div>
     <div class="topactions">
       <button class="notifbtn" onclick="openNotifications()" aria-label="通知">🔔<span class="notifbadge" id="notifBadge">0</span></button>
       <button class="profilebtn" id="profileBtn" onclick="openProfile()" aria-label="プロフィール"><span id="profileInitial">渡</span><span class="plus">＋</span></button>
@@ -892,7 +892,7 @@ const changelog=[
  {version:'0.9 Demo',date:'2026/09/20',text:'通知ディープリンク、担当・期限、管理センターを追加'},
  {version:'0.8 Demo',date:'2026/09/20',text:'QR映像マニュアル、引き継ぎ履歴を追加'}
 ];
-const tenantState={id:'DEMO-COMPANY-001',name:'SHIFT NOTE デモ組織',isolated:true};
+const tenantState={id:'DEMO-COMPANY-001',name:'SKILL PASSPORT デモ組織',isolated:true};
 let authState={verified:true,method:'社員ID + Face ID',device:'この端末',lastAuth:'本日 20:32'};
 let notificationRules={quiet:true,quietStart:'22:00',quietEnd:'07:00',reminder:'2時間',emergencyBypass:true};
 let syncState={offline:false,pending:0,last:'たった今',conflicts:0};
@@ -1329,7 +1329,7 @@ function watermarkStamp(){
   const date=d.toLocaleDateString('ja-JP',{year:'numeric',month:'2-digit',day:'2-digit'});
   const time=d.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
   const store=document.getElementById('store')?.value||'西口店';
-  return '渡邉友介 / '+store+' / '+roleLabels[currentAccountRole]+' / '+date+' '+time+' / SHIFT NOTE CONFIDENTIAL';
+  return '渡邉友介 / '+store+' / '+roleLabels[currentAccountRole]+' / '+date+' '+time+' / SKILL PASSPORT CONFIDENTIAL';
 }
 function enableConfidentialWatermark(){
   if(!securityState.watermark)return;
@@ -1338,7 +1338,7 @@ function enableConfidentialWatermark(){
   modal.classList.add('confidential');
   const stamp=watermarkStamp();
   layer.innerHTML=Array.from({length:18},()=>'<span>'+stamp+'</span>').join('');
-  footer.textContent='SHIFT NOTE CONFIDENTIAL ・ 渡邉友介 ・ Session SN-8F21';
+  footer.textContent='SKILL PASSPORT CONFIDENTIAL ・ 渡邉友介 ・ Session SN-8F21';
 }
 function disableConfidentialWatermark(){
   const modal=document.getElementById('modal');
