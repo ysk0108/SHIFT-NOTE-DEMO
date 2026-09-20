@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: calendar-two-line-time-v25 -->
+<!-- build: permissions-storemaster-audit-v26 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -353,6 +353,7 @@ const pilotChecklist=[
 ];
 let incidentStatus='平常';
 const changelog=[
+ {version:'1.8 Demo',date:'2026/09/21',text:'店舗マスタ承認を店長以上、監査ログをオーナー以上に権限変更'},
  {version:'1.7 Demo',date:'2026/09/21',text:'カレンダー内の時間を開始・終了の2段表示に変更'},
  {version:'1.6 Demo',date:'2026/09/21',text:'希望確定後の翌日移動・カレンダー上の状態丸と時間表示・iPad時間位置を調整'},
  {version:'1.5 Demo',date:'2026/09/20',text:'希望時間の手入力・時間テンプレート・傾向候補・未入力日の自動休みを追加'},
@@ -826,13 +827,16 @@ function openAdminCenter(){
     ['自分のシフト・希望提出',['✓','✓','✓','✓','✓','✓','✓']],
     ['シフト作成・承認',['—','—','✓','✓','✓','✓','✓']],
     ['店舗追加・名称変更の申請',['—','—','✓','✓','✓','✓','✓']],
-    ['店舗マスタの承認・反映',['—','—','—','—','—','✓','✓']],
+    ['店舗マスタの承認・反映',['—','—','✓','✓','✓','✓','✓']],
     ['確認状況一覧',['—','—','✓','✓','✓','✓','✓']],
     ['アカウント管理',['—','—','✓','✓','✓','✓','✓']],
-    ['監査ログ',['—','—','✓','✓','✓','✓','✓']],
+    ['監査ログ',['—','—','—','—','—','✓','✓']],
     ['本部公開管理',['—','—','—','—','—','—','✓']]
   ];
   const permissionTable='<div class="permtable"><table><tr><th>機能</th>'+permRoles.map(x=>'<th>'+roleLabels[x]+'</th>').join('')+'</tr>'+permRows.map(row=>'<tr><td>'+row[0]+'</td>'+row[1].map(v=>'<td class="'+(v==='✓'?'permok':'permno')+'">'+v+'</td>').join('')+'</tr>').join('')+'</table></div>';
+  const auditSection=roleRank[currentAccountRole]>=roleRank.owner
+    ?'<section class="section"><div class="head"><h3>操作ログ</h3><small>オーナー以上</small></div><div class="card"><div class="sub">監査ログは追記のみ。既存記録を編集・削除できない想定。</div>'+logs+'</div></section>'
+    :'';
   document.getElementById('modalBody').innerHTML=
     '<div class="head"><h3>管理センター</h3><small>企業導入デモ</small></div>'+
     '<div class="demobadge">この画面の数値・人物・ログはすべてデモデータ</div>'+
@@ -927,8 +931,8 @@ function openAdminCenter(){
       '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>規約・プライバシー</h3><small>Draft</small></div><div class="card">'+legalDocs.map(d=>'<div class="controlrow legalbtn" onclick="openLegal(\''+d.id+'\')"><div><div class="title">'+d.title+'</div><div class="sub">'+d.version+'</div></div><span>›</span></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 1.7 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>操作ログ</h3><small>改ざん防止</small></div><div class="card"><div class="sub">監査ログは追記のみ。管理者でも既存記録を編集・削除できない想定。</div>'+logs+'</div></section>';
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 1.8 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
+    auditSection;
   document.getElementById('modal').classList.add('open');
   enableConfidentialWatermark();
 }
