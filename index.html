@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: all-user-leak-prevention-v15 -->
+<!-- build: enterprise-readiness-complete-v16 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -14,6 +14,8 @@
 .userwm-layer{position:fixed;inset:0;max-width:430px;margin:auto;z-index:1;pointer-events:none;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:115px 8px;padding:120px 0 110px}
 .userwm-layer span{font-size:9px;font-weight:900;letter-spacing:.3px;color:#101828;opacity:.025;white-space:nowrap;transform:rotate(-28deg);transform-origin:center}
 .userwm-session{position:fixed;right:max(calc((100vw - 430px)/2 + 8px),8px);bottom:76px;z-index:3;pointer-events:none;font-size:7px;font-weight:800;color:#667085;opacity:.34;background:#f4f6f8cc;padding:3px 5px;border-radius:5px}
+.syncbar{margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:#fff;font-size:10px;cursor:pointer}.syncbar b{font-size:10px}.syncpill{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:900;color:#157f5b}.syncpill.off{color:#a65d0b}.syncdot{width:7px;height:7px;border-radius:50%;background:#12b76a}.syncpill.off .syncdot{background:#f79009}
+.permtable{overflow:auto;border:1px solid var(--line);border-radius:12px;background:#fff}.permtable table{border-collapse:collapse;min-width:560px;width:100%;font-size:9px}.permtable th,.permtable td{padding:8px;border-bottom:1px solid #eef1f4;text-align:center;white-space:nowrap}.permtable th:first-child,.permtable td:first-child{text-align:left;position:sticky;left:0;background:#fff;z-index:1}.permok{color:#157f5b;font-weight:900}.permno{color:#98a2b3}.healthrow{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #eef1f4}.healthrow:last-child{border-bottom:0}.healthok{font-size:9px;font-weight:900;color:#157f5b}.storagebar{height:8px;background:#e9edf2;border-radius:999px;overflow:hidden;margin-top:7px}.storagebar i{display:block;height:100%;width:12%;background:#667085;border-radius:999px}.authbadge{display:inline-flex;align-items:center;gap:5px;background:#ecfdf3;color:#067647;border:1px solid #abefc6;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:900}.legalbtn{cursor:pointer}.invitepending{opacity:.72}
 .top{position:sticky;top:0;z-index:10;background:#f4f6f8ee;backdrop-filter:blur(15px);padding:14px;border-bottom:1px solid var(--line)}
 .brand{display:flex;align-items:center;justify-content:space-between}.brand h1{font-size:18px;margin:0}.tiny{font-size:10px;color:var(--muted)}
 .topactions{display:flex;align-items:center;gap:8px}.notifbtn{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid #d7dde6;background:#fff;color:#101828;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px #1018280d}.notifbadge{position:absolute;right:-3px;top:-3px;min-width:18px;height:18px;border-radius:999px;background:#c43232;color:#fff;border:2px solid var(--bg);font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;padding:0 4px}.profilebtn{position:relative;width:44px;height:44px;border-radius:50%;border:1px solid #d7dde6;background:linear-gradient(145deg,#1d2939,#344054);color:#fff;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;overflow:visible;cursor:pointer;box-shadow:0 3px 10px #10182814}
@@ -76,6 +78,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
       <option>西口店</option><option>駅前店</option><option>中央店</option>
     </select>
   </div>
+  <div class="syncbar" onclick="openSyncStatus()"><div><b>端末同期</b><div class="tiny" id="syncText">最終同期：たった今</div></div><span class="syncpill" id="syncPill"><span class="syncdot"></span><span id="syncLabel">同期済み</span></span></div>
 </header>
 
 <main id="home" class="page active">
@@ -287,9 +290,21 @@ const pilotChecklist=[
 ];
 let incidentStatus='平常';
 const changelog=[
+ {version:'1.0 Demo',date:'2026/09/20',text:'認証・テナント分離・権限表・オフライン同期・運用監視を統合'},
  {version:'0.9 Demo',date:'2026/09/20',text:'通知ディープリンク、担当・期限、管理センターを追加'},
- {version:'0.8 Demo',date:'2026/09/20',text:'QR映像マニュアル、引き継ぎ履歴を追加'},
- {version:'0.7 Demo',date:'2026/09/20',text:'確認者一覧、再通知、画像添付を追加'}
+ {version:'0.8 Demo',date:'2026/09/20',text:'QR映像マニュアル、引き継ぎ履歴を追加'}
+];
+const tenantState={id:'DEMO-COMPANY-001',name:'SHIFT NOTE デモ組織',isolated:true};
+let authState={verified:true,method:'社員ID + Face ID',device:'この端末',lastAuth:'本日 20:32'};
+let notificationRules={quiet:true,quietStart:'22:00',quietEnd:'07:00',reminder:'2時間',emergencyBypass:true};
+let syncState={offline:false,pending:0,last:'たった今',conflicts:0};
+let mediaState={used:2.4,limit:20,compression:true};
+let restoreTestState='未実施';
+let pilotKpiState={baseline:false,started:false};
+const legalDocs=[
+ {id:'terms',title:'利用規約',version:'Draft 0.1',text:'SHIFT NOTEの利用条件、禁止事項、アカウント管理、サービス停止時の扱いを定める想定です。'},
+ {id:'privacy',title:'プライバシーポリシー',version:'Draft 0.1',text:'取得する情報、利用目的、保存期間、削除、問い合わせ窓口を明記する想定です。'},
+ {id:'security',title:'情報セキュリティ方針',version:'Draft 0.1',text:'最小権限、アクセス記録、端末紛失、情報持ち出し、インシデント対応を定める想定です。'}
 ];
 function currentUserStamp(){
   const d=new Date();
@@ -407,20 +422,36 @@ function openAdminCenter(){
   const activeCount=adminAccounts.filter(x=>x.active).length;
   const inactiveCount=adminAccounts.filter(x=>!x.active).length;
   const accountRows=adminAccounts.map(a=>
-    '<div class="ackline"><div><div class="person"><span class="statusdot '+(a.active?'':'off')+'"></span>'+a.name+'</div><div class="personmeta">'+roleLabels[a.role]+' ・ '+a.store+'</div></div>'+
+    '<div class="ackline '+(a.pending?'invitepending':'')+'"><div><div class="person"><span class="statusdot '+(a.active?'':'off')+'"></span>'+a.name+'</div><div class="personmeta">'+roleLabels[a.role]+' ・ '+a.store+(a.pending?' ・ 招待中':'')+'</div></div>'+
     (a.id===1
       ?'<span class="tag blue">自分</span>'
       :'<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">'+
-        '<button class="btn ghost" style="padding:6px 8px" onclick="toggleAccount('+a.id+')">'+(a.active?'利用停止':'再開')+'</button>'+
+        (a.pending?'<button class="btn ghost" style="padding:6px 8px" onclick="resendInvite('+a.id+')">再送</button>':'<button class="btn ghost" style="padding:6px 8px" onclick="toggleAccount('+a.id+')">'+(a.active?'利用停止':'再開')+'</button>')+
         '<button class="btn" style="padding:6px 8px;background:#fff0f0;color:#c43232;border:1px solid #ffd6d6" onclick="deleteAccount('+a.id+')">削除</button>'+
        '</div>')+
     '</div>').join('');
   const secRow=(key,title,desc)=>'<div class="controlrow"><div><div class="title">'+title+'</div><div class="sub">'+desc+'</div></div><div class="switch '+(securityState[key]?'on':'')+'" onclick="toggleSecurity(\''+key+'\')"></div></div>';
   const logs=auditLogs.map(x=>'<div class="logline"><div class="logtime">'+x.time+'</div><div class="logtext">'+x.text+'</div></div>').join('');
+  const permRoles=['regular','leader','manager','mg','toukatsu','owner','hq'];
+  const permRows=[
+    ['自分のSkill Passport',['✓','✓','✓','✓','✓','✓','✓']],
+    ['店舗の公開マニュアル',['✓','✓','✓','✓','✓','✓','✓']],
+    ['確認状況一覧',['—','—','✓','✓','✓','✓','✓']],
+    ['アカウント管理',['—','—','✓','✓','✓','✓','✓']],
+    ['監査ログ',['—','—','✓','✓','✓','✓','✓']],
+    ['本部公開管理',['—','—','—','—','—','—','✓']]
+  ];
+  const permissionTable='<div class="permtable"><table><tr><th>機能</th>'+permRoles.map(x=>'<th>'+roleLabels[x]+'</th>').join('')+'</tr>'+permRows.map(row=>'<tr><td>'+row[0]+'</td>'+row[1].map(v=>'<td class="'+(v==='✓'?'permok':'permno')+'">'+v+'</td>').join('')+'</tr>').join('')+'</table></div>';
   document.getElementById('modalBody').innerHTML=
     '<div class="head"><h3>管理センター</h3><small>企業導入デモ</small></div>'+
     '<div class="demobadge">この画面の数値・人物・ログはすべてデモデータ</div>'+
-    '<section class="section"><div class="head"><h3>導入後に計測するKPI</h3><small>現在は未計測</small></div>'+
+    '<section class="section"><div class="head"><h3>認証・ログイン</h3><small>本人確認</small></div>'+
+      '<div class="card"><div class="row"><div><div class="title">この端末</div><div class="sub">'+authState.method+' ・ '+authState.lastAuth+'</div></div><span class="authbadge">✓ 本人確認済み</span></div><button class="btn ghost full" style="margin-top:8px" onclick="openAuthDemo()">認証フローを見る</button></div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>会社データ分離</h3><small>Tenant Isolation</small></div>'+
+      '<div class="card"><div class="title">'+tenantState.name+'</div><div class="sub">組織ID '+tenantState.id+'</div><div class="sub" style="margin-top:6px">このアカウントは現在の会社領域だけを参照。他社・他組織のデータIDを指定してもアクセス拒否する想定。</div><span class="tag green" style="margin-top:8px">組織分離 ON</span></div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>導入後に計測するKPI</h3><small>'+(pilotKpiState.started?'計測中':'現在は未計測')+'</small></div>'+
       '<div class="card"><div class="sub">※ここは実績ではありません。パイロット開始後に実データで導入前／導入後を比較します。</div></div>'+
       '<div class="adminGrid">'+
         '<div class="card"><strong>--</strong><div class="sub">未確認率</div><div class="kpidown">導入前 → 導入後</div></div>'+
@@ -430,9 +461,25 @@ function openAdminCenter(){
         '<div class="card"><strong>--</strong><div class="sub">未確認者への再通知回数</div><div class="kpidown">導入前 → 導入後</div></div>'+
         '<div class="card"><strong>--</strong><div class="sub">FAQ化できた質問数</div><div class="kpidown">パイロット中に集計</div></div>'+
       '</div>'+
+      '<div class="card"><div class="title">パイロット計測</div><div class="sub">'+(pilotKpiState.baseline?'導入前ベースライン：記録済み':'導入前ベースライン：未記録')+'</div><div class="sub">'+(pilotKpiState.started?'パイロット：計測中':'パイロット：未開始')+'</div><div style="display:flex;gap:7px;margin-top:8px"><button class="btn ghost grow" onclick="recordBaseline()">導入前を記録</button><button class="btn blue grow" onclick="startPilotKpi()">計測開始</button></div></div>'+
     '</section>'+
-    '<section class="section"><div class="head"><h3>アカウント管理</h3><small>在籍・退職対応</small></div>'+
-      '<div class="card"><div class="sub">利用中 '+activeCount+'名 / 停止 '+inactiveCount+'名</div>'+accountRows+'</div>'+
+    '<section class="section"><div class="head"><h3>招待・入社・退職</h3><small>Account Lifecycle</small></div>'+
+      '<div class="card"><div class="sub">利用中 '+activeCount+'名 / 停止 '+inactiveCount+'名</div><button class="btn blue full" style="margin:8px 0" onclick="openInviteDemo()">＋ 新しいクルーを招待</button>'+accountRows+'</div>'+
+      '<div class="card"><div class="sub">入社：招待 → 本人確認 → 所属/役職設定 → 利用開始<br>退職：即時停止 → セッション失効 → 保存期限に従いデータ処理</div></div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>権限一覧</h3><small>役職ごと</small></div>'+permissionTable+'<div class="sub" style="margin-top:7px">※本番では「閲覧 / 作成 / 編集 / 削除 / 公開」を機能単位でサーバー側判定。</div></section>'+
+    '<section class="section"><div class="head"><h3>通知ルール</h3><small>店舗運用</small></div>'+
+      '<div class="card">'+
+        '<div class="controlrow"><div><div class="title">静かな時間</div><div class="sub">'+notificationRules.quietStart+'〜'+notificationRules.quietEnd+'は通常通知を抑制</div></div><div class="switch '+(notificationRules.quiet?'on':'')+'" onclick="toggleNotifyRule(\'quiet\')"></div></div>'+
+        '<div class="controlrow"><div><div class="title">未確認の再通知</div><div class="sub">初回から '+notificationRules.reminder+' 後</div></div><select style="max-width:100px;padding:7px;border:1px solid var(--line);border-radius:9px" onchange="setReminderRule(this.value)"><option '+(notificationRules.reminder==='1時間'?'selected':'')+'>1時間</option><option '+(notificationRules.reminder==='2時間'?'selected':'')+'>2時間</option><option '+(notificationRules.reminder==='4時間'?'selected':'')+'>4時間</option></select></div>'+
+        '<div class="controlrow"><div><div class="title">緊急通知は例外</div><div class="sub">静かな時間でも緊急は即時通知</div></div><div class="switch '+(notificationRules.emergencyBypass?'on':'')+'" onclick="toggleNotifyRule(\'emergencyBypass\')"></div></div>'+
+      '</div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>オフライン・同期</h3><small>'+(syncState.offline?'オフライン':'オンライン')+'</small></div>'+
+      '<div class="card"><div class="title">最終同期：'+syncState.last+'</div><div class="sub">未送信 '+syncState.pending+'件 / 競合 '+syncState.conflicts+'件</div><div class="sub" style="margin-top:6px">通信断中は必要なマニュアルと直近データを端末キャッシュで参照し、復帰後に同期する想定。</div><div style="display:flex;gap:7px;margin-top:8px"><button class="btn ghost grow" onclick="toggleOfflineDemo()">通信断を再現</button><button class="btn blue grow" onclick="openConflictDemo()">競合処理を見る</button></div></div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>画像・動画容量</h3><small>'+mediaState.used+'GB / '+mediaState.limit+'GB</small></div>'+
+      '<div class="card"><div class="title">ストレージ使用量</div><div class="storagebar"><i></i></div><div class="sub" style="margin-top:6px">アップロード時に圧縮。保存期限を過ぎたメディアはポリシーに従って削除する想定。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>データ保存ルール</h3><small>組織で設定</small></div>'+
       '<div class="card">'+
@@ -456,6 +503,7 @@ function openAdminCenter(){
     '</div></section>'+
     '<section class="section"><div class="head"><h3>バックアップ</h3><small>復旧対策</small></div>'+
       '<div class="card"><div class="title">最終バックアップ</div><div class="sub" id="backupTime">'+lastBackup+' ・ 正常</div><button class="btn blue full" style="margin-top:8px" onclick="runBackup()">今すぐバックアップ（デモ）</button></div>'+
+      '<div class="card"><div class="title">復元テスト</div><div class="sub">最終結果：'+restoreTestState+'</div><div class="sub">バックアップが存在するだけでなく、復元できるか定期確認する想定。</div><button class="btn ghost full" style="margin-top:8px" onclick="runRestoreTest()">復元テスト実行（デモ）</button></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>権利・データ区分</h3><small>導入前に明確化</small></div>'+
       '<div class="card"><div class="title">会社データ</div><div class="sub">店舗名・スタッフ情報・業務映像・報告内容は組織管理データとして扱い、承認前の外部持ち出しを禁止する想定。</div></div>'+
@@ -475,18 +523,60 @@ function openAdminCenter(){
     '<section class="section"><div class="head"><h3>端末紛失・不正利用対応</h3><small>緊急操作</small></div>'+
       '<div class="card"><div class="title">全セッション強制ログアウト</div><div class="sub">端末紛失や不正利用の疑いがある時に、全端末で再ログインを要求する想定。</div><button class="btn primary full" style="margin-top:8px" onclick="forceLogoutDemo()">強制ログアウト実行（デモ）</button></div>'+
     '</section>'+
-    '<section class="section"><div class="head"><h3>障害・インシデント対応</h3><small>現在 '+incidentStatus+'</small></div>'+
-      '<div class="card"><div class="title">現在の状態</div><div class="sub">'+incidentStatus+'。異常発生時は記録→影響範囲確認→復旧→再発防止を残す想定。</div><button class="btn ghost full" style="margin-top:8px" onclick="openIncidentDemo()">インシデント記録を開く</button></div>'+
+    '<section class="section"><div class="head"><h3>障害監視・インシデント</h3><small>現在 '+incidentStatus+'</small></div>'+
+      '<div class="card"><div class="healthrow"><span>API / ログイン</span><span class="healthok">● 正常</span></div><div class="healthrow"><span>通知配信</span><span class="healthok">● 正常</span></div><div class="healthrow"><span>同期</span><span class="healthok">● 正常</span></div><div class="healthrow"><span>画像・動画</span><span class="healthok">● 正常</span></div></div>'+
+      '<div class="card"><div class="title">インシデント手順</div><div class="sub">検知 → 影響範囲確認 → 暫定対応 → 復旧 → 原因分析 → 再発防止。</div><button class="btn ghost full" style="margin-top:8px" onclick="openIncidentDemo()">インシデント記録を開く</button></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>問い合わせ窓口</h3><small>運用サポート</small></div>'+
       '<div class="card"><div class="title">一次窓口：店長 / MG</div><div class="sub">操作・権限・店舗運用に関する問い合わせ。</div></div>'+
       '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
     '</section>'+
-    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 0.9 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>操作ログ</h3><small>誰が・いつ・何を</small></div><div class="card">'+logs+'</div></section>';
+    '<section class="section"><div class="head"><h3>規約・プライバシー</h3><small>Draft</small></div><div class="card">'+legalDocs.map(d=>'<div class="controlrow legalbtn" onclick="openLegal(\''+d.id+'\')"><div><div class="title">'+d.title+'</div><div class="sub">'+d.version+'</div></div><span>›</span></div>').join('')+'</div></section>'+
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 1.0 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
+    '<section class="section"><div class="head"><h3>操作ログ</h3><small>改ざん防止</small></div><div class="card"><div class="sub">監査ログは追記のみ。管理者でも既存記録を編集・削除できない想定。</div>'+logs+'</div></section>';
   document.getElementById('modal').classList.add('open');
   enableConfidentialWatermark();
 }
+function openAuthDemo(){
+  document.getElementById('modalBody').innerHTML='<h3>ログイン・本人確認</h3><div class="card"><div class="title">1. 社員ID</div><div class="sub">会社から付与されたIDで組織を特定</div></div><div class="card"><div class="title">2. パスコード / 生体認証</div><div class="sub">Face ID・Touch ID等で本人確認</div></div><div class="card"><div class="title">3. 端末登録</div><div class="sub">新しい端末は再認証。紛失端末は管理者がセッション失効</div></div><button class="btn primary full" onclick="toast(\'Face ID認証成功（デモ）\')">Face IDを試す（デモ）</button>';
+  document.getElementById('modal').classList.add('open');enableConfidentialWatermark();
+}
+function openInviteDemo(){
+  document.getElementById('modalBody').innerHTML='<h3>新しいクルーを招待</h3><input id="inviteName" class="input" placeholder="氏名（デモ）"><select id="inviteRole" class="input" style="margin-top:8px"><option value="regular">レギュラークルー</option><option value="leader">リーダー</option><option value="manager">店長</option></select><select id="inviteStore" class="input" style="margin-top:8px"><option>西口店</option><option>駅前店</option><option>中央店</option></select><button class="btn blue full" style="margin-top:10px" onclick="sendInviteDemo()">招待を作成</button><div class="sub">実際の連絡先はこの公開デモでは取得しません。</div>';
+  document.getElementById('modal').classList.add('open');enableConfidentialWatermark();
+}
+function sendInviteDemo(){
+  const name=document.getElementById('inviteName').value.trim();if(!name)return toast('氏名を入力してください');
+  const role=document.getElementById('inviteRole').value,store=document.getElementById('inviteStore').value;
+  adminAccounts.push({id:Date.now(),name,role,store,active:false,pending:true});
+  auditLogs.unshift({time:'21:00',text:'渡邉友介が '+name+' を '+store+' / '+roleLabels[role]+' として招待'});
+  closeModal();openAdminCenter();toast(name+' を招待しました（デモ）');
+}
+function resendInvite(id){const a=adminAccounts.find(x=>x.id===id);if(a)toast(a.name+' へ招待を再送しました（デモ）')}
+function toggleNotifyRule(key){notificationRules[key]=!notificationRules[key];openAdminCenter();toast('通知ルールを更新しました（デモ）')}
+function setReminderRule(v){notificationRules.reminder=v;toast('再通知を '+v+' 後に設定しました（デモ）')}
+function toggleOfflineDemo(){
+  syncState.offline=!syncState.offline;
+  syncState.pending=syncState.offline?2:0;syncState.last=syncState.offline?'3分前':'たった今';
+  refreshSyncBar();openAdminCenter();toast(syncState.offline?'オフライン状態を再現しています':'オンライン復帰・同期完了（デモ）');
+}
+function refreshSyncBar(){
+  const p=document.getElementById('syncPill'),l=document.getElementById('syncLabel'),t=document.getElementById('syncText');if(!p||!l||!t)return;
+  p.classList.toggle('off',syncState.offline);l.textContent=syncState.offline?'オフライン':'同期済み';t.textContent='最終同期：'+syncState.last+(syncState.pending?' ・ 未送信 '+syncState.pending+'件':'');
+}
+function openSyncStatus(){
+  document.getElementById('modalBody').innerHTML='<h3>端末同期</h3><div class="card"><div class="title">'+(syncState.offline?'オフライン':'オンライン')+'</div><div class="sub">最終同期 '+syncState.last+' / 未送信 '+syncState.pending+'件 / 競合 '+syncState.conflicts+'件</div></div><div class="card"><div class="title">オフライン時に保持するもの</div><div class="sub">必要な公開マニュアル、直近の引き継ぎ、自分のSkill Passport。復帰後にサーバー側の権限を再確認して同期する想定。</div></div><button class="btn ghost full" onclick="toggleOfflineFromSync()">通信状態を切り替える（デモ）</button>';
+  document.getElementById('modal').classList.add('open');
+}
+function toggleOfflineFromSync(){syncState.offline=!syncState.offline;syncState.pending=syncState.offline?2:0;syncState.last=syncState.offline?'3分前':'たった今';refreshSyncBar();closeModal();openSyncStatus()}
+function openConflictDemo(){
+  document.getElementById('modalBody').innerHTML='<h3>同時編集の競合</h3><div class="card"><div class="title">冷凍ケース右側の温度上昇</div><div class="sub">あなた：対応完了 / 山本直樹：対応中</div></div><div class="card"><div class="title">自動上書きしない</div><div class="sub">新しい更新を優先するのではなく、差分と更新者・時刻を表示して権限者が選択する想定。</div></div><button class="btn blue full" onclick="toast(\'サーバー版を採用しました（デモ）\')">サーバー版を採用</button><button class="btn ghost full" style="margin-top:7px" onclick="toast(\'自分の変更を再適用しました（デモ）\')">自分の変更を再適用</button>';
+  document.getElementById('modal').classList.add('open');enableConfidentialWatermark();
+}
+function runRestoreTest(){restoreTestState='成功・本日 21:00';auditLogs.unshift({time:'21:00',text:'バックアップ復元テストに成功'});openAdminCenter();toast('復元テスト成功（デモ）')}
+function recordBaseline(){pilotKpiState.baseline=true;auditLogs.unshift({time:'21:00',text:'パイロット導入前KPIのベースラインを記録'});openAdminCenter();toast('導入前ベースラインを記録しました（デモ）')}
+function startPilotKpi(){if(!pilotKpiState.baseline)return toast('先に導入前ベースラインを記録してください');pilotKpiState.started=true;openAdminCenter();toast('パイロットKPI計測を開始しました（デモ）')}
+function openLegal(id){const d=legalDocs.find(x=>x.id===id);if(!d)return;document.getElementById('modalBody').innerHTML='<h3>'+d.title+'</h3><div class="sub">'+d.version+' ・ デモ草案</div><div class="card"><div class="sub">'+d.text+'</div></div><div class="card"><div class="title">本番化前に必要</div><div class="sub">実際の事業者、データ処理、委託先、問い合わせ先、法務確認に合わせて正式文書化します。</div></div>';document.getElementById('modal').classList.add('open');enableConfidentialWatermark()}
 function retentionRow(key,label){
   const opts=['30日','90日','180日','365日','3年'].map(v=>'<option '+(retentionState[key]===v?'selected':'')+'>'+v+'</option>').join('');
   return '<div class="controlrow"><div><div class="title">'+label+'</div><div class="sub">保存期間</div></div><select style="max-width:110px;padding:7px;border:1px solid var(--line);border-radius:9px;background:#fff" onchange="setRetention(\''+key+'\',this.value)">'+opts+'</select></div>';
@@ -545,7 +635,7 @@ function openProfile(){
     ?'<button class="btn primary full" onclick="closeModal();openAdminCenter()">管理センターを開く</button>'
     :'';
   document.getElementById('modalBody').innerHTML=
-    '<div class="profilehead"><div id="modalAvatar" class="'+imgClass+'" style="'+imgStyle+'">渡</div><div><h3 style="margin:0">渡邉友介</h3><div class="sub">'+roleLabels[r]+'・'+document.getElementById('store').value+'</div></div></div>'+
+    '<div class="profilehead"><div id="modalAvatar" class="'+imgClass+'" style="'+imgStyle+'">渡</div><div><h3 style="margin:0">渡邉友介</h3><div class="sub">'+roleLabels[r]+'・'+document.getElementById('store').value+'</div><span class="authbadge" style="margin-top:5px">✓ 本人確認済み</span></div></div>'+
     '<button class="btn ghost full" onclick="document.getElementById(\'profileImageInput\').click()">📷 プロフィール画像を追加・変更</button>'+
     '<section class="section"><div class="head"><h3>Skill Passport</h3><small>習得率 '+skillRate()+'%</small></div>'+
     '<div class="card">'+skillRowsHTML()+'</div></section>'+
@@ -771,7 +861,7 @@ function openGuide(){const s=document.getElementById('store').value,rows=guides[
 function openManual(){document.getElementById('modalBody').innerHTML='<h3>📄 コピー機の用紙補充</h3><div class="sub">v1.3・最終更新 2026/09/20</div><div class="card"><div class="title">1. 側面カバーを開く</div></div><div class="card"><div class="title">2. 用紙をそろえてセット</div></div><div class="card"><div class="title">3. 紙詰まり表示がないか確認</div></div><button class="btn primary full" onclick="closeModal();toast(\'最新版の確認を記録しました\')">最新版を確認しました</button>';document.getElementById('modal').classList.add('open')}
 function closeModal(){stopQR();disableConfidentialWatermark();document.getElementById('modal').classList.remove('open')}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
-applyRole();applyStore();setHelpVisibility('public');refreshAckSummary();renderHandovers();updateNotificationBadge();refreshUserWatermark();setInterval(refreshUserWatermark,60000);
+applyRole();applyStore();setHelpVisibility('public');refreshAckSummary();renderHandovers();updateNotificationBadge();refreshUserWatermark();refreshSyncBar();setInterval(refreshUserWatermark,60000);
 </script>
 </body>
 </html>
