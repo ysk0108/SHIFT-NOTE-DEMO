@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: admin-center-back-v28 -->
+<!-- build: language-settings-srilanka-v29 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -49,7 +49,7 @@
 .urg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.urg button{border:1px solid var(--line);background:#fff;border-radius:11px;padding:10px 2px;font-size:11px;font-weight:800}.urg button.active[data-l="緊急"]{background:#8f1d1d;color:#fff}.urg button.active[data-l="高"]{background:#fff0f0;color:var(--red)}.urg button.active[data-l="通常"]{background:#fff6e8;color:var(--amber)}.urg button.active[data-l="低"]{background:#edf2ff;color:var(--blue)}
 input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:11px;margin-top:6px}textarea.input{min-height:90px}
 .skill{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid #eef1f4}.skill:last-child{border-bottom:0}
-.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:68px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);z-index:20}.nav button{border:0;background:#fff;font-size:8px;color:#7b8494;padding:5px 2px}.nav button span{display:block;font-size:17px}.nav button.active{color:#101828;font-weight:800}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(430px,100%);height:68px;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);z-index:20}.nav button{border:0;background:#fff;font-size:8px;color:#7b8494;padding:5px 2px}.nav button span{display:block;font-size:17px}.navlabel{display:block;font-style:normal;line-height:1.15}.nav button.active{color:#101828;font-weight:800}
 .modalbg{display:none;position:fixed;inset:0;background:#10182866;z-index:30;align-items:flex-end;justify-content:center}.modalbg.open{display:flex}.modal{position:relative;width:min(430px,100%);max-height:88vh;overflow:auto;background:#f8fafb;border-radius:24px 24px 0 0;padding:16px 16px 38px}.close{position:relative;z-index:8;float:right;border:0;background:#e9edf1;border-radius:10px;padding:8px}
 .wm-layer{display:none;position:absolute;inset:0;z-index:6;pointer-events:none;overflow:hidden;padding:76px 0 90px;grid-template-columns:1fr 1fr;align-content:start;gap:92px 6px}
 .modalbg.confidential .wm-layer{display:grid}.wm-layer span{font-size:10px;font-weight:900;letter-spacing:.35px;color:#101828;opacity:.07;white-space:nowrap;transform:rotate(-29deg);transform-origin:center}
@@ -280,12 +280,12 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 </main>
 
 <nav class="nav">
-<button class="active" data-page="home" onclick="go('home',this)"><span>⌂</span>ホーム</button>
-<button data-page="handover" onclick="go('handover',this)"><span>📝</span>引き継ぎ</button>
-<button data-page="tasks" onclick="go('tasks',this)"><span>✓</span>業務</button>
-<button data-page="shift" onclick="go('shift',this)"><span>🗓</span>シフト</button>
-<button data-page="manuals" onclick="go('manuals',this)"><span>📖</span>マニュアル</button>
-<button data-page="report" onclick="go('report',this)"><span>!</span>報告・質問</button>
+<button class="active" data-page="home" onclick="go('home',this)"><span>⌂</span><em class="navlabel" data-langkey="home">ホーム</em></button>
+<button data-page="handover" onclick="go('handover',this)"><span>📝</span><em class="navlabel" data-langkey="handover">引き継ぎ</em></button>
+<button data-page="tasks" onclick="go('tasks',this)"><span>✓</span><em class="navlabel" data-langkey="tasks">業務</em></button>
+<button data-page="shift" onclick="go('shift',this)"><span>🗓</span><em class="navlabel" data-langkey="shift">シフト</em></button>
+<button data-page="manuals" onclick="go('manuals',this)"><span>📖</span><em class="navlabel" data-langkey="manuals">マニュアル</em></button>
+<button data-page="report" onclick="go('report',this)"><span>!</span><em class="navlabel" data-langkey="report">報告・質問</em></button>
 </nav>
 </div>
 
@@ -318,6 +318,52 @@ const ackState=demoPeople.map((p,i)=>({
 }));
 ackState.forEach((p,i)=>{if(p.ack&&!p.self){const h=17+Math.floor(Math.random()*3),m=String(Math.floor(Math.random()*60)).padStart(2,'0');p.time=h+':'+m}});
 const roleLabels={regular:'レギュラークルー',leader:'リーダー',manager:'店長',owner:'オーナー',toukatsu:'統括',mg:'MG',hq:'本部'};
+const languageOptions=[
+ {code:'ja',label:'日本語'},
+ {code:'en',label:'English'},
+ {code:'zh-CN',label:'简体中文'},
+ {code:'ko',label:'한국어'},
+ {code:'vi',label:'Tiếng Việt'},
+ {code:'ne',label:'नेपाली'},
+ {code:'pt',label:'Português'},
+ {code:'si',label:'සිංහල'},
+ {code:'ta',label:'தமிழ்'}
+];
+let currentLanguage=localStorage.getItem('shiftNoteLanguage')||'ja';
+const uiLang={
+ ja:{home:'ホーム',handover:'引き継ぎ',tasks:'業務',shift:'シフト',manuals:'マニュアル',report:'報告・質問',back:'戻る',language:'言語設定',choose:'表示言語を選択',save:'この言語に変更'},
+ en:{home:'Home',handover:'Handover',tasks:'Tasks',shift:'Shift',manuals:'Manuals',report:'Report / Ask',back:'Back',language:'Language',choose:'Choose display language',save:'Use this language'},
+ 'zh-CN':{home:'首页',handover:'交接',tasks:'业务',shift:'排班',manuals:'手册',report:'报告/提问',back:'返回',language:'语言设置',choose:'选择显示语言',save:'使用此语言'},
+ ko:{home:'홈',handover:'인수인계',tasks:'업무',shift:'시프트',manuals:'매뉴얼',report:'보고/질문',back:'뒤로',language:'언어 설정',choose:'표시 언어 선택',save:'이 언어 사용'},
+ vi:{home:'Trang chủ',handover:'Bàn giao',tasks:'Công việc',shift:'Ca làm',manuals:'Hướng dẫn',report:'Báo cáo/Hỏi',back:'Quay lại',language:'Ngôn ngữ',choose:'Chọn ngôn ngữ hiển thị',save:'Dùng ngôn ngữ này'},
+ ne:{home:'होम',handover:'हस्तान्तरण',tasks:'काम',shift:'सिफ्ट',manuals:'म्यानुअल',report:'रिपोर्ट/प्रश्न',back:'फर्कनुहोस्',language:'भाषा सेटिङ',choose:'प्रदर्शन भाषा छान्नुहोस्',save:'यो भाषा प्रयोग गर्नुहोस्'},
+ pt:{home:'Início',handover:'Passagem',tasks:'Tarefas',shift:'Escala',manuals:'Manuais',report:'Relatar/Perguntar',back:'Voltar',language:'Idioma',choose:'Escolha o idioma',save:'Usar este idioma'},
+ si:{home:'මුල් පිටුව',handover:'භාරදීම',tasks:'කාර්යයන්',shift:'වැඩ මුර',manuals:'අත්පොත්',report:'වාර්තා/ප්‍රශ්න',back:'ආපසු',language:'භාෂා සැකසුම්',choose:'පෙන්වීමේ භාෂාව තෝරන්න',save:'මෙම භාෂාව භාවිත කරන්න'},
+ ta:{home:'முகப்பு',handover:'ஒப்படைப்பு',tasks:'பணிகள்',shift:'பணி நேரம்',manuals:'கையேடுகள்',report:'அறிக்கை/கேள்வி',back:'பின்',language:'மொழி அமைப்புகள்',choose:'காட்சி மொழியைத் தேர்ந்தெடுக்கவும்',save:'இந்த மொழியைப் பயன்படுத்தவும்'}
+};
+function currentLanguageLabel(){return (languageOptions.find(x=>x.code===currentLanguage)||languageOptions[0]).label}
+function applyLanguage(){
+  const d=uiLang[currentLanguage]||uiLang.ja;
+  document.documentElement.lang=currentLanguage;
+  document.querySelectorAll('[data-langkey]').forEach(el=>{const k=el.dataset.langkey;if(d[k])el.textContent=d[k]});
+  document.querySelectorAll('.pageback').forEach(el=>el.textContent='← '+d.back);
+  const p=document.getElementById('profileLangLabel');if(p)p.textContent=currentLanguageLabel();
+}
+function openLanguageSettings(){
+  const d=uiLang[currentLanguage]||uiLang.ja;
+  const opts=languageOptions.map(x=>'<option value="'+x.code+'" '+(x.code===currentLanguage?'selected':'')+'>'+x.label+'</option>').join('');
+  document.getElementById('modalBody').innerHTML=
+    '<h3>'+d.language+'</h3><div class="card"><div class="title">'+d.choose+'</div><select id="languageSelect" class="input" style="margin-top:8px">'+opts+'</select></div>'+
+    '<button class="btn blue full" onclick="saveLanguageSetting()">'+d.save+'</button>';
+  document.getElementById('modal').classList.add('open');
+}
+function saveLanguageSetting(){
+  currentLanguage=document.getElementById('languageSelect').value;
+  localStorage.setItem('shiftNoteLanguage',currentLanguage);
+  applyLanguage();
+  closeModal();
+  toast(currentLanguageLabel()+' に変更しました');
+}
 const skillPassport=[
  {name:'レジ接客',category:'接客',status:'単独対応可',score:100,reconfirm:false},
  {name:'公共料金',category:'受付',status:'実施経験あり',score:60,reconfirm:false},
@@ -369,6 +415,7 @@ const pilotChecklist=[
 ];
 let incidentStatus='平常';
 const changelog=[
+ {version:'2.1 Demo',date:'2026/09/21',text:'言語設定を追加。シンハラ語・タミル語を含む9言語に対応'},
  {version:'2.0 Demo',date:'2026/09/21',text:'管理センターにプロフィールへ戻る導線を追加'},
  {version:'1.9 Demo',date:'2026/09/21',text:'引き継ぎ・業務・マニュアルに報告質問クイック窓と戻るナビを追加'},
  {version:'1.8 Demo',date:'2026/09/21',text:'店舗マスタ承認を店長以上、監査ログをオーナー以上に権限変更'},
@@ -979,7 +1026,7 @@ function openAdminCenter(){
       '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>規約・プライバシー</h3><small>Draft</small></div><div class="card">'+legalDocs.map(d=>'<div class="controlrow legalbtn" onclick="openLegal(\''+d.id+'\')"><div><div class="title">'+d.title+'</div><div class="sub">'+d.version+'</div></div><span>›</span></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 2.0 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 2.1 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
     auditSection;
   document.getElementById('modal').classList.add('open');
   enableConfidentialWatermark();
@@ -1084,13 +1131,15 @@ function openProfile(){
   document.getElementById('modalBody').innerHTML=
     '<div class="profilehead"><div id="modalAvatar" class="'+imgClass+'" style="'+imgStyle+'">渡</div><div><h3 style="margin:0">渡邉友介</h3><div class="sub">'+roleLabels[r]+'・'+document.getElementById('store').value+'</div><span class="authbadge" style="margin-top:5px">✓ 本人確認済み</span></div></div>'+
     '<button class="btn ghost full" onclick="document.getElementById(\'profileImageInput\').click()">📷 プロフィール画像を追加・変更</button>'+
+    '<button class="btn ghost full" style="margin-top:8px" onclick="openLanguageSettings()">🌐 Language / 言語 <span id="profileLangLabel" style="float:right">'+currentLanguageLabel()+'</span></button>'+
     '<section class="section"><div class="head"><h3>Skill Passport</h3><small>習得率 '+skillRate()+'%</small></div>'+
     '<div class="card">'+skillRowsHTML()+'</div></section>'+
     '<section class="section"><div class="head"><h3>自分の閲覧範囲</h3><small>最小権限</small></div>'+
     '<div class="card"><div class="sub">自分のSkill Passport / 選択中店舗で必要な業務情報 / 公開済みマニュアル / 自分宛の通知を中心に表示。役職外の管理情報や他人の非公開情報は表示しません。</div></div></section>'+
     adminButton+
     '<button class="btn blue full" style="margin-top:8px" onclick="closeModal();go(\'settings\')">役職・権限を見る</button>';
-  document.getElementById('modal').classList.add('open')
+  document.getElementById('modal').classList.add('open');
+  applyLanguage()
 }
 function setProfileImage(e){
   const file=e.target.files&&e.target.files[0];if(!file)return;
@@ -1308,7 +1357,7 @@ function openGuide(){const s=document.getElementById('store').value,rows=guides[
 function openManual(){document.getElementById('modalBody').innerHTML='<h3>📄 コピー機の用紙補充</h3><div class="sub">v1.3・最終更新 2026/09/20</div><div class="card"><div class="title">1. 側面カバーを開く</div></div><div class="card"><div class="title">2. 用紙をそろえてセット</div></div><div class="card"><div class="title">3. 紙詰まり表示がないか確認</div></div><button class="btn primary full" onclick="closeModal();toast(\'最新版の確認を記録しました\')">最新版を確認しました</button>';document.getElementById('modal').classList.add('open')}
 function closeModal(){stopQR();disableConfidentialWatermark();document.getElementById('modal').classList.remove('open')}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
-applyRole();applyStore();setHelpVisibility('public');refreshAckSummary();renderHandovers();updateNotificationBadge();refreshUserWatermark();refreshSyncBar();updateAdvancePrefCount();setInterval(refreshUserWatermark,60000);
+applyRole();applyStore();setHelpVisibility('public');refreshAckSummary();renderHandovers();updateNotificationBadge();refreshUserWatermark();refreshSyncBar();updateAdvancePrefCount();applyLanguage();setInterval(refreshUserWatermark,60000);
 </script>
 </body>
 </html>
