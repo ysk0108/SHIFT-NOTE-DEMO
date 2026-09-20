@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: full-ui-post-translation-demo-v30 -->
+<!-- build: full-japanese-translation-targets-v31 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -344,6 +344,15 @@ const uiLang={
 };
 function currentLanguageLabel(){return (languageOptions.find(x=>x.code===currentLanguage)||languageOptions[0]).label}
 function applyLanguage(){
+  // Restore original Japanese before re-applying the selected language.
+  document.querySelectorAll('*').forEach(el=>{
+    const originals=translationAttrOriginal.get(el);
+    if(originals)Object.entries(originals).forEach(([a,v])=>{if(v!=null)el.setAttribute(a,v)});
+  });
+  const walkerRestore=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  let restoreNode;while((restoreNode=walkerRestore.nextNode())){
+    if(translationTextOriginal.has(restoreNode))restoreNode.nodeValue=translationTextOriginal.get(restoreNode);
+  }
   const d=uiLang[currentLanguage]||uiLang.ja;
   document.documentElement.lang=currentLanguage;
   document.querySelectorAll('[data-langkey]').forEach(el=>{const k=el.dataset.langkey;if(d[k])el.textContent=d[k]});
@@ -353,6 +362,7 @@ function applyLanguage(){
   headingMap.forEach(([sel,key])=>{const el=document.querySelector(sel);if(el&&d[key])el.textContent=d[key]});
   renderHandovers();
   refreshTranslationSamples();
+  scheduleFullTranslationSweep();
 }
 function refreshTranslationSamples(){
   const t1=document.getElementById('questionSampleTitle'),t2=document.getElementById('questionSampleDetail'),tb=document.getElementById('questionSampleTranslation');
@@ -364,7 +374,7 @@ function openLanguageSettings(){
   const d=uiLang[currentLanguage]||uiLang.ja;
   const opts=languageOptions.map(x=>'<option value="'+x.code+'" '+(x.code===currentLanguage?'selected':'')+'>'+x.label+'</option>').join('');
   document.getElementById('modalBody').innerHTML=
-    '<h3>'+d.language+'</h3><div class="card"><div class="title">'+d.choose+'</div><select id="languageSelect" class="input" style="margin-top:8px">'+opts+'</select><div class="translation-note">'+(d.translation_note||uiLang.en.translation_note)+'</div></div>'+
+    '<h3>'+d.language+'</h3><div class="card"><div class="title">'+d.choose+'</div><select id="languageSelect" class="input" style="margin-top:8px">'+opts+'</select><div class="translation-note">'+(d.translation_note||uiLang.en.translation_note)+'</div><div class="translation-note">🌐 現在の画面・モーダル・通知・入力補助・管理画面を含む日本語UIをすべて翻訳対象として登録。人名・店舗名などの固有名詞は原文維持。本番では未登録文も翻訳バックエンドで自動翻訳します。</div></div>'+
     '<button class="btn blue full" onclick="saveLanguageSetting()">'+d.save+'</button>';
   document.getElementById('modal').classList.add('open');
 }
@@ -433,6 +443,149 @@ function togglePostOriginal(key){
   refreshTranslationSamples();
   if(document.getElementById('modal').classList.contains('open')&&key.startsWith('handover'))openHandover(Number(key.replace('handover','')));
 }
+
+/* ---- Global translation target layer ----
+   Every visible Japanese UI string is registered here automatically.
+   Proper nouns such as person/store names are intentionally preserved.
+   In production, unresolved targets are sent to the translation backend. */
+const preserveJapaneseTerms=new Set([
+ '渡邉友介','佐藤美咲','鈴木蓮','高橋彩乃','伊藤拓海','小林結衣','田中悠真','吉田葵','山本直樹','中村玲奈','加藤颯太','森川真央','藤田一真',
+ '西口店','駅前店','中央店','SHIFT NOTE','MG'
+]);
+const exactI18n=[
+ {ja:'通知',en:'Notifications','zh-CN':'通知',ko:'알림',vi:'Thông báo',ne:'सूचना',pt:'Notificações',si:'දැනුම්දීම්',ta:'அறிவிப்புகள்'},
+ {ja:'プロフィール',en:'Profile','zh-CN':'个人资料',ko:'프로필',vi:'Hồ sơ',ne:'प्रोफाइल',pt:'Perfil',si:'පැතිකඩ',ta:'சுயவிவரம்'},
+ {ja:'確認',en:'Confirm','zh-CN':'确认',ko:'확인',vi:'Xác nhận',ne:'पुष्टि',pt:'Confirmar',si:'තහවුරු',ta:'உறுதிப்படுத்து'},
+ {ja:'確認済み',en:'Confirmed','zh-CN':'已确认',ko:'확인 완료',vi:'Đã xác nhận',ne:'पुष्टि भयो',pt:'Confirmado',si:'තහවුරු කළා',ta:'உறுதிப்படுத்தப்பட்டது'},
+ {ja:'未確認',en:'Unconfirmed','zh-CN':'未确认',ko:'미확인',vi:'Chưa xác nhận',ne:'अपुष्ट',pt:'Não confirmado',si:'තහවුරු නොකළ',ta:'உறுதிப்படுத்தப்படவில்லை'},
+ {ja:'対応中',en:'In progress','zh-CN':'处理中',ko:'처리 중',vi:'Đang xử lý',ne:'कारबाहीमा',pt:'Em andamento',si:'ක්‍රියාත්මකයි',ta:'செயல்பாட்டில்'},
+ {ja:'完了',en:'Completed','zh-CN':'完成',ko:'완료',vi:'Hoàn tất',ne:'सम्पन्न',pt:'Concluído',si:'සම්පූර්ණයි',ta:'முடிந்தது'},
+ {ja:'緊急',en:'Emergency','zh-CN':'紧急',ko:'긴급',vi:'Khẩn cấp',ne:'आपतकालीन',pt:'Emergência',si:'හදිසි',ta:'அவசரம்'},
+ {ja:'高',en:'High','zh-CN':'高',ko:'높음',vi:'Cao',ne:'उच्च',pt:'Alta',si:'ඉහළ',ta:'உயர்'},
+ {ja:'通常',en:'Normal','zh-CN':'普通',ko:'보통',vi:'Bình thường',ne:'सामान्य',pt:'Normal',si:'සාමාන්‍ය',ta:'சாதாரண'},
+ {ja:'低',en:'Low','zh-CN':'低',ko:'낮음',vi:'Thấp',ne:'कम',pt:'Baixa',si:'අඩු',ta:'குறைவு'},
+ {ja:'戻る',en:'Back','zh-CN':'返回',ko:'뒤로',vi:'Quay lại',ne:'फर्कनुहोस्',pt:'Voltar',si:'ආපසු',ta:'பின்'},
+ {ja:'詳細',en:'Details','zh-CN':'详情',ko:'상세',vi:'Chi tiết',ne:'विवरण',pt:'Detalhes',si:'විස්තර',ta:'விவரங்கள்'},
+ {ja:'履歴',en:'History','zh-CN':'记录',ko:'기록',vi:'Lịch sử',ne:'इतिहास',pt:'Histórico',si:'ඉතිහාසය',ta:'வரலாறு'},
+ {ja:'担当',en:'Assignee','zh-CN':'负责人',ko:'담당',vi:'Phụ trách',ne:'जिम्मेवार',pt:'Responsável',si:'භාරකරු',ta:'பொறுப்பாளர்'},
+ {ja:'期限',en:'Deadline','zh-CN':'期限',ko:'기한',vi:'Hạn',ne:'समयसीमा',pt:'Prazo',si:'අවසන් දිනය',ta:'காலக்கெடு'},
+ {ja:'期限超過',en:'Overdue','zh-CN':'已逾期',ko:'기한 초과',vi:'Quá hạn',ne:'म्याद नाघ्यो',pt:'Atrasado',si:'කාලය ඉක්මවා ඇත',ta:'காலக்கெடு கடந்தது'},
+ {ja:'質問',en:'Question','zh-CN':'提问',ko:'질문',vi:'Câu hỏi',ne:'प्रश्न',pt:'Pergunta',si:'ප්‍රශ්නය',ta:'கேள்வி'},
+ {ja:'報告',en:'Report','zh-CN':'报告',ko:'보고',vi:'Báo cáo',ne:'रिपोर्ट',pt:'Relatório',si:'වාර්තාව',ta:'அறிக்கை'},
+ {ja:'公開',en:'Public','zh-CN':'公开',ko:'공개',vi:'Công khai',ne:'सार्वजनिक',pt:'Público',si:'පොදු',ta:'பொது'},
+ {ja:'非公開',en:'Private','zh-CN':'非公开',ko:'비공개',vi:'Riêng tư',ne:'निजी',pt:'Privado',si:'පුද්ගලික',ta:'தனிப்பட்ட'},
+ {ja:'画像を添付',en:'Attach image','zh-CN':'附加图片',ko:'이미지 첨부',vi:'Đính kèm ảnh',ne:'तस्बिर संलग्न',pt:'Anexar imagem',si:'රූපයක් අමුණන්න',ta:'படத்தை இணைக்க'},
+ {ja:'この内容で報告',en:'Submit report','zh-CN':'提交报告',ko:'이 내용으로 보고',vi:'Gửi báo cáo',ne:'रिपोर्ट पठाउनुहोस्',pt:'Enviar relatório',si:'වාර්තාව යවන්න',ta:'அறிக்கையை அனுப்பு'},
+ {ja:'希望を提出',en:'Submit availability','zh-CN':'提交希望',ko:'희망 제출',vi:'Gửi nguyện vọng',ne:'उपलब्धता पठाउनुहोस्',pt:'Enviar disponibilidade',si:'කැමැත්ත යවන්න',ta:'விருப்பத்தை சமர்ப்பி'},
+ {ja:'変更を申請',en:'Request change','zh-CN':'申请变更',ko:'변경 신청',vi:'Yêu cầu thay đổi',ne:'परिवर्तन अनुरोध',pt:'Solicitar alteração',si:'වෙනස ඉල්ලන්න',ta:'மாற்றம் கோரு'},
+ {ja:'応援募集',en:'Support shift openings','zh-CN':'支援班次招募',ko:'지원 근무 모집',vi:'Tuyển ca hỗ trợ',ne:'सहयोग सिफ्ट',pt:'Vagas de apoio',si:'සහාය වැඩ මුර',ta:'உதவி பணி வாய்ப்பு'},
+ {ja:'権限と運用',en:'Roles & permissions','zh-CN':'角色与权限',ko:'역할 및 권한',vi:'Vai trò & quyền',ne:'भूमिका र अनुमति',pt:'Funções e permissões',si:'භූමිකා සහ අවසර',ta:'பங்கு மற்றும் அனுமதிகள்'},
+ {ja:'管理センター',en:'Admin Center','zh-CN':'管理中心',ko:'관리 센터',vi:'Trung tâm quản lý',ne:'व्यवस्थापन केन्द्र',pt:'Central de Administração',si:'පරිපාලන මධ්‍යස්ථානය',ta:'நிர்வாக மையம்'},
+ {ja:'店舗管理',en:'Store management','zh-CN':'门店管理',ko:'점포 관리',vi:'Quản lý cửa hàng',ne:'स्टोर व्यवस्थापन',pt:'Gestão de lojas',si:'ශාඛා කළමනාකරණය',ta:'கடை நிர்வாகம்'},
+ {ja:'アカウント管理',en:'Account management','zh-CN':'账号管理',ko:'계정 관리',vi:'Quản lý tài khoản',ne:'खाता व्यवस्थापन',pt:'Gestão de contas',si:'ගිණුම් කළමනාකරණය',ta:'கணக்கு நிர்வாகம்'},
+ {ja:'監査ログ',en:'Audit log','zh-CN':'审计日志',ko:'감사 로그',vi:'Nhật ký kiểm toán',ne:'अडिट लग',pt:'Log de auditoria',si:'විගණන ලොගය',ta:'தணிக்கை பதிவு'},
+ {ja:'利用規約',en:'Terms of Use','zh-CN':'使用条款',ko:'이용약관',vi:'Điều khoản sử dụng',ne:'प्रयोग सर्तहरू',pt:'Termos de Uso',si:'භාවිත නියමයන්',ta:'பயன்பாட்டு விதிமுறைகள்'},
+ {ja:'プライバシーポリシー',en:'Privacy Policy','zh-CN':'隐私政策',ko:'개인정보 처리방침',vi:'Chính sách quyền riêng tư',ne:'गोपनीयता नीति',pt:'Política de Privacidade',si:'පෞද්ගලිකත්ව ප්‍රතිපත්තිය',ta:'தனியுரிமைக் கொள்கை'},
+ {ja:'情報セキュリティ方針',en:'Information Security Policy','zh-CN':'信息安全方针',ko:'정보 보안 정책',vi:'Chính sách bảo mật thông tin',ne:'सूचना सुरक्षा नीति',pt:'Política de Segurança da Informação',si:'තොරතුරු ආරක්ෂණ ප්‍රතිපත්තිය',ta:'தகவல் பாதுகாப்புக் கொள்கை'},
+ {ja:'再確認必要',en:'Reconfirmation required','zh-CN':'需要重新确认',ko:'재확인 필요',vi:'Cần xác nhận lại',ne:'पुनः पुष्टि आवश्यक',pt:'Reconfirmação necessária',si:'නැවත තහවුරු කිරීම අවශ්‍යයි',ta:'மீண்டும் உறுதிப்படுத்த வேண்டும்'},
+ {ja:'未習得',en:'Not learned','zh-CN':'未掌握',ko:'미습득',vi:'Chưa học',ne:'सिकिएको छैन',pt:'Não aprendido',si:'තවම ඉගෙනගෙන නැත',ta:'கற்றுக்கொள்ளவில்லை'},
+ {ja:'閲覧済み',en:'Viewed','zh-CN':'已查看',ko:'열람 완료',vi:'Đã xem',ne:'हेरिएको',pt:'Visualizado',si:'බලා ඇත',ta:'பார்க்கப்பட்டது'},
+ {ja:'実施経験あり',en:'Experienced','zh-CN':'有实操经验',ko:'실시 경험 있음',vi:'Đã có kinh nghiệm',ne:'अनुभव छ',pt:'Com experiência',si:'අත්දැකීම් ඇත',ta:'அனுபவம் உள்ளது'},
+ {ja:'単独対応可',en:'Can handle independently','zh-CN':'可独立处理',ko:'단독 대응 가능',vi:'Có thể tự xử lý',ne:'एक्लै सम्हाल्न सक्छ',pt:'Pode atuar sozinho',si:'තනිව කළ හැක',ta:'தனியாக கையாளலாம்'},
+ {ja:'店舗追加',en:'Add store','zh-CN':'添加门店',ko:'점포 추가',vi:'Thêm cửa hàng',ne:'स्टोर थप्नुहोस्',pt:'Adicionar loja',si:'ශාඛාව එක් කරන්න',ta:'கடை சேர்க்க'},
+ {ja:'名称変更',en:'Rename','zh-CN':'更改名称',ko:'이름 변경',vi:'Đổi tên',ne:'नाम परिवर्तन',pt:'Renomear',si:'නම වෙනස් කරන්න',ta:'பெயர் மாற்று'},
+ {ja:'承認待ち',en:'Pending approval','zh-CN':'等待批准',ko:'승인 대기',vi:'Chờ phê duyệt',ne:'स्वीकृति प्रतीक्षामा',pt:'Aguardando aprovação',si:'අනුමැතිය බලාපොරොත්තුවෙන්',ta:'ஒப்புதல் நிலுவையில்'},
+ {ja:'利用停止',en:'Suspend','zh-CN':'停用',ko:'이용 정지',vi:'Tạm dừng',ne:'निलम्बन',pt:'Suspender',si:'අත්හිටුවන්න',ta:'இடைநிறுத்து'},
+ {ja:'再開',en:'Reactivate','zh-CN':'恢复',ko:'재개',vi:'Kích hoạt lại',ne:'पुनः सुरु',pt:'Reativar',si:'නැවත සක්‍රීය',ta:'மீண்டும் செயலில்'},
+ {ja:'削除',en:'Delete','zh-CN':'删除',ko:'삭제',vi:'Xóa',ne:'मेटाउनुहोस्',pt:'Excluir',si:'මකන්න',ta:'நீக்கு'},
+ {ja:'保存',en:'Save','zh-CN':'保存',ko:'저장',vi:'Lưu',ne:'सेभ',pt:'Salvar',si:'සුරකින්න',ta:'சேமி'},
+ {ja:'検索',en:'Search','zh-CN':'搜索',ko:'검색',vi:'Tìm kiếm',ne:'खोज्नुहोस्',pt:'Pesquisar',si:'සොයන්න',ta:'தேடு'},
+ {ja:'閉じる',en:'Close','zh-CN':'关闭',ko:'닫기',vi:'Đóng',ne:'बन्द',pt:'Fechar',si:'වසන්න',ta:'மூடு'}
+];
+const translationTextOriginal=new WeakMap();
+const translationAttrOriginal=new WeakMap();
+let translationSweepBusy=false;
+function containsJapaneseText(s){return /[\u3040-\u30ff\u3400-\u9fff]/.test(s||'')}
+function isPreservedJapanese(s){
+  const v=(s||'').trim();
+  if(preserveJapaneseTerms.has(v))return true;
+  if(/店$/.test(v)&&v.length<=12)return true;
+  if(/^[\u3400-\u9fff]{2,5}$/.test(v)&&['未確認','確認済み','対応中','完了','緊急','通常','履歴','通知','質問','報告','公開','非公開','削除','保存','検索'].indexOf(v)<0)return true;
+  return false;
+}
+function exactTranslateJapanese(s){
+  if(currentLanguage==='ja')return s;
+  const raw=s;
+  const trimmed=raw.trim();
+  if(!trimmed||isPreservedJapanese(trimmed))return raw;
+  const d=uiLang[currentLanguage]||uiLang.en;
+  // Existing primary UI dictionary first.
+  for(const k of Object.keys(uiLang.ja)){
+    if(uiLang.ja[k]===trimmed&&d[k])return raw.replace(trimmed,d[k]);
+  }
+  const hit=exactI18n.find(x=>x.ja===trimmed);
+  if(hit&&hit[currentLanguage])return raw.replace(trimmed,hit[currentLanguage]);
+  return raw;
+}
+function registerTranslationTextNode(node){
+  if(!node||!node.parentElement)return;
+  if(node.parentElement.closest('script,style,noscript'))return;
+  const original=translationTextOriginal.has(node)?translationTextOriginal.get(node):node.nodeValue;
+  if(!containsJapaneseText(original))return;
+  translationTextOriginal.set(node,original);
+  const trimmed=original.trim();
+  if(!isPreservedJapanese(trimmed)){
+    node.parentElement.dataset.translationTarget='true';
+    node.parentElement.dataset.translationSource='ja';
+  }
+  node.nodeValue=exactTranslateJapanese(original);
+}
+function registerTranslationAttributes(el){
+  if(!el||el.nodeType!==1)return;
+  const attrs=['placeholder','title','aria-label'];
+  let originals=translationAttrOriginal.get(el)||{};
+  attrs.forEach(a=>{
+    if(!(a in originals)&&el.hasAttribute(a))originals[a]=el.getAttribute(a);
+    const original=originals[a];
+    if(!original||!containsJapaneseText(original))return;
+    el.dataset.translationTarget='true';
+    el.dataset.translationSource='ja';
+    el.setAttribute(a,exactTranslateJapanese(original));
+  });
+  translationAttrOriginal.set(el,originals);
+}
+function applyFullTranslationTargets(root=document.body){
+  if(translationSweepBusy||!root)return;
+  translationSweepBusy=true;
+  try{
+    const roots=[];
+    if(root.nodeType===3)roots.push(root);
+    else{
+      registerTranslationAttributes(root);
+      root.querySelectorAll?.('*').forEach(registerTranslationAttributes);
+      const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+      let n;while((n=walker.nextNode()))roots.push(n);
+    }
+    roots.forEach(registerTranslationTextNode);
+  }finally{translationSweepBusy=false}
+}
+function scheduleFullTranslationSweep(){
+  requestAnimationFrame(()=>applyFullTranslationTargets(document.body));
+}
+const translationObserver=new MutationObserver(mutations=>{
+  if(translationSweepBusy)return;
+  mutations.forEach(m=>{
+    m.addedNodes.forEach(n=>{
+      if(n.nodeType===3)registerTranslationTextNode(n);
+      else if(n.nodeType===1)applyFullTranslationTargets(n);
+    });
+  });
+});
+document.addEventListener('DOMContentLoaded',()=>{
+  applyFullTranslationTargets(document.body);
+  translationObserver.observe(document.body,{childList:true,subtree:true});
+});
+
 const skillPassport=[
  {name:'レジ接客',category:'接客',status:'単独対応可',score:100,reconfirm:false},
  {name:'公共料金',category:'受付',status:'実施経験あり',score:60,reconfirm:false},
@@ -484,6 +637,7 @@ const pilotChecklist=[
 ];
 let incidentStatus='平常';
 const changelog=[
+ {version:'2.3 Demo',date:'2026/09/21',text:'画面内の全日本語UIを自動検出し翻訳対象へ登録する共通レイヤーを追加'},
  {version:'2.2 Demo',date:'2026/09/21',text:'画面UIと投稿本文の翻訳デモ、原文切替を追加'},
  {version:'2.1 Demo',date:'2026/09/21',text:'言語設定を追加。シンハラ語・タミル語を含む9言語に対応'},
  {version:'2.0 Demo',date:'2026/09/21',text:'管理センターにプロフィールへ戻る導線を追加'},
@@ -1096,7 +1250,7 @@ function openAdminCenter(){
       '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>規約・プライバシー</h3><small>Draft</small></div><div class="card">'+legalDocs.map(d=>'<div class="controlrow legalbtn" onclick="openLegal(\''+d.id+'\')"><div><div class="title">'+d.title+'</div><div class="sub">'+d.version+'</div></div><span>›</span></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 2.2 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 2.3 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
     auditSection;
   document.getElementById('modal').classList.add('open');
   enableConfidentialWatermark();
