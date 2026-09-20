@@ -34,6 +34,9 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 .segment{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:#edf0f4;border-radius:13px;padding:4px;margin-top:8px}.segment button{border:0;border-radius:10px;background:transparent;padding:9px;font-size:11px;font-weight:800;color:#667085}.segment button.active{background:#fff;color:#101828;box-shadow:0 1px 4px #10182812}
 .recipient{display:none;margin-top:10px}.recipient.show{display:block}
 .role-list .card{padding:12px}
+.attach{display:flex;align-items:center;justify-content:center;gap:7px;border:1px dashed #b9c2cf;background:#fbfcfd;border-radius:13px;padding:12px;margin-top:9px;font-size:12px;font-weight:800;color:#475467;cursor:pointer}
+.preview{display:none;margin-top:9px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#fff}
+.preview.show{display:block}.preview img{display:block;width:100%;max-height:220px;object-fit:cover}.previewbar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;font-size:10px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -49,9 +52,9 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
       <option value="regular">レギュラークルー</option>
       <option value="leader" selected>リーダー</option>
       <option value="manager">店長</option>
-      <option value="owner">オーナー</option>
-      <option value="toukatsu">統括</option>
       <option value="mg">MG</option>
+      <option value="toukatsu">統括</option>
+      <option value="owner">オーナー</option>
       <option value="hq">本部</option>
     </select>
     <select id="store" onchange="applyStore()">
@@ -106,6 +109,10 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
     <div class="urg" style="margin-top:7px"><button data-l="低" onclick="urgency(this,'低')">低</button><button data-l="通常" class="active" onclick="urgency(this,'通常')">通常</button><button data-l="高" onclick="urgency(this,'高')">高</button><button data-l="緊急" onclick="urgency(this,'緊急')">緊急</button></div>
     <div id="urgNote" class="sub">通常：リーダーへ通知。</div>
     <textarea id="reportText" class="input" placeholder="状況を入力"></textarea>
+    <label class="attach">📷 画像を添付
+      <input type="file" accept="image/*" capture="environment" hidden onchange="previewAttachment(event,'reportPreview')">
+    </label>
+    <div class="preview" id="reportPreview"></div>
     <button class="btn primary full" style="margin-top:8px" onclick="submitReport()">この内容で報告</button>
   </div>
 </section>
@@ -122,14 +129,18 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
       <label class="tiny">宛先（店長以上）</label>
       <select id="helpRecipient" class="input">
         <option>店長</option>
-        <option>オーナー</option>
-        <option>統括</option>
         <option>MG</option>
+        <option>統括</option>
+        <option>オーナー</option>
         <option>本部</option>
       </select>
       <div class="sub">レギュラークルー／リーダーは宛先に表示しません。</div>
     </div>
     <textarea id="help" class="input" placeholder="質問を入力"></textarea>
+    <label class="attach">📷 画像を添付
+      <input type="file" accept="image/*" capture="environment" hidden onchange="previewAttachment(event,'helpPreview')">
+    </label>
+    <div class="preview" id="helpPreview"></div>
     <button id="helpSendBtn" class="btn blue full" style="margin-top:8px" onclick="sendHelp()">質問を公開する</button>
   </div>
   <div class="card"><div class="title">公共料金の控えはどこ？</div><div class="sub">西口店：レジ裏の青ファイル。</div></div>
@@ -141,9 +152,9 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
   <div class="card"><div class="title">レギュラークルー</div><div class="sub">閲覧・確認・完了・報告</div></div>
   <div class="card"><div class="title">リーダー</div><div class="sub">＋店舗内編集・報告一次対応</div></div>
   <div class="card"><div class="title">店長</div><div class="sub">＋公開・権限管理・高緊急度対応</div></div>
-  <div class="card"><div class="title">オーナー</div><div class="sub">複数店舗の確認・承認</div></div>
-  <div class="card"><div class="title">統括</div><div class="sub">管轄店舗を横断して管理</div></div>
   <div class="card"><div class="title">MG</div><div class="sub">管轄全体の管理・本部連携</div></div>
+  <div class="card"><div class="title">統括</div><div class="sub">管轄店舗を横断して管理</div></div>
+  <div class="card"><div class="title">オーナー</div><div class="sub">複数店舗の確認・承認</div></div>
   <div class="card"><div class="title">本部</div><div class="sub">全店共通マニュアル・全店舗監視</div></div>
 </section>
 </main>
@@ -170,8 +181,8 @@ const guides={
 function go(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active')}
 function applyStore(){const s=document.getElementById('store').value;document.getElementById('homeTitle').textContent=s+'の今日';document.getElementById('guideBanner').style.display=s==='西口店'?'none':'block'}
 function applyRole(){const r=document.getElementById('role').value;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';document.getElementById('roleName').textContent=roleLabels[r]||r}
-function urgency(btn,l){currentUrgency=l;document.querySelectorAll('.urg button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('urgNote').textContent={低:'低：一覧へ記録。',通常:'通常：リーダーへ通知。',高:'高：リーダー＋店長へ即時通知。',緊急:'緊急：店長＋本部へ即時通知・エスカレーション。'}[l]}
-function submitReport(){const t=document.getElementById('reportText').value.trim();if(!t)return toast('状況を入力してください');toast(currentUrgency==='緊急'?'緊急報告を店長・本部へ通知しました':'報告しました');document.getElementById('reportText').value=''}
+function urgency(btn,l){currentUrgency=l;document.querySelectorAll('.urg button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('urgNote').textContent={低:'低：記録のみ。リーダーが一覧で確認。',通常:'通常：リーダーへ通知。',高:'高：店長＋MGへ即時通知。',緊急:'緊急：店長＋MG＋統括＋オーナー＋本部へ即時通知・エスカレーション。'}[l]}
+function submitReport(){const t=document.getElementById('reportText').value.trim();if(!t)return toast('状況を入力してください');const msg={低:'低緊急度として記録しました',通常:'リーダーへ通知しました',高:'店長・MGへ即時通知しました',緊急:'店長・MG・統括・オーナー・本部へ緊急通知しました'}[currentUrgency];toast(msg);document.getElementById('reportText').value='';clearPreview('reportPreview')}
 function setHelpVisibility(v){
   helpVisibility=v;
   document.getElementById('helpPublicBtn').classList.toggle('active',v==='public');
@@ -189,8 +200,15 @@ function sendHelp(){
   }else{
     toast('質問を公開しました');
   }
-  document.getElementById('help').value='';
+  document.getElementById('help').value='';clearPreview('helpPreview');
 }
+function previewAttachment(e,id){
+  const file=e.target.files&&e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{const box=document.getElementById(id);box.innerHTML='<img src="'+reader.result+'" alt="添付画像"><div class="previewbar"><span>画像を添付しました（デモ）</span><button class="btn ghost" style="padding:6px 8px" onclick="clearPreview(\''+id+'\')">削除</button></div>';box.classList.add('show')};
+  reader.readAsDataURL(file)
+}
+function clearPreview(id){const box=document.getElementById(id);if(box){box.innerHTML='';box.classList.remove('show')}}
 function openProfile(){
   const r=document.getElementById('role').value;
   const imgStyle=profileImageData?'background-image:url('+profileImageData+')':'';
