@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: admin-visibility-v11 -->
+<!-- build: metric-drilldown-skill-auto-v12 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -18,7 +18,7 @@
 .ctx{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.ctx select{width:100%;padding:9px;border:1px solid var(--line);border-radius:12px;background:#fff}
 .page{display:none;padding:14px}.page.active{display:block}
 .hero{background:linear-gradient(135deg,#101828,#23324b);color:#fff;border-radius:22px;padding:18px}.hero h2{font-size:24px;margin:6px 0}.hero p{font-size:13px;opacity:.8}
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.metric{background:#ffffff12;border:1px solid #ffffff1f;border-radius:14px;padding:10px}.metric strong{display:block;font-size:20px}.metric span{font-size:10px;opacity:.7}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.metric{background:#ffffff12;border:1px solid #ffffff1f;border-radius:14px;padding:10px;cursor:pointer;transition:.15s}.metric:active{transform:scale(.97);background:#ffffff1c}.metric strong{display:block;font-size:20px}.metric span{font-size:10px;opacity:.7}
 .section{margin:16px 0}.head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.head h3{font-size:15px;margin:0}.head small{font-size:11px;color:var(--muted)}
 .card{background:#fff;border:1px solid var(--line);border-radius:17px;padding:14px;margin-bottom:10px}.title{font-size:14px;font-weight:800}.sub{font-size:12px;color:var(--muted);line-height:1.5;margin-top:4px}
 .row{display:flex;gap:10px;align-items:flex-start}.grow{flex:1}.tag{display:inline-block;font-size:10px;font-weight:800;border-radius:999px;padding:5px 7px;background:#eff2f5;color:#475467}.tag.green{background:#e9f7f1;color:var(--green)}.tag.red{background:#fff0f0;color:var(--red)}.tag.blue{background:#edf2ff;color:var(--blue)}.tag.amber{background:#fff6e8;color:var(--amber)}
@@ -71,7 +71,11 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 
 <main id="home" class="page active">
   <div class="hero"><div class="tiny" style="color:#fff">2026年9月20日</div><h2 id="homeTitle">西口店の今日</h2><p>必要な人に、必要な情報を、必要な瞬間に。</p>
-    <div class="metrics"><div class="metric"><strong id="homeUnconfirmed">0</strong><span>未確認</span></div><div class="metric"><strong id="homeOverdue">0</strong><span>期限超過</span></div><div class="metric"><strong>72%</strong><span>習得率</span></div></div>
+    <div class="metrics">
+      <div class="metric" onclick="openMetricDetail('unconfirmed')"><strong id="homeUnconfirmed">0</strong><span>未確認 ›</span></div>
+      <div class="metric" onclick="openMetricDetail('overdue')"><strong id="homeOverdue">0</strong><span>期限超過 ›</span></div>
+      <div class="metric" onclick="openMetricDetail('skills')"><strong id="homeSkillRate">0%</strong><span>習得率 ›</span></div>
+    </div>
   </div>
   <div id="guideBanner" class="banner" style="display:none"><b>📍 この店舗は初めてです</b><p>いつもの店舗との違いだけ確認。Skill Passportはそのまま引き継がれます。</p><button class="btn blue" onclick="openGuide()">Store Guideを開く</button></div>
   <section id="hqPanel" class="section" style="display:none"><div class="head"><h3>本部ダッシュボード</h3><small>全店舗</small></div><div class="hq"><div class="card"><strong>7</strong><span class="sub">未確認引き継ぎ</span></div><div class="card"><strong>2</strong><span class="sub">高・緊急報告</span></div><div class="card"><strong>5</strong><span class="sub">再確認待ち</span></div><div class="card"><strong>3</strong><span class="sub">未対応Help</span></div></div></section>
@@ -223,6 +227,13 @@ const ackState=demoPeople.map((p,i)=>({
 }));
 ackState.forEach((p,i)=>{if(p.ack&&!p.self){const h=17+Math.floor(Math.random()*3),m=String(Math.floor(Math.random()*60)).padStart(2,'0');p.time=h+':'+m}});
 const roleLabels={regular:'レギュラークルー',leader:'リーダー',manager:'店長',owner:'オーナー',toukatsu:'統括',mg:'MG',hq:'本部'};
+const skillPassport=[
+ {name:'レジ接客',category:'接客',status:'単独対応可',score:100,reconfirm:false},
+ {name:'公共料金',category:'受付',status:'実施経験あり',score:60,reconfirm:false},
+ {name:'コピー機対応',category:'機器対応',status:'単独対応可',score:100,reconfirm:true},
+ {name:'宅配便受付',category:'受付',status:'単独対応可',score:100,reconfirm:false},
+ {name:'発注',category:'商品管理',status:'未習得',score:0,reconfirm:false}
+];
 const guides={
  '駅前店':[['バックヤード','入口から右奥・スタッフ扉の先'],['コピー用紙','事務所右棚・上段'],['ごみ庫','搬入口横。廃棄登録は22時まで'],['休憩・打刻','休憩室2階、打刻は事務所入口横']],
  '中央店':[['バックヤード','レジ奥のスタッフ扉'],['コピー用紙','事務所キャビネット下段'],['宅配便伝票','左棚の青ファイル'],['ごみ庫','店舗裏手']]
@@ -323,7 +334,7 @@ function ackSharedReport(){
   const b=document.getElementById('ackBtn'),s=document.getElementById('sharedReportStatus');
   if(b){b.textContent='確認済み';b.disabled=true;b.style.opacity='.55'}
   if(s)s.textContent='あなた：確認済み ・ 19:42';
-  refreshAckSummary();toast('確認を記録しました');
+  refreshAckSummary();refreshOperationalMetrics();toast('確認を記録しました');
 }
 function openAckList(){
   if(roleRank[currentAccountRole]<roleRank.manager){toast('確認者一覧は店長以上のみ閲覧できます');return}
@@ -472,11 +483,8 @@ function openProfile(){
   document.getElementById('modalBody').innerHTML=
     '<div class="profilehead"><div id="modalAvatar" class="'+imgClass+'" style="'+imgStyle+'">渡</div><div><h3 style="margin:0">渡邉友介</h3><div class="sub">'+roleLabels[r]+'・'+document.getElementById('store').value+'</div></div></div>'+
     '<button class="btn ghost full" onclick="document.getElementById(\'profileImageInput\').click()">📷 プロフィール画像を追加・変更</button>'+
-    '<section class="section"><div class="head"><h3>Skill Passport</h3><small>店舗をまたいで保持</small></div>'+
-    '<div class="card"><div class="skill"><div><b>レジ接客</b><div class="sub">接客</div></div><span class="tag green">単独対応可</span></div>'+
-    '<div class="skill"><div><b>公共料金</b><div class="sub">受付</div></div><span class="tag blue">実施経験あり</span></div>'+
-    '<div class="skill"><div><b>コピー機対応</b><div class="sub">v1.3更新</div></div><span class="tag red">再確認必要</span></div>'+
-    '<div class="skill"><div><b>宅配便受付</b><div class="sub">受付</div></div><span class="tag green">単独対応可</span></div></div></section>'+
+    '<section class="section"><div class="head"><h3>Skill Passport</h3><small>習得率 '+skillRate()+'%</small></div>'+
+    '<div class="card">'+skillRowsHTML()+'</div></section>'+
     adminButton+
     '<button class="btn blue full" style="margin-top:8px" onclick="closeModal();go(\'settings\')">役職・権限を見る</button>';
   document.getElementById('modal').classList.add('open')
@@ -541,11 +549,54 @@ function advanceHandover(id,next){
   closeModal();renderHandovers();
   toast(next==='完了'?'対応完了。履歴へ移動しました':'ステータスを「'+next+'」に更新しました');
 }
+function skillRate(){
+  if(!skillPassport.length)return 0;
+  return Math.round(skillPassport.reduce((sum,s)=>sum+s.score,0)/skillPassport.length);
+}
+function skillTagClass(s){
+  if(s.status==='単独対応可')return 'green';
+  if(s.status==='実施経験あり')return 'blue';
+  if(s.status==='閲覧済み')return 'amber';
+  return 'red';
+}
+function skillRowsHTML(){
+  return skillPassport.map(s=>
+    '<div class="skill"><div><b>'+s.name+'</b><div class="sub">'+s.category+' ・ '+s.score+'/100'+(s.reconfirm?' ・ 最新版の再確認が必要':'')+'</div></div>'+
+    '<div style="text-align:right"><span class="tag '+skillTagClass(s)+'">'+s.status+'</span>'+(s.reconfirm?'<div><span class="tag red" style="margin-top:4px">再確認必要</span></div>':'')+'</div></div>'
+  ).join('');
+}
 function refreshOperationalMetrics(){
-  const u=handovers.filter(x=>x.status==='未確認').length;
+  const u=handovers.filter(x=>x.status==='未確認').length+(sharedReportAcknowledged?0:1);
   const o=handovers.filter(x=>x.status!=='完了'&&x.overdue).length;
-  const ue=document.getElementById('homeUnconfirmed'),oe=document.getElementById('homeOverdue');
-  if(ue)ue.textContent=u;if(oe)oe.textContent=o;
+  const ue=document.getElementById('homeUnconfirmed'),oe=document.getElementById('homeOverdue'),se=document.getElementById('homeSkillRate');
+  if(ue)ue.textContent=u;
+  if(oe)oe.textContent=o;
+  if(se)se.textContent=skillRate()+'%';
+}
+function openMetricDetail(type){
+  if(type==='unconfirmed'){
+    const hs=handovers.filter(x=>x.status==='未確認');
+    let rows='';
+    if(!sharedReportAcknowledged){
+      rows+='<div class="card tapcard" onclick="closeModal();go(\'home\');setTimeout(()=>flashTarget(\'sharedReportCard\'),180)"><div class="title">共有報告：冷凍ケース右側の温度が高め</div><div class="sub">あなたが未確認です。タップして確認する →</div></div>';
+    }
+    rows+=hs.map(h=>'<div class="card tapcard" onclick="closeModal();go(\'handover\');setTimeout(()=>openHandover('+h.id+'),180)"><div class="title">'+h.title+'</div><div class="sub">担当 '+h.assignee+' ・ '+h.deadline+' ・ タップして詳細 →</div></div>').join('');
+    document.getElementById('modalBody').innerHTML='<div class="head"><h3>未確認</h3><small>'+(hs.length+(sharedReportAcknowledged?0:1))+'件</small></div>'+(rows||'<div class="empty">未確認はありません</div>');
+  }
+  if(type==='overdue'){
+    const hs=handovers.filter(x=>x.status!=='完了'&&x.overdue);
+    const rows=hs.map(h=>'<div class="card tapcard" onclick="closeModal();go(\'handover\');setTimeout(()=>openHandover('+h.id+'),180)"><div class="title">'+h.title+'</div><div class="deadline overdue">期限：'+h.deadline+' ・ 期限超過</div><div class="sub">担当 '+h.assignee+' ・ タップして詳細 →</div></div>').join('');
+    document.getElementById('modalBody').innerHTML='<div class="head"><h3>期限超過</h3><small>'+hs.length+'件</small></div>'+(rows||'<div class="empty">期限超過はありません</div>');
+  }
+  if(type==='skills'){
+    document.getElementById('modalBody').innerHTML=
+      '<div class="head"><h3>習得率 '+skillRate()+'%</h3><small>Skill Passportから自動計算</small></div>'+
+      '<div class="card"><div class="title">この数字の意味</div><div class="sub">業務ごとの習得段階を100点満点に換算し、対象業務の平均を表示しています。人事評価の点数ではなく「今どこまで任せられるか」を見るための指標です。</div>'+
+      '<div class="sub" style="margin-top:8px">未習得 0 / 閲覧済み 25 / 実施経験あり 60 / 単独対応可 100</div></div>'+
+      '<div class="card">'+skillRowsHTML()+'</div>'+
+      '<div class="sub">※「再確認必要」はマニュアル更新を示す印で、現在の習得段階そのものは保持します。</div>';
+  }
+  document.getElementById('modal').classList.add('open');
 }
 function updateNotificationBadge(){
   const n=notifications.filter(x=>!x.read).length,b=document.getElementById('notifBadge');
