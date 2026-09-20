@@ -48,7 +48,7 @@
       emit();
       return reg;
     } catch (err) {
-      console.warn('SHIFT NOTE service worker registration failed', err);
+      console.warn('SKILL PASSPORT service worker registration failed', err);
       emit();
       return null;
     }
@@ -103,7 +103,7 @@
     if (permission !== 'granted') return { ok: false, reason: permission };
 
     if (state.registration) {
-      await state.registration.showNotification('SHIFT NOTE', {
+      await state.registration.showNotification('SKILL PASSPORT', {
         body: '通知を有効にしました。引き継ぎ・緊急報告・シフト確定などを受け取れる準備ができました。',
         icon: './pwa-icon.svg',
         badge: './pwa-icon.svg',
