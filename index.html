@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: full-japanese-translation-targets-v31 -->
+<!-- build: phrase-level-global-translation-v32 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -502,6 +502,115 @@ const exactI18n=[
  {ja:'検索',en:'Search','zh-CN':'搜索',ko:'검색',vi:'Tìm kiếm',ne:'खोज्नुहोस्',pt:'Pesquisar',si:'සොයන්න',ta:'தேடு'},
  {ja:'閉じる',en:'Close','zh-CN':'关闭',ko:'닫기',vi:'Đóng',ne:'बन्द',pt:'Fechar',si:'වසන්න',ta:'மூடு'}
 ];
+
+const phraseI18n=[
+ {ja:'本日',en:'Today','zh-CN':'今天',ko:'오늘',vi:'Hôm nay',ne:'आज',pt:'Hoje',si:'අද',ta:'இன்று'},
+ {ja:'昨日',en:'Yesterday','zh-CN':'昨天',ko:'어제',vi:'Hôm qua',ne:'हिजो',pt:'Ontem',si:'ඊයේ',ta:'நேற்று'},
+ {ja:'今日',en:'Today','zh-CN':'今天',ko:'오늘',vi:'Hôm nay',ne:'आज',pt:'Hoje',si:'අද',ta:'இன்று'},
+ {ja:'たった今',en:'Just now','zh-CN':'刚刚',ko:'방금',vi:'Vừa xong',ne:'भर्खरै',pt:'Agora mesmo',si:'දැන්ම',ta:'இப்போதுதான்'},
+ {ja:'最終同期',en:'Last sync','zh-CN':'最后同步',ko:'마지막 동기화',vi:'Đồng bộ gần nhất',ne:'अन्तिम सिंक',pt:'Última sincronização',si:'අවසන් සමමුහුර්තකරණය',ta:'கடைசி ஒத்திசைவு'},
+ {ja:'端末同期',en:'Device sync','zh-CN':'设备同步',ko:'기기 동기화',vi:'Đồng bộ thiết bị',ne:'उपकरण सिंक',pt:'Sincronização do dispositivo',si:'උපාංග සමමුහුර්තකරණය',ta:'சாதன ஒத்திசைவு'},
+ {ja:'未確認引き継ぎ',en:'Unconfirmed handovers','zh-CN':'未确认交接',ko:'미확인 인수인계',vi:'Bàn giao chưa xác nhận',ne:'अपुष्ट हस्तान्तरण',pt:'Passagens não confirmadas',si:'තහවුරු නොකළ භාරදීම්',ta:'உறுதிப்படுத்தாத ஒப்படைப்புகள்'},
+ {ja:'高・緊急報告',en:'High / emergency reports','zh-CN':'高/紧急报告',ko:'높음/긴급 보고',vi:'Báo cáo cao/khẩn cấp',ne:'उच्च/आपतकालीन रिपोर्ट',pt:'Relatórios altos/emergenciais',si:'ඉහළ/හදිසි වාර්තා',ta:'உயர்/அவசர அறிக்கைகள்'},
+ {ja:'再確認待ち',en:'Awaiting reconfirmation','zh-CN':'等待重新确认',ko:'재확인 대기',vi:'Chờ xác nhận lại',ne:'पुनः पुष्टि प्रतीक्षा',pt:'Aguardando reconfirmação',si:'නැවත තහවුරු කිරීම බලාපොරොත්තුවෙන්',ta:'மீள் உறுதிப்படுத்தல் நிலுவையில்'},
+ {ja:'確認状況を見る',en:'View confirmation status','zh-CN':'查看确认状态',ko:'확인 상태 보기',vi:'Xem trạng thái xác nhận',ne:'पुष्टि स्थिति हेर्नुहोस्',pt:'Ver status de confirmação',si:'තහවුරු තත්ත්වය බලන්න',ta:'உறுதிப்படுத்தல் நிலையைப் பார்க்க'},
+ {ja:'プロフィールに集約',en:'Managed in profile','zh-CN':'集中在个人资料',ko:'프로필에서 관리',vi:'Quản lý trong hồ sơ',ne:'प्रोफाइलमा व्यवस्थापन',pt:'Gerenciado no perfil',si:'පැතිකඩේ කළමනාකරණය',ta:'சுயவிவரத்தில் நிர்வகிக்கப்படுகிறது'},
+ {ja:'わからない',en:"I don't know",'zh-CN':'不明白',ko:'모르겠어요',vi:'Không biết',ne:'थाहा छैन',pt:'Não sei',si:'දන්නේ නැහැ',ta:'தெரியவில்லை'},
+ {ja:'新人モード対応',en:'New crew mode','zh-CN':'新人模式',ko:'신입 모드',vi:'Chế độ nhân viên mới',ne:'नयाँ क्रु मोड',pt:'Modo novo funcionário',si:'නව කාර්ය මණ්ඩල මාදිලිය',ta:'புதிய பணியாளர் முறை'},
+ {ja:'今日必要な5つだけ表示',en:'Show only the 5 tasks needed today','zh-CN':'仅显示今天需要的5项',ko:'오늘 필요한 5개만 표시',vi:'Chỉ hiển thị 5 việc cần hôm nay',ne:'आज आवश्यक ५ काम मात्र देखाउनुहोस्',pt:'Mostrar apenas as 5 tarefas de hoje',si:'අද අවශ්‍ය කාර්ය 5 පමණක් පෙන්වන්න',ta:'இன்று தேவையான 5 பணிகள் மட்டும்'},
+ {ja:'レジ周辺補充',en:'Restock register area','zh-CN':'补充收银台周边',ko:'계산대 주변 보충',vi:'Bổ sung khu vực quầy thu ngân',ne:'क्यास काउन्टर वरिपरि भर्नुहोस्',pt:'Repor área do caixa',si:'කෑෂ් ප්‍රදේශය නැවත පුරවන්න',ta:'கவுன்டர் பகுதி நிரப்பு'},
+ {ja:'コピー機用紙確認',en:'Check copier paper','zh-CN':'检查复印机用纸',ko:'복사기 용지 확인',vi:'Kiểm tra giấy máy photocopy',ne:'कपी मेसिन कागज जाँच',pt:'Verificar papel da copiadora',si:'පිටපත් යන්ත්‍ර කඩදාසි පරීක්ෂා කරන්න',ta:'நகலெடுக்கும் காகிதத்தைச் சரிபார்'},
+ {ja:'業務を検索',en:'Search tasks','zh-CN':'搜索业务',ko:'업무 검색',vi:'Tìm công việc',ne:'काम खोज्नुहोस्',pt:'Pesquisar tarefas',si:'කාර්ය සොයන්න',ta:'பணிகளைத் தேடு'},
+ {ja:'本部作成',en:'Created by HQ','zh-CN':'总部制作',ko:'본부 작성',vi:'Do trụ sở tạo',ne:'मुख्यालयले बनाएको',pt:'Criado pela sede',si:'මූලස්ථානය විසින් සකස් කළ',ta:'தலைமையகம் உருவாக்கியது'},
+ {ja:'映像を見る',en:'Watch video','zh-CN':'观看视频',ko:'영상 보기',vi:'Xem video',ne:'भिडियो हेर्नुहोस्',pt:'Assistir ao vídeo',si:'වීඩියෝ බලන්න',ta:'வீடியோ பார்க்க'},
+ {ja:'公共料金受付',en:'Utility bill payment','zh-CN':'公共缴费受理',ko:'공공요금 접수',vi:'Thanh toán hóa đơn tiện ích',ne:'सार्वजनिक बिल भुक्तानी',pt:'Pagamento de contas',si:'බිල්පත් ගෙවීම්',ta:'பொது கட்டணப் பதிவு'},
+ {ja:'緊急度',en:'Urgency','zh-CN':'紧急程度',ko:'긴급도',vi:'Mức khẩn cấp',ne:'तत्कालता',pt:'Urgência',si:'හදිසි මට්ටම',ta:'அவசர நிலை'},
+ {ja:'状況を入力',en:'Enter the situation','zh-CN':'输入情况',ko:'상황 입력',vi:'Nhập tình hình',ne:'स्थिति लेख्नुहोस्',pt:'Digite a situação',si:'තත්ත්වය ඇතුළත් කරන්න',ta:'நிலையை உள்ளிடு'},
+ {ja:'質問を入力',en:'Enter your question','zh-CN':'输入问题',ko:'질문 입력',vi:'Nhập câu hỏi',ne:'प्रश्न लेख्नुहोस्',pt:'Digite sua pergunta',si:'ප්‍රශ්නය ඇතුළත් කරන්න',ta:'கேள்வியை உள்ளிடு'},
+ {ja:'公開範囲を選べる',en:'Choose visibility','zh-CN':'可选择公开范围',ko:'공개 범위 선택 가능',vi:'Chọn phạm vi hiển thị',ne:'दृश्यता छान्न सकिन्छ',pt:'Escolha a visibilidade',si:'පෙනීමේ පරාසය තෝරන්න',ta:'காட்சித் தரத்தைத் தேர்வு செய்'},
+ {ja:'店長以上',en:'Store manager and above','zh-CN':'店长及以上',ko:'점장 이상',vi:'Quản lý cửa hàng trở lên',ne:'स्टोर म्यानेजर वा माथि',pt:'Gerente de loja ou acima',si:'ශාඛා කළමනාකරු සහ ඉහළ',ta:'கடை மேலாளர் மற்றும் மேல்'},
+ {ja:'全クルー共有',en:'Shared with all crew','zh-CN':'全体员工共享',ko:'전체 크루 공유',vi:'Chia sẻ với toàn bộ nhân viên',ne:'सबै क्रुसँग साझा',pt:'Compartilhado com toda a equipe',si:'සියලු කාර්ය මණ්ඩලය සමඟ බෙදාගත්',ta:'அனைத்து பணியாளர்களுடனும் பகிர்வு'},
+ {ja:'即時通知',en:'Immediate notification','zh-CN':'即时通知',ko:'즉시 알림',vi:'Thông báo ngay',ne:'तत्काल सूचना',pt:'Notificação imediata',si:'ක්ෂණික දැනුම්දීම',ta:'உடனடி அறிவிப்பு'},
+ {ja:'エスカレーション',en:'Escalation','zh-CN':'升级处理',ko:'에스컬레이션',vi:'Chuyển cấp',ne:'एस्केलेसन',pt:'Escalonamento',si:'ඉහළ මට්ටමට යොමු කිරීම',ta:'மேல்நிலை மாற்றம்'},
+ {ja:'希望受付中',en:'Availability open','zh-CN':'正在收集希望',ko:'희망 접수 중',vi:'Đang nhận nguyện vọng',ne:'उपलब्धता खुला',pt:'Disponibilidade aberta',si:'කැමැත්ත භාරගනිමින්',ta:'விருப்பங்கள் பெறப்படுகின்றன'},
+ {ja:'対象期間',en:'Period','zh-CN':'对象期间',ko:'대상 기간',vi:'Thời gian áp dụng',ne:'अवधि',pt:'Período',si:'කාලසීමාව',ta:'காலம்'},
+ {ja:'締切',en:'Deadline','zh-CN':'截止时间',ko:'마감',vi:'Hạn chót',ne:'अन्तिम मिति',pt:'Prazo',si:'අවසන් දිනය',ta:'கடைசி நாள்'},
+ {ja:'自分の勤務予定',en:'My scheduled shifts','zh-CN':'我的排班',ko:'내 근무 일정',vi:'Lịch làm của tôi',ne:'मेरो सिफ्ट तालिका',pt:'Meus turnos',si:'මගේ වැඩ මුර',ta:'என் பணி நேரங்கள்'},
+ {ja:'確定済み',en:'Confirmed','zh-CN':'已确定',ko:'확정됨',vi:'Đã xác nhận',ne:'निश्चित',pt:'Confirmado',si:'තහවුරු කළ',ta:'உறுதி செய்யப்பட்டது'},
+ {ja:'変更申請',en:'Change request','zh-CN':'变更申请',ko:'변경 신청',vi:'Yêu cầu thay đổi',ne:'परिवर्तन अनुरोध',pt:'Solicitação de alteração',si:'වෙනස් කිරීමේ ඉල්ලීම',ta:'மாற்ற கோரிக்கை'},
+ {ja:'応援勤務',en:'Support shift','zh-CN':'支援班次',ko:'지원 근무',vi:'Ca hỗ trợ',ne:'सहयोग सिफ्ट',pt:'Turno de apoio',si:'සහාය වැඩ මුර',ta:'உதவி பணி'},
+ {ja:'初勤務',en:'First shift','zh-CN':'首次上班',ko:'첫 근무',vi:'Ca đầu tiên',ne:'पहिलो सिफ्ट',pt:'Primeiro turno',si:'පළමු වැඩ මුරය',ta:'முதல் பணி'},
+ {ja:'通常勤務',en:'Regular shift','zh-CN':'正常班次',ko:'일반 근무',vi:'Ca thường',ne:'नियमित सिफ्ट',pt:'Turno normal',si:'සාමාන්‍ය වැඩ මුරය',ta:'சாதாரண பணி'},
+ {ja:'必要スキル',en:'Required skills','zh-CN':'所需技能',ko:'필요 스킬',vi:'Kỹ năng cần thiết',ne:'आवश्यक सीप',pt:'Habilidades necessárias',si:'අවශ්‍ය කුසලතා',ta:'தேவையான திறன்கள்'},
+ {ja:'問題なし',en:'No issues','zh-CN':'无问题',ko:'문제 없음',vi:'Không có vấn đề',ne:'समस्या छैन',pt:'Sem problemas',si:'ගැටලුවක් නැත',ta:'பிரச்சனை இல்லை'},
+ {ja:'先の希望を事前登録',en:'Pre-register future availability','zh-CN':'预先登记未来希望',ko:'향후 희망 사전 등록',vi:'Đăng ký trước lịch mong muốn',ne:'भविष्य उपलब्धता अग्रिम दर्ता',pt:'Pré-registrar disponibilidade futura',si:'ඉදිරි කැමැත්ත පෙර ලියාපදිංචි කරන්න',ta:'எதிர்கால விருப்பத்தை முன்பதிவு செய்'},
+ {ja:'募集が始まる前でも予定を入力できます',en:'You can enter plans before requests open','zh-CN':'募集开始前也可输入计划',ko:'모집 시작 전에도 일정을 입력할 수 있습니다',vi:'Có thể nhập lịch trước khi mở đăng ký',ne:'आह्वान खुल्नु अघि पनि योजना राख्न सकिन्छ',pt:'Você pode inserir planos antes da abertura',si:'ඉල්ලීම් විවෘත වීමට පෙර සැලසුම් ඇතුළත් කළ හැක',ta:'விண்ணப்பம் திறப்பதற்கு முன்பே திட்டம் உள்ளிடலாம்'},
+ {ja:'店舗の人員状況',en:'Store staffing','zh-CN':'门店人员情况',ko:'점포 인원 현황',vi:'Tình hình nhân sự cửa hàng',ne:'स्टोर कर्मचारी स्थिति',pt:'Equipe da loja',si:'ශාඛා කාර්ය මණ්ඩල තත්ත්වය',ta:'கடை பணியாளர் நிலை'},
+ {ja:'シフト作成の案内',en:'Shift planning notice','zh-CN':'排班制作通知',ko:'시프트 작성 안내',vi:'Thông báo lập ca',ne:'सिफ्ट योजना सूचना',pt:'Aviso de planejamento de turnos',si:'වැඩ මුර සැලසුම් දැනුම්දීම',ta:'பணி அட்டவணை அறிவிப்பு'},
+ {ja:'全体通知を作成',en:'Create announcement','zh-CN':'创建全体通知',ko:'전체 공지 작성',vi:'Tạo thông báo chung',ne:'सामूहिक सूचना बनाउनुहोस्',pt:'Criar comunicado',si:'සමූහ දැනුම්දීමක් සාදන්න',ta:'பொது அறிவிப்பை உருவாக்கு'},
+ {ja:'出勤可能者を見る',en:'View available staff','zh-CN':'查看可出勤人员',ko:'출근 가능자 보기',vi:'Xem nhân viên có thể làm',ne:'उपलब्ध कर्मचारी हेर्नुहोस्',pt:'Ver equipe disponível',si:'ලබාගත හැකි කාර්ය මණ්ඩලය බලන්න',ta:'பணிக்கு வரக்கூடியவர்களைப் பார்க்க'},
+ {ja:'出勤可能',en:'Available','zh-CN':'可出勤',ko:'출근 가능',vi:'Có thể làm',ne:'उपलब्ध',pt:'Disponível',si:'ලබාගත හැක',ta:'வர முடியும்'},
+ {ja:'休み希望',en:'Day off','zh-CN':'希望休息',ko:'휴무 희망',vi:'Muốn nghỉ',ne:'बिदा चाहिएको',pt:'Folga',si:'නිවාඩු කැමැත්ත',ta:'விடுப்பு விருப்பம்'},
+ {ja:'休み',en:'Off','zh-CN':'休息',ko:'휴무',vi:'Nghỉ',ne:'बिदा',pt:'Folga',si:'නිවාඩු',ta:'விடுப்பு'},
+ {ja:'事前登録',en:'Pre-registered','zh-CN':'预先登记',ko:'사전 등록',vi:'Đăng ký trước',ne:'अग्रिम दर्ता',pt:'Pré-cadastrado',si:'පෙර ලියාපදිංචි',ta:'முன்பதிவு'},
+ {ja:'店舗追加・名称変更の申請',en:'Store add / rename request','zh-CN':'门店新增/更名申请',ko:'점포 추가/이름 변경 신청',vi:'Yêu cầu thêm/đổi tên cửa hàng',ne:'स्टोर थप/नाम परिवर्तन अनुरोध',pt:'Solicitação de adicionar/renomear loja',si:'ශාඛා එක්/නම වෙනස් කිරීමේ ඉල්ලීම',ta:'கடை சேர்ப்பு/பெயர் மாற்ற கோரிக்கை'},
+ {ja:'店舗マスタの承認・反映',en:'Approve/apply store master','zh-CN':'门店主数据批准/应用',ko:'점포 마스터 승인/반영',vi:'Phê duyệt/áp dụng dữ liệu cửa hàng',ne:'स्टोर मास्टर स्वीकृति/लागू',pt:'Aprovar/aplicar cadastro de lojas',si:'ශාඛා මූලික දත්ත අනුමත/යොදන්න',ta:'கடை மாஸ்டர் ஒப்புதல்/பயன்பாடு'},
+ {ja:'確認状況一覧',en:'Confirmation status list','zh-CN':'确认状态列表',ko:'확인 상태 목록',vi:'Danh sách trạng thái xác nhận',ne:'पुष्टि स्थिति सूची',pt:'Lista de confirmações',si:'තහවුරු තත්ත්ව ලැයිස්තුව',ta:'உறுதிப்படுத்தல் நிலை பட்டியல்'},
+ {ja:'本部公開管理',en:'HQ publishing','zh-CN':'总部发布管理',ko:'본부 공개 관리',vi:'Quản lý phát hành của trụ sở',ne:'मुख्यालय प्रकाशन',pt:'Publicação da sede',si:'මූලස්ථාන ප්‍රකාශන කළමනාකරණය',ta:'தலைமையக வெளியீடு'},
+ {ja:'レジ接客',en:'Register service','zh-CN':'收银接客',ko:'계산대 응대',vi:'Phục vụ quầy thu ngân',ne:'क्यास सेवा',pt:'Atendimento no caixa',si:'කෑෂ් සේවාව',ta:'கவுன்டர் சேவை'},
+ {ja:'接客',en:'Customer service','zh-CN':'接客',ko:'고객 응대',vi:'Phục vụ khách',ne:'ग्राहक सेवा',pt:'Atendimento ao cliente',si:'පාරිභෝගික සේවය',ta:'வாடிக்கையாளர் சேவை'},
+ {ja:'受付',en:'Reception','zh-CN':'受理',ko:'접수',vi:'Tiếp nhận',ne:'स्वीकृति',pt:'Atendimento',si:'භාරගැනීම',ta:'பெறுதல்'},
+ {ja:'コピー機対応',en:'Copier support','zh-CN':'复印机处理',ko:'복사기 대응',vi:'Xử lý máy photocopy',ne:'कपी मेसिन सहायता',pt:'Suporte à copiadora',si:'පිටපත් යන්ත්‍ර සහාය',ta:'நகலெடுக்கும் இயந்திர உதவி'},
+ {ja:'機器対応',en:'Equipment support','zh-CN':'设备处理',ko:'기기 대응',vi:'Xử lý thiết bị',ne:'उपकरण सहायता',pt:'Suporte a equipamentos',si:'උපකරණ සහාය',ta:'உபகரண உதவி'},
+ {ja:'宅配便受付',en:'Parcel reception','zh-CN':'快递受理',ko:'택배 접수',vi:'Nhận bưu kiện',ne:'पार्सल स्वीकृति',pt:'Recebimento de encomendas',si:'පාර්සල් භාරගැනීම',ta:'பார்சல் பெறுதல்'},
+ {ja:'発注',en:'Ordering','zh-CN':'订货',ko:'발주',vi:'Đặt hàng',ne:'अर्डर',pt:'Pedidos',si:'ඇණවුම්',ta:'ஆர்டர்'},
+ {ja:'商品管理',en:'Inventory management','zh-CN':'商品管理',ko:'상품 관리',vi:'Quản lý hàng hóa',ne:'सामान व्यवस्थापन',pt:'Gestão de estoque',si:'භාණ්ඩ කළමනාකරණය',ta:'பொருள் மேலாண்மை'},
+ {ja:'バックヤード',en:'Back room','zh-CN':'后场',ko:'백룸',vi:'Kho phía sau',ne:'ब्याक रुम',pt:'Área de apoio',si:'පසු කාමරය',ta:'பின்புற அறை'},
+ {ja:'コピー用紙',en:'Copy paper','zh-CN':'复印纸',ko:'복사용지',vi:'Giấy photocopy',ne:'कपी कागज',pt:'Papel de cópia',si:'පිටපත් කඩදාසි',ta:'நகல் காகிதம்'},
+ {ja:'ごみ庫',en:'Waste storage','zh-CN':'垃圾库',ko:'쓰레기 보관소',vi:'Kho rác',ne:'फोहोर भण्डारण',pt:'Depósito de resíduos',si:'කසළ ගබඩාව',ta:'கழிவு சேமிப்பு'},
+ {ja:'休憩・打刻',en:'Break / clock-in','zh-CN':'休息/打卡',ko:'휴식/타각',vi:'Nghỉ / chấm công',ne:'विश्राम / टाइम कार्ड',pt:'Pausa / ponto',si:'විවේකය / වේලා සටහන',ta:'இடைவேளை / நேர பதிவு'},
+ {ja:'再通知',en:'Reminder','zh-CN':'再次通知',ko:'재알림',vi:'Nhắc lại',ne:'पुनः सूचना',pt:'Lembrete',si:'නැවත දැනුම්දීම',ta:'மீள் அறிவிப்பு'},
+ {ja:'マニュアル更新',en:'Manual update','zh-CN':'手册更新',ko:'매뉴얼 업데이트',vi:'Cập nhật hướng dẫn',ne:'म्यानुअल अपडेट',pt:'Atualização do manual',si:'අත්පොත යාවත්කාලීන කිරීම',ta:'கையேடு புதுப்பிப்பு'},
+ {ja:'非公開質問',en:'Private question','zh-CN':'非公开提问',ko:'비공개 질문',vi:'Câu hỏi riêng tư',ne:'निजी प्रश्न',pt:'Pergunta privada',si:'පුද්ගලික ප්‍රශ්නය',ta:'தனிப்பட்ட கேள்வி'},
+ {ja:'共有報告が未確認です',en:'A shared report is unconfirmed','zh-CN':'有共享报告尚未确认',ko:'공유 보고가 미확인 상태입니다',vi:'Có báo cáo chung chưa xác nhận',ne:'साझा रिपोर्ट अपुष्ट छ',pt:'Há um relatório compartilhado não confirmado',si:'බෙදාගත් වාර්තාවක් තහවුරු කර නැත',ta:'பகிரப்பட்ட அறிக்கை உறுதிப்படுத்தப்படவில்லை'},
+ {ja:'引き継ぎの期限を超過',en:'Handover deadline exceeded','zh-CN':'交接已逾期',ko:'인수인계 기한 초과',vi:'Bàn giao đã quá hạn',ne:'हस्तान्तरण म्याद नाघ्यो',pt:'Prazo da passagem excedido',si:'භාරදීමේ කාලය ඉක්මවා ඇත',ta:'ஒப்படைப்பு காலக்கெடு கடந்தது'},
+ {ja:'本部が更新しました',en:'Updated by HQ','zh-CN':'总部已更新',ko:'본부에서 업데이트했습니다',vi:'Trụ sở đã cập nhật',ne:'मुख्यालयले अपडेट गर्यो',pt:'Atualizado pela sede',si:'මූලස්ථානය යාවත්කාලීන කළා',ta:'தலைமையகம் புதுப்பித்தது'},
+ {ja:'再確認が必要です',en:'Reconfirmation is required','zh-CN':'需要重新确认',ko:'재확인이 필요합니다',vi:'Cần xác nhận lại',ne:'पुनः पुष्टि आवश्यक छ',pt:'É necessário reconfirmar',si:'නැවත තහවුරු කිරීම අවශ්‍යයි',ta:'மீண்டும் உறுதிப்படுத்த வேண்டும்'},
+ {ja:'利用条件',en:'Terms of use','zh-CN':'使用条件',ko:'이용 조건',vi:'Điều kiện sử dụng',ne:'प्रयोग सर्त',pt:'Condições de uso',si:'භාවිත කොන්දේසි',ta:'பயன்பாட்டு நிபந்தனைகள்'},
+ {ja:'禁止事項',en:'Prohibited actions','zh-CN':'禁止事项',ko:'금지 사항',vi:'Hành vi bị cấm',ne:'निषेधित कार्य',pt:'Ações proibidas',si:'තහනම් ක්‍රියා',ta:'தடைசெய்யப்பட்ட செயல்கள்'},
+ {ja:'保存期間',en:'Retention period','zh-CN':'保存期限',ko:'보존 기간',vi:'Thời gian lưu giữ',ne:'सुरक्षित अवधि',pt:'Período de retenção',si:'රඳවා තැබීමේ කාලය',ta:'சேமிப்பு காலம்'},
+ {ja:'問い合わせ窓口',en:'Support contact','zh-CN':'咨询窗口',ko:'문의 창구',vi:'Đầu mối hỗ trợ',ne:'सम्पर्क सहायता',pt:'Contato de suporte',si:'සහාය සම්බන්ධතා',ta:'ஆதரவு தொடர்பு'},
+ {ja:'本人確認済み',en:'Identity verified','zh-CN':'身份已验证',ko:'본인 확인 완료',vi:'Đã xác minh danh tính',ne:'पहिचान पुष्टि भयो',pt:'Identidade verificada',si:'අනන්‍යතාව තහවුරු කර ඇත',ta:'அடையாளம் உறுதி செய்யப்பட்டது'},
+ {ja:'プロフィール画像を追加・変更',en:'Add / change profile image','zh-CN':'添加/更改头像',ko:'프로필 이미지 추가/변경',vi:'Thêm/đổi ảnh hồ sơ',ne:'प्रोफाइल तस्बिर थप्नु/बदल्नु',pt:'Adicionar/alterar foto do perfil',si:'පැතිකඩ රූපය එක්/වෙනස් කරන්න',ta:'சுயவிவரப் படம் சேர்க்க/மாற்ற'},
+ {ja:'習得率',en:'Skill rate','zh-CN':'掌握率',ko:'숙련도',vi:'Mức kỹ năng',ne:'सीप दर',pt:'Nível de habilidade',si:'කුසලතා අනුපාතය',ta:'திறன் விகிதம்'},
+ {ja:'自分の閲覧範囲',en:'My access scope','zh-CN':'我的访问范围',ko:'내 열람 범위',vi:'Phạm vi truy cập của tôi',ne:'मेरो पहुँच क्षेत्र',pt:'Meu escopo de acesso',si:'මගේ ප්‍රවේශ පරාසය',ta:'என் அணுகல் வரம்பு'},
+ {ja:'最小権限',en:'Least privilege','zh-CN':'最小权限',ko:'최소 권한',vi:'Quyền tối thiểu',ne:'न्यूनतम अनुमति',pt:'Privilégio mínimo',si:'අවම අවසර',ta:'குறைந்தபட்ச அனுமதி'},
+ {ja:'役職・権限を見る',en:'View roles & permissions','zh-CN':'查看角色与权限',ko:'역할 및 권한 보기',vi:'Xem vai trò & quyền',ne:'भूमिका र अनुमति हेर्नुहोस्',pt:'Ver funções e permissões',si:'භූමිකා සහ අවසර බලන්න',ta:'பங்கு மற்றும் அனுமதிகளைப் பார்க்க'},
+ {ja:'記録を作成',en:'Create record','zh-CN':'创建记录',ko:'기록 작성',vi:'Tạo bản ghi',ne:'रेकर्ड बनाउनुहोस्',pt:'Criar registro',si:'වාර්තාවක් සාදන්න',ta:'பதிவு உருவாக்கு'},
+ {ja:'状態',en:'Status','zh-CN':'状态',ko:'상태',vi:'Trạng thái',ne:'स्थिति',pt:'Status',si:'තත්ත්වය',ta:'நிலை'},
+ {ja:'平常',en:'Normal','zh-CN':'正常',ko:'정상',vi:'Bình thường',ne:'सामान्य',pt:'Normal',si:'සාමාන්‍ය',ta:'சாதாரண'},
+ {ja:'未実施',en:'Not performed','zh-CN':'未实施',ko:'미실시',vi:'Chưa thực hiện',ne:'गरिएको छैन',pt:'Não realizado',si:'සිදු කර නැත',ta:'செய்யப்படவில்லை'},
+ {ja:'準備済み',en:'Ready','zh-CN':'已准备',ko:'준비 완료',vi:'Sẵn sàng',ne:'तयार',pt:'Pronto',si:'සූදානම්',ta:'தயார்'},
+ {ja:'未完了',en:'Incomplete','zh-CN':'未完成',ko:'미완료',vi:'Chưa hoàn tất',ne:'अपूर्ण',pt:'Incompleto',si:'අසම්පූර්ණ',ta:'முழுமையில்லை'}
+];
+function runtimeTranslateJapanese(input){
+  if(currentLanguage==='ja'||input==null)return input;
+  let out=String(input);
+  // Exact known labels first.
+  const exact=exactI18n.find(x=>x.ja===out.trim());
+  if(exact&&exact[currentLanguage])return out.replace(out.trim(),exact[currentLanguage]);
+  // Replace longer known phrases before shorter ones.
+  const sorted=phraseI18n.slice().sort((a,b)=>b.ja.length-a.ja.length);
+  sorted.forEach(x=>{if(x[currentLanguage]&&out.includes(x.ja))out=out.split(x.ja).join(x[currentLanguage])});
+  // Main navigation dictionary can also appear inside composite messages.
+  const d=uiLang[currentLanguage]||uiLang.en;
+  Object.keys(uiLang.ja).sort((a,b)=>String(uiLang.ja[b]).length-String(uiLang.ja[a]).length).forEach(k=>{
+    const ja=uiLang.ja[k],tr=d[k];
+    if(typeof ja==='string'&&typeof tr==='string'&&ja.length>1&&out.includes(ja))out=out.split(ja).join(tr);
+  });
+  return out;
+}
+
 const translationTextOriginal=new WeakMap();
 const translationAttrOriginal=new WeakMap();
 let translationSweepBusy=false;
@@ -518,14 +627,8 @@ function exactTranslateJapanese(s){
   const raw=s;
   const trimmed=raw.trim();
   if(!trimmed||isPreservedJapanese(trimmed))return raw;
-  const d=uiLang[currentLanguage]||uiLang.en;
-  // Existing primary UI dictionary first.
-  for(const k of Object.keys(uiLang.ja)){
-    if(uiLang.ja[k]===trimmed&&d[k])return raw.replace(trimmed,d[k]);
-  }
-  const hit=exactI18n.find(x=>x.ja===trimmed);
-  if(hit&&hit[currentLanguage])return raw.replace(trimmed,hit[currentLanguage]);
-  return raw;
+  const translated=runtimeTranslateJapanese(trimmed);
+  return translated===trimmed?raw:raw.replace(trimmed,translated);
 }
 function registerTranslationTextNode(node){
   if(!node||!node.parentElement)return;
@@ -542,7 +645,7 @@ function registerTranslationTextNode(node){
 }
 function registerTranslationAttributes(el){
   if(!el||el.nodeType!==1)return;
-  const attrs=['placeholder','title','aria-label'];
+  const attrs=['placeholder','title','aria-label','data-label'];
   let originals=translationAttrOriginal.get(el)||{};
   attrs.forEach(a=>{
     if(!(a in originals)&&el.hasAttribute(a))originals[a]=el.getAttribute(a);
@@ -637,6 +740,7 @@ const pilotChecklist=[
 ];
 let incidentStatus='平常';
 const changelog=[
+ {version:'2.4 Demo',date:'2026/09/21',text:'文章内の部分翻訳、Toast・確認ダイアログ・シフト・通知・Skill・管理系の翻訳範囲を拡大'},
  {version:'2.3 Demo',date:'2026/09/21',text:'画面内の全日本語UIを自動検出し翻訳対象へ登録する共通レイヤーを追加'},
  {version:'2.2 Demo',date:'2026/09/21',text:'画面UIと投稿本文の翻訳デモ、原文切替を追加'},
  {version:'2.1 Demo',date:'2026/09/21',text:'言語設定を追加。シンハラ語・タミル語を含む9言語に対応'},
@@ -1250,7 +1354,7 @@ function openAdminCenter(){
       '<div class="card"><div class="title">システム窓口：管理者</div><div class="sub">障害、アカウント、データ復旧、セキュリティ関連。</div></div>'+
     '</section>'+
     '<section class="section"><div class="head"><h3>規約・プライバシー</h3><small>Draft</small></div><div class="card">'+legalDocs.map(d=>'<div class="controlrow legalbtn" onclick="openLegal(\''+d.id+'\')"><div><div class="title">'+d.title+'</div><div class="sub">'+d.version+'</div></div><span>›</span></div>').join('')+'</div></section>'+
-    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 2.3 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
+    '<section class="section"><div class="head"><h3>バージョン・変更履歴</h3><small>最新 2.4 Demo</small></div><div class="card">'+changelog.map(x=>'<div class="logline"><div class="logtime">'+x.date+' ・ '+x.version+'</div><div class="logtext">'+x.text+'</div></div>').join('')+'</div></section>'+
     auditSection;
   document.getElementById('modal').classList.add('open');
   enableConfidentialWatermark();
@@ -1588,7 +1692,10 @@ function toggleVideoDemo(){
 function openGuide(){const s=document.getElementById('store').value,rows=guides[s]||[];document.getElementById('modalBody').innerHTML='<h3>📍 '+s+' Store Guide</h3><div class="sub">この店舗だけの違いを確認</div>'+rows.map((r,i)=>'<div class="card"><div class="title">'+(i+1)+'. '+r[0]+'</div><div class="sub">'+r[1]+'</div></div>').join('')+'<button class="btn primary full" onclick="closeModal();toast(\''+s+'の初回確認を保存しました\')">確認しました</button>';document.getElementById('modal').classList.add('open')}
 function openManual(){document.getElementById('modalBody').innerHTML='<h3>📄 コピー機の用紙補充</h3><div class="sub">v1.3・最終更新 2026/09/20</div><div class="card"><div class="title">1. 側面カバーを開く</div></div><div class="card"><div class="title">2. 用紙をそろえてセット</div></div><div class="card"><div class="title">3. 紙詰まり表示がないか確認</div></div><button class="btn primary full" onclick="closeModal();toast(\'最新版の確認を記録しました\')">最新版を確認しました</button>';document.getElementById('modal').classList.add('open')}
 function closeModal(){stopQR();disableConfidentialWatermark();document.getElementById('modal').classList.remove('open')}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
+function toast(m){const t=document.getElementById('toast');t.textContent=runtimeTranslateJapanese(m);t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
+const nativeConfirm=window.confirm.bind(window),nativePrompt=window.prompt.bind(window);
+window.confirm=(m)=>nativeConfirm(runtimeTranslateJapanese(m));
+window.prompt=(m,d)=>nativePrompt(runtimeTranslateJapanese(m),d);
 applyRole();applyStore();setHelpVisibility('public');refreshAckSummary();renderHandovers();updateNotificationBadge();refreshUserWatermark();refreshSyncBar();updateAdvancePrefCount();applyLanguage();setInterval(refreshUserWatermark,60000);
 </script>
 </body>
