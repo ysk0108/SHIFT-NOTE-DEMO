@@ -151,7 +151,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 </main>
 
 <main id="settings" class="page">
-<section class="section role-list"><div class="head"><h3>権限と運用</h3><small id="roleName">リーダー（アカウント登録）</small></div>
+<section class="section role-list"><div class="head"><h3>権限と運用</h3><small id="roleName">店長（デモ権限）</small></div>
   <div class="card"><div class="title">役職はアカウント作成時に登録</div><div class="sub">ホームでは切り替えません。役職変更は管理側で更新する想定です。</div></div>
   <div class="card"><div class="title">レギュラークルー</div><div class="sub">閲覧・確認・完了・報告</div></div>
   <div class="card"><div class="title">リーダー</div><div class="sub">＋店舗内編集・報告一次対応</div></div>
@@ -177,11 +177,11 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 
 <script>
 let currentUrgency='通常',helpVisibility='public',profileImageData='';
-const currentAccountRole='leader';
+const currentAccountRole='manager';
 const roleRank={regular:0,leader:1,manager:2,mg:3,toukatsu:4,owner:5,hq:6};
 let sharedReportAcknowledged=false;
 const demoPeople=[
-  {name:'渡邉友介',role:'leader',store:'西口店',self:true},
+  {name:'渡邉友介',role:'manager',store:'西口店',self:true},
   {name:'佐藤美咲',role:'regular',store:'西口店'},
   {name:'鈴木蓮',role:'regular',store:'西口店'},
   {name:'高橋彩乃',role:'regular',store:'西口店'},
