@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: pilot-readiness-v9 -->
+<!-- build: account-delete-v10 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -343,7 +343,12 @@ function openAdminCenter(){
   const inactiveCount=adminAccounts.filter(x=>!x.active).length;
   const accountRows=adminAccounts.map(a=>
     '<div class="ackline"><div><div class="person"><span class="statusdot '+(a.active?'':'off')+'"></span>'+a.name+'</div><div class="personmeta">'+roleLabels[a.role]+' ・ '+a.store+'</div></div>'+
-    (a.id===1?'<span class="tag blue">自分</span>':'<button class="btn ghost" style="padding:6px 8px" onclick="toggleAccount('+a.id+')">'+(a.active?'利用停止':'再開')+'</button>')+
+    (a.id===1
+      ?'<span class="tag blue">自分</span>'
+      :'<div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end">'+
+        '<button class="btn ghost" style="padding:6px 8px" onclick="toggleAccount('+a.id+')">'+(a.active?'利用停止':'再開')+'</button>'+
+        '<button class="btn" style="padding:6px 8px;background:#fff0f0;color:#c43232;border:1px solid #ffd6d6" onclick="deleteAccount('+a.id+')">削除</button>'+
+       '</div>')+
     '</div>').join('');
   const secRow=(key,title,desc)=>'<div class="controlrow"><div><div class="title">'+title+'</div><div class="sub">'+desc+'</div></div><div class="switch '+(securityState[key]?'on':'')+'" onclick="toggleSecurity(\''+key+'\')"></div></div>';
   const logs=auditLogs.map(x=>'<div class="logline"><div class="logtime">'+x.time+'</div><div class="logtext">'+x.text+'</div></div>').join('');
@@ -419,6 +424,16 @@ function toggleAccount(id){
   auditLogs.unshift({time:'19:50',text:'渡邉友介が '+a.name+' のアカウントを'+(a.active?'再開':'利用停止')});
   openAdminCenter();
   toast(a.name+' を'+(a.active?'再開':'利用停止')+'しました（デモ）');
+}
+function deleteAccount(id){
+  if(id===1){toast('自分のアカウントは削除できません');return}
+  const i=adminAccounts.findIndex(x=>x.id===id);if(i<0)return;
+  const a=adminAccounts[i];
+  if(!confirm(a.name+' のアカウントを削除しますか？\n操作履歴は監査のため残ります。'))return;
+  adminAccounts.splice(i,1);
+  auditLogs.unshift({time:'20:50',text:'渡邉友介が '+a.name+' のアカウントを削除'});
+  openAdminCenter();
+  toast(a.name+' のアカウントを削除しました（デモ）');
 }
 function runBackup(){lastBackup='たった今';auditLogs.unshift({time:'19:50',text:'渡邉友介が手動バックアップを実行'});openAdminCenter();toast('バックアップが完了しました（デモ）')}
 function togglePilot(id){
