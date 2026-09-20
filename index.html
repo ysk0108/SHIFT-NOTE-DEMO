@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: notification-deeplinks-v7 -->
+<!-- build: enterprise-governance-v8 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -41,6 +41,13 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 .ackline{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #eef1f4}.ackline:last-child{border-bottom:0}.person{font-size:12px;font-weight:800}.personmeta{font-size:10px;color:var(--muted);margin-top:2px}.acksummary{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .tapcard{cursor:pointer;transition:.15s}.tapcard:active{transform:scale(.99);background:#f9fafb}.historycard{opacity:.78}.empty{border:1px dashed #cfd6df;border-radius:15px;padding:18px;text-align:center;color:var(--muted);font-size:12px;background:#fafbfc}
 .qrhero{background:linear-gradient(135deg,#0e1726,#263750);color:#fff;border-radius:18px;padding:16px;margin-bottom:10px}.qrhero .sub{color:#d2dae6}.qrbox{width:116px;height:116px;margin:14px auto;border-radius:14px;background:#fff;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(7,1fr);gap:3px;padding:10px}.qrbox i{background:#101828;border-radius:1px}.scanview{position:relative;background:#111827;border-radius:18px;overflow:hidden;aspect-ratio:3/4;margin:12px 0}.scanview video{width:100%;height:100%;object-fit:cover}.scanframe{position:absolute;inset:19%;border:3px solid #fff;border-radius:18px;box-shadow:0 0 0 999px #0005}.scanline{position:absolute;left:20%;right:20%;top:50%;height:2px;background:#8ef0c0;box-shadow:0 0 10px #8ef0c0}.videoplayer{background:#0c1320;color:#fff;border-radius:18px;padding:16px;margin-top:12px}.videoframe{aspect-ratio:16/9;background:linear-gradient(135deg,#1f2937,#101828);border-radius:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}.playbtn{width:62px;height:62px;border-radius:50%;border:0;background:#fff;color:#101828;font-size:24px;font-weight:900}.timeline{height:4px;background:#ffffff33;border-radius:99px;margin-top:12px;overflow:hidden}.timeline span{display:block;width:36%;height:100%;background:#fff}.videometa{display:flex;justify-content:space-between;margin-top:7px;font-size:10px;color:#cbd5e1}.flow{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}.flow span{font-size:9px;font-weight:800;border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 7px;color:#98a2b3}.flow span.on{background:#101828;color:#fff;border-color:#101828}.deadline{font-size:11px;font-weight:800;margin-top:6px}.deadline.overdue{color:var(--red)}.noteitem{cursor:pointer}.noteitem.unread{border-left:4px solid var(--blue)}
+.demobadge{display:inline-flex;align-items:center;gap:5px;background:#fff3cd;color:#7a4b00;border:1px solid #ffe39a;border-radius:999px;padding:5px 8px;font-size:9px;font-weight:900;margin-top:8px}
+.adminGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.adminGrid .card{margin:0}.adminGrid strong{font-size:21px;display:block}
+.statusdot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px;background:#12b76a}.statusdot.off{background:#98a2b3}.statusdot.warn{background:#f79009}
+.controlrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #eef1f4}.controlrow:last-child{border-bottom:0}.controlrow .sub{margin:2px 0 0}
+.switch{width:44px;height:26px;border-radius:999px;background:#d0d5dd;position:relative;flex:0 0 auto;cursor:pointer}.switch::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;box-shadow:0 1px 4px #0002;transition:.15s}.switch.on{background:#157f5b}.switch.on::after{left:21px}
+.logline{padding:10px 0;border-bottom:1px solid #eef1f4}.logline:last-child{border-bottom:0}.logtime{font-size:9px;color:var(--muted)}.logtext{font-size:11px;font-weight:700;margin-top:3px}
+.kpiup{font-size:10px;font-weight:800;color:var(--green);margin-top:3px}.kpidown{font-size:10px;font-weight:800;color:var(--blue);margin-top:3px}
 </style>
 </head>
 <body>
@@ -54,6 +61,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
     </div>
   </div>
   <input type="file" id="profileImageInput" accept="image/*" hidden onchange="setProfileImage(event)">
+  <div class="demobadge">● DEMO環境・架空データのみ</div>
   <div class="ctx" style="grid-template-columns:1fr">
     <select id="store" onchange="applyStore()">
       <option>西口店</option><option>駅前店</option><option>中央店</option>
@@ -231,6 +239,24 @@ const notifications=[
  {id:3,type:'マニュアル更新',title:'コピー機マニュアル v1.3',body:'本部が更新しました。再確認が必要です。',read:false},
  {id:4,type:'非公開質問',title:'店長宛の質問',body:'レギュラークルーから非公開質問が届いています。',read:true}
 ];
+const adminAccounts=[
+ {id:1,name:'渡邉友介',role:'manager',store:'西口店',active:true},
+ {id:2,name:'佐藤美咲',role:'regular',store:'西口店',active:true},
+ {id:3,name:'鈴木蓮',role:'regular',store:'西口店',active:true},
+ {id:4,name:'小林結衣',role:'leader',store:'駅前店',active:true},
+ {id:5,name:'山本直樹',role:'manager',store:'西口店',active:true},
+ {id:6,name:'藤田一真',role:'regular',store:'中央店',active:false}
+];
+let securityState={mfa:true,sessionLock:true,exportApproval:true,externalShareBlock:true};
+let retentionState={reports:'365日',media:'180日',audit:'3年',questions:'365日'};
+let lastBackup='本日 18:30';
+const auditLogs=[
+ {time:'19:48',text:'渡邉友介が引き継ぎ「冷凍ケース右側の温度上昇」を完了'},
+ {time:'19:42',text:'渡邉友介が全体報告を確認'},
+ {time:'19:10',text:'本部が「コピー機の用紙補充」v1.3を公開'},
+ {time:'18:55',text:'佐藤美咲が店長宛に非公開質問を送信'},
+ {time:'18:30',text:'自動バックアップ完了'}
+];
 function go(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active')}
 function applyStore(){const s=document.getElementById('store').value;document.getElementById('homeTitle').textContent=s+'の今日';document.getElementById('guideBanner').style.display=s==='西口店'?'none':'block'}
 function applyRole(){const r=currentAccountRole;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';const rn=document.getElementById('roleName');if(rn)rn.textContent=(roleLabels[r]||r)+'（アカウント登録）'}
@@ -297,6 +323,69 @@ function openAckList(){
   document.getElementById('modal').classList.add('open');
 }
 function resendUnread(){const n=ackState.filter(x=>!x.ack).length;toast('未確認 '+n+'名へ再通知しました')}
+function openAdminCenter(){
+  if(roleRank[currentAccountRole]<roleRank.manager){toast('管理センターは店長以上のみ利用できます');return}
+  const activeCount=adminAccounts.filter(x=>x.active).length;
+  const inactiveCount=adminAccounts.filter(x=>!x.active).length;
+  const accountRows=adminAccounts.map(a=>
+    '<div class="ackline"><div><div class="person"><span class="statusdot '+(a.active?'':'off')+'"></span>'+a.name+'</div><div class="personmeta">'+roleLabels[a.role]+' ・ '+a.store+'</div></div>'+
+    (a.id===1?'<span class="tag blue">自分</span>':'<button class="btn ghost" style="padding:6px 8px" onclick="toggleAccount('+a.id+')">'+(a.active?'利用停止':'再開')+'</button>')+
+    '</div>').join('');
+  const secRow=(key,title,desc)=>'<div class="controlrow"><div><div class="title">'+title+'</div><div class="sub">'+desc+'</div></div><div class="switch '+(securityState[key]?'on':'')+'" onclick="toggleSecurity(\''+key+'\')"></div></div>';
+  const logs=auditLogs.map(x=>'<div class="logline"><div class="logtime">'+x.time+'</div><div class="logtext">'+x.text+'</div></div>').join('');
+  document.getElementById('modalBody').innerHTML=
+    '<div class="head"><h3>管理センター</h3><small>企業導入デモ</small></div>'+
+    '<div class="demobadge">この画面の数値・人物・ログはすべてデモデータ</div>'+
+    '<section class="section"><div class="head"><h3>導入効果KPI</h3><small>サンプル値</small></div>'+
+      '<div class="adminGrid">'+
+        '<div class="card"><strong>25%</strong><div class="sub">未確認率</div><div class="kpidown">12件 → 3件</div></div>'+
+        '<div class="card"><strong>28分</strong><div class="sub">平均対応完了</div><div class="kpidown">64分 → 28分</div></div>'+
+        '<div class="card"><strong>7分</strong><div class="sub">質問初回回答</div><div class="kpidown">18分 → 7分</div></div>'+
+        '<div class="card"><strong>89%</strong><div class="sub">再確認率</div><div class="kpiup">61% → 89%</div></div>'+
+      '</div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>アカウント管理</h3><small>在籍・退職対応</small></div>'+
+      '<div class="card"><div class="sub">利用中 '+activeCount+'名 / 停止 '+inactiveCount+'名</div>'+accountRows+'</div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>データ保存ルール</h3><small>組織で設定</small></div>'+
+      '<div class="card">'+
+        retentionRow('reports','報告・引き継ぎ')+
+        retentionRow('media','画像・動画')+
+        retentionRow('questions','質問・回答')+
+        retentionRow('audit','監査ログ')+
+      '</div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>セキュリティ</h3><small>デモ設定</small></div><div class="card">'+
+      secRow('mfa','管理者の多要素認証','店長以上の管理アカウントに必須')+
+      secRow('sessionLock','自動セッションロック','一定時間操作がなければ再認証')+
+      secRow('exportApproval','データ書き出し承認','エクスポートは権限者の承認が必要')+
+      secRow('externalShareBlock','外部共有ブロック','会社データを外部URLへ公開しない')+
+    '</div></section>'+
+    '<section class="section"><div class="head"><h3>バックアップ</h3><small>復旧対策</small></div>'+
+      '<div class="card"><div class="title">最終バックアップ</div><div class="sub" id="backupTime">'+lastBackup+' ・ 正常</div><button class="btn blue full" style="margin-top:8px" onclick="runBackup()">今すぐバックアップ（デモ）</button></div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>権利・データ区分</h3><small>導入前に明確化</small></div>'+
+      '<div class="card"><div class="title">会社データ</div><div class="sub">店舗名・スタッフ情報・業務映像・報告内容は組織管理データとして扱い、承認前の外部持ち出しを禁止する想定。</div></div>'+
+      '<div class="card"><div class="title">マニュアル・映像の権利</div><div class="sub">作成主体と利用範囲を組織ポリシーで明記。外部配布や転用は権限者承認を前提とする想定。</div></div>'+
+      '<div class="card"><div class="title">デモ環境</div><div class="sub">現在の公開デモには架空データのみを使用。実在の店舗・スタッフ・機密情報は入れない前提。</div></div>'+
+    '</section>'+
+    '<section class="section"><div class="head"><h3>操作ログ</h3><small>誰が・いつ・何を</small></div><div class="card">'+logs+'</div></section>';
+  document.getElementById('modal').classList.add('open');
+}
+function retentionRow(key,label){
+  const opts=['30日','90日','180日','365日','3年'].map(v=>'<option '+(retentionState[key]===v?'selected':'')+'>'+v+'</option>').join('');
+  return '<div class="controlrow"><div><div class="title">'+label+'</div><div class="sub">保存期間</div></div><select style="max-width:110px;padding:7px;border:1px solid var(--line);border-radius:9px;background:#fff" onchange="setRetention(\''+key+'\',this.value)">'+opts+'</select></div>';
+}
+function setRetention(key,val){retentionState[key]=val;toast('保存期間を '+val+' に変更しました（デモ）')}
+function toggleSecurity(key){securityState[key]=!securityState[key];openAdminCenter();toast('セキュリティ設定を更新しました（デモ）')}
+function toggleAccount(id){
+  const a=adminAccounts.find(x=>x.id===id);if(!a)return;
+  a.active=!a.active;
+  auditLogs.unshift({time:'19:50',text:'渡邉友介が '+a.name+' のアカウントを'+(a.active?'再開':'利用停止')});
+  openAdminCenter();
+  toast(a.name+' を'+(a.active?'再開':'利用停止')+'しました（デモ）');
+}
+function runBackup(){lastBackup='たった今';auditLogs.unshift({time:'19:50',text:'渡邉友介が手動バックアップを実行'});openAdminCenter();toast('バックアップが完了しました（デモ）')}
 function openProfile(){
   const r=currentAccountRole;
   const imgStyle=profileImageData?'background-image:url('+profileImageData+')':'';
@@ -309,7 +398,8 @@ function openProfile(){
     '<div class="skill"><div><b>公共料金</b><div class="sub">受付</div></div><span class="tag blue">実施経験あり</span></div>'+
     '<div class="skill"><div><b>コピー機対応</b><div class="sub">v1.3更新</div></div><span class="tag red">再確認必要</span></div>'+
     '<div class="skill"><div><b>宅配便受付</b><div class="sub">受付</div></div><span class="tag green">単独対応可</span></div></div></section>'+
-    '<button class="btn blue full" onclick="closeModal();go(\'settings\')">役職・権限を見る</button>';
+    '<button class="btn primary full" onclick="closeModal();openAdminCenter()">管理センターを開く</button>'+
+    '<button class="btn blue full" style="margin-top:8px" onclick="closeModal();go(\'settings\')">役職・権限を見る</button>';
   document.getElementById('modal').classList.add('open')
 }
 function setProfileImage(e){
