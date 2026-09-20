@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- build: ack-random-demo-v4 -->
+<!-- build: handover-history-qr-video-v5 -->
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -39,6 +39,8 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 .preview{display:none;margin-top:9px;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#fff}
 .preview.show{display:block}.preview img{display:block;width:100%;max-height:220px;object-fit:cover}.previewbar{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;font-size:10px;color:var(--muted)}
 .ackline{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #eef1f4}.ackline:last-child{border-bottom:0}.person{font-size:12px;font-weight:800}.personmeta{font-size:10px;color:var(--muted);margin-top:2px}.acksummary{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.tapcard{cursor:pointer;transition:.15s}.tapcard:active{transform:scale(.99);background:#f9fafb}.historycard{opacity:.78}.empty{border:1px dashed #cfd6df;border-radius:15px;padding:18px;text-align:center;color:var(--muted);font-size:12px;background:#fafbfc}
+.qrhero{background:linear-gradient(135deg,#0e1726,#263750);color:#fff;border-radius:18px;padding:16px;margin-bottom:10px}.qrhero .sub{color:#d2dae6}.qrbox{width:116px;height:116px;margin:14px auto;border-radius:14px;background:#fff;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(7,1fr);gap:3px;padding:10px}.qrbox i{background:#101828;border-radius:1px}.scanview{position:relative;background:#111827;border-radius:18px;overflow:hidden;aspect-ratio:3/4;margin:12px 0}.scanview video{width:100%;height:100%;object-fit:cover}.scanframe{position:absolute;inset:19%;border:3px solid #fff;border-radius:18px;box-shadow:0 0 0 999px #0005}.scanline{position:absolute;left:20%;right:20%;top:50%;height:2px;background:#8ef0c0;box-shadow:0 0 10px #8ef0c0}.videoplayer{background:#0c1320;color:#fff;border-radius:18px;padding:16px;margin-top:12px}.videoframe{aspect-ratio:16/9;background:linear-gradient(135deg,#1f2937,#101828);border-radius:14px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}.playbtn{width:62px;height:62px;border-radius:50%;border:0;background:#fff;color:#101828;font-size:24px;font-weight:900}.timeline{height:4px;background:#ffffff33;border-radius:99px;margin-top:12px;overflow:hidden}.timeline span{display:block;width:36%;height:100%;background:#fff}.videometa{display:flex;justify-content:space-between;margin-top:7px;font-size:10px;color:#cbd5e1}
 </style>
 </head>
 <body>
@@ -79,9 +81,13 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 </main>
 
 <main id="handover" class="page">
-<section class="section"><div class="head"><h3>引き継ぎ</h3><small>未確認を見える化</small></div>
-  <div class="card"><div class="row"><div class="grow"><div class="title">フライヤー油を交換しました</div><div class="sub">次回は3日後を目安。渡邉友介・14:00</div></div><span class="tag green">通常</span></div></div>
-  <div class="card"><div class="row"><div class="grow"><div class="title">冷凍ケース右側の温度上昇</div><div class="sub">7℃。販売停止・商品退避済み。</div></div><span class="tag red">高</span></div></div>
+<section class="section">
+  <div class="head"><h3>進行中の引き継ぎ</h3><small>タップで詳細</small></div>
+  <div id="handoverActive"></div>
+</section>
+<section class="section">
+  <div class="head"><h3>履歴</h3><small>確認済みも保存</small></div>
+  <div id="handoverHistory"></div>
 </section>
 </main>
 
@@ -94,10 +100,15 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 </main>
 
 <main id="manuals" class="page">
-<section class="section"><div class="head"><h3>業務マニュアル</h3><small>更新・再確認</small></div>
+<section class="section"><div class="head"><h3>業務マニュアル</h3><small>本部作成・QR対応</small></div>
+  <div class="qrhero">
+    <div class="title">▦ QRで映像マニュアルを開く</div>
+    <div class="sub">機器に貼ったQRをかざすと、本部が作成した最新版の映像マニュアルへ直接移動します。</div>
+    <button class="btn full" style="margin-top:12px;background:#fff;color:#101828" onclick="openQRScanner()">QRをかざす</button>
+  </div>
   <input class="input" placeholder="業務を検索">
-  <div class="card"><div class="row"><div class="grow"><div class="title">📄 コピー機の用紙補充</div><div class="sub">全店共通・v1.3・2026/09/20更新</div></div><span class="tag red">再確認必要</span></div><button class="btn blue full" style="margin-top:10px" onclick="openManual()">開く</button></div>
-  <div class="card"><div class="title">🧾 公共料金受付</div><div class="sub">全店共通・v2.0・最新版確認済み</div></div>
+  <div class="card"><div class="row"><div class="grow"><div class="title">🎬 コピー機の用紙補充</div><div class="sub">本部作成・映像 1:42・v1.3・2026/09/20更新</div></div><span class="tag red">再確認必要</span></div><button class="btn blue full" style="margin-top:10px" onclick="showVideoManual()">映像を見る</button></div>
+  <div class="card"><div class="title">🧾 公共料金受付</div><div class="sub">本部作成・映像 2:18・v2.0・最新版確認済み</div></div>
 </section>
 </main>
 
@@ -205,6 +216,12 @@ const guides={
  '駅前店':[['バックヤード','入口から右奥・スタッフ扉の先'],['コピー用紙','事務所右棚・上段'],['ごみ庫','搬入口横。廃棄登録は22時まで'],['休憩・打刻','休憩室2階、打刻は事務所入口横']],
  '中央店':[['バックヤード','レジ奥のスタッフ扉'],['コピー用紙','事務所キャビネット下段'],['宅配便伝票','左棚の青ファイル'],['ごみ庫','店舗裏手']]
 };
+let qrStream=null,qrTimer=null,videoDemoPlaying=false;
+const handovers=[
+ {id:1,title:'フライヤー油を交換しました',level:'通常',author:'渡邉友介',time:'14:00',store:'西口店',detail:'酸化度確認後に油を交換しました。次回は3日後を目安に確認してください。',action:'次回シフトで酸化度シートを確認',done:false},
+ {id:2,title:'冷凍ケース右側の温度上昇',level:'高',author:'佐藤美咲',time:'15:28',store:'西口店',detail:'冷凍ケース右側が7℃まで上昇。対象商品は退避し、販売停止しています。',action:'設備業者の到着まで30分ごとに温度記録',done:false},
+ {id:3,title:'宅配便伝票の保管場所変更',level:'低',author:'小林結衣',time:'昨日 21:10',store:'駅前店',detail:'宅配便伝票をレジ下から事務所の青ファイルへ移動しました。',action:'次回勤務者へ周知済み',done:true,resolvedBy:'山本直樹',resolvedAt:'昨日 22:05'}
+];
 function go(id,btn){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(btn)btn.classList.add('active')}
 function applyStore(){const s=document.getElementById('store').value;document.getElementById('homeTitle').textContent=s+'の今日';document.getElementById('guideBanner').style.display=s==='西口店'?'none':'block'}
 function applyRole(){const r=currentAccountRole;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';const rn=document.getElementById('roleName');if(rn)rn.textContent=(roleLabels[r]||r)+'（アカウント登録）'}
@@ -292,11 +309,84 @@ function setProfileImage(e){
   reader.onload=()=>{profileImageData=reader.result;const b=document.getElementById('profileBtn');b.style.backgroundImage='url('+profileImageData+')';b.classList.add('has-image');document.getElementById('profileInitial').style.visibility='hidden';toast('プロフィール画像を設定しました（デモ）');if(document.getElementById('modal').classList.contains('open'))openProfile()};
   reader.readAsDataURL(file)
 }
+function renderHandovers(){
+  const active=handovers.filter(x=>!x.done),history=handovers.filter(x=>x.done);
+  const tagClass=l=>l==='高'||l==='緊急'?'red':l==='通常'?'amber':'blue';
+  const card=h=>'<div class="card tapcard '+(h.done?'historycard':'')+'" onclick="openHandover('+h.id+')"><div class="row"><div class="grow"><div class="title">'+h.title+'</div><div class="sub">'+h.store+' ・ '+h.author+' ・ '+h.time+'</div></div><span class="tag '+tagClass(h.level)+'">'+h.level+'</span></div>'+(h.done?'<div class="sub">確認済み：'+h.resolvedBy+' ・ '+h.resolvedAt+'</div>':'<div class="sub">タップして詳細・対応内容を確認</div>')+'</div>';
+  document.getElementById('handoverActive').innerHTML=active.length?active.map(card).join(''):'<div class="empty">進行中の引き継ぎはありません</div>';
+  document.getElementById('handoverHistory').innerHTML=history.length?history.map(card).join(''):'<div class="empty">履歴はまだありません</div>';
+}
+function openHandover(id){
+  const h=handovers.find(x=>x.id===id);if(!h)return;
+  const canResolve=roleRank[currentAccountRole]>=roleRank.manager;
+  document.getElementById('modalBody').innerHTML=
+    '<h3>'+h.title+'</h3>'+
+    '<div class="acksummary"><span class="tag '+(h.level==='高'||h.level==='緊急'?'red':h.level==='通常'?'amber':'blue')+'">'+h.level+'</span><span class="tag">'+h.store+'</span></div>'+
+    '<div class="card"><div class="title">詳細</div><div class="sub">'+h.detail+'</div></div>'+
+    '<div class="card"><div class="title">必要な対応</div><div class="sub">'+h.action+'</div></div>'+
+    '<div class="card"><div class="title">投稿者</div><div class="sub">'+h.author+' ・ '+h.time+'</div></div>'+
+    (h.done?'<div class="card"><div class="title">確認済み</div><div class="sub">'+h.resolvedBy+' ・ '+h.resolvedAt+'。この引き継ぎは履歴として保存されています。</div></div>':
+      (canResolve?'<button class="btn primary full" onclick="resolveHandover('+h.id+')">店長以上：確認済みにする</button>':'<div class="sub">確認済みへの変更は店長以上のみ可能です。</div>'));
+  document.getElementById('modal').classList.add('open');
+}
+function resolveHandover(id){
+  const h=handovers.find(x=>x.id===id);if(!h)return;
+  if(roleRank[currentAccountRole]<roleRank.manager){toast('店長以上のみ操作できます');return}
+  h.done=true;h.resolvedBy='渡邉友介';h.resolvedAt='19:45';
+  closeModal();renderHandovers();toast('確認済みにして履歴へ移動しました');
+}
+function qrPattern(){
+  const bits=[1,1,1,0,1,1,1,1,0,1,0,1,0,1,1,1,1,0,1,1,1,0,1,0,1,0,1,0,1,1,0,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1];
+  return bits.map(b=>b?'<i></i>':'<i style="background:transparent"></i>').join('');
+}
+function openQRScanner(){
+  document.getElementById('modalBody').innerHTML=
+    '<h3>▦ QRスキャン</h3><div class="sub">機器のQRコードを枠内に合わせてください。</div>'+
+    '<div class="scanview"><video id="qrVideo" autoplay playsinline muted></video><div class="scanframe"></div><div class="scanline"></div></div>'+
+    '<button class="btn primary full" onclick="simulateQRRead()">デモ：QRを読み取る</button>'+
+    '<div class="sub">対応ブラウザではカメラを起動します。デモボタンでも同じ流れを確認できます。</div>';
+  document.getElementById('modal').classList.add('open');
+  startCameraQR();
+}
+async function startCameraQR(){
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return;
+    qrStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+    const v=document.getElementById('qrVideo');if(v)v.srcObject=qrStream;
+    if('BarcodeDetector' in window){
+      const detector=new BarcodeDetector({formats:['qr_code']});
+      qrTimer=setInterval(async()=>{
+        const video=document.getElementById('qrVideo');if(!video||video.readyState<2)return;
+        try{const codes=await detector.detect(video);if(codes&&codes.length){simulateQRRead()}}catch(e){}
+      },700);
+    }
+  }catch(e){}
+}
+function stopQR(){if(qrTimer){clearInterval(qrTimer);qrTimer=null}if(qrStream){qrStream.getTracks().forEach(t=>t.stop());qrStream=null}}
+function simulateQRRead(){stopQR();toast('QRを読み取りました');setTimeout(showVideoManual,350)}
+function showVideoManual(){
+  stopQR();videoDemoPlaying=false;
+  document.getElementById('modalBody').innerHTML=
+    '<h3>🎬 コピー機の用紙補充</h3><div class="sub">本部作成・v1.3・最終更新 2026/09/20</div>'+
+    '<div class="videoplayer"><div class="videoframe" id="videoFrame"><button class="playbtn" id="playBtn" onclick="toggleVideoDemo()">▶</button></div><div class="timeline"><span id="videoProgress"></span></div><div class="videometa"><span id="videoTime">0:00</span><span>1:42</span></div></div>'+
+    '<div class="card"><div class="title">映像の内容</div><div class="sub">① 側面カバーを開く → ② 用紙をそろえてセット → ③ 紙詰まり表示を確認</div></div>'+
+    '<div class="card"><div class="title">本部からの注意</div><div class="sub">用紙の向きとトレイ番号を必ず確認してください。更新時は再確認が必要です。</div></div>'+
+    '<button class="btn primary full" onclick="closeModal();toast(\'映像マニュアルの確認を記録しました\')">確認しました</button>';
+  document.getElementById('modal').classList.add('open');
+}
+function toggleVideoDemo(){
+  videoDemoPlaying=!videoDemoPlaying;
+  const b=document.getElementById('playBtn'),p=document.getElementById('videoProgress'),t=document.getElementById('videoTime');
+  if(b)b.textContent=videoDemoPlaying?'❚❚':'▶';
+  if(p)p.style.width=videoDemoPlaying?'68%':'36%';
+  if(t)t.textContent=videoDemoPlaying?'1:09':'0:00';
+  toast(videoDemoPlaying?'映像を再生中（デモ）':'一時停止しました');
+}
 function openGuide(){const s=document.getElementById('store').value,rows=guides[s]||[];document.getElementById('modalBody').innerHTML='<h3>📍 '+s+' Store Guide</h3><div class="sub">この店舗だけの違いを確認</div>'+rows.map((r,i)=>'<div class="card"><div class="title">'+(i+1)+'. '+r[0]+'</div><div class="sub">'+r[1]+'</div></div>').join('')+'<button class="btn primary full" onclick="closeModal();toast(\''+s+'の初回確認を保存しました\')">確認しました</button>';document.getElementById('modal').classList.add('open')}
 function openManual(){document.getElementById('modalBody').innerHTML='<h3>📄 コピー機の用紙補充</h3><div class="sub">v1.3・最終更新 2026/09/20</div><div class="card"><div class="title">1. 側面カバーを開く</div></div><div class="card"><div class="title">2. 用紙をそろえてセット</div></div><div class="card"><div class="title">3. 紙詰まり表示がないか確認</div></div><button class="btn primary full" onclick="closeModal();toast(\'最新版の確認を記録しました\')">最新版を確認しました</button>';document.getElementById('modal').classList.add('open')}
-function closeModal(){document.getElementById('modal').classList.remove('open')}
+function closeModal(){stopQR();document.getElementById('modal').classList.remove('open')}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';setTimeout(()=>t.style.display='none',1800)}
-applyRole();applyStore();setHelpVisibility('public');refreshAckSummary();
+applyRole();applyStore();setHelpVisibility('public');refreshAckSummary();renderHandovers();
 </script>
 </body>
 </html>
