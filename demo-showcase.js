@@ -121,7 +121,7 @@
 
   function overview(){
     let html='<div class="spdemo-hero"><span class="spdemo-badge">上司・企業向けプレゼンモード</span><h3>人が変わっても、店が変わっても、仕事の情報が途切れない。</h3><p>Skill Passport・店舗知識・シフト・マニュアル・引き継ぎを一つにつなぐ店舗オペレーション基盤。</p><div class="spdemo-kpis"><div class="spdemo-kpi"><strong>24</strong><span>主要機能をデモ化</span></div><div class="spdemo-kpi"><strong>3</strong><span>クルー / 店長 / 本部</span></div><div class="spdemo-kpi"><strong>1</strong><span>一つの業務基盤</span></div></div><div class="spdemo-actions"><button class="spdemo-btn white" onclick="SPDemo.tour(0)">▶ 60秒で見る</button><button class="spdemo-btn blue" onclick="SPDemo.scrollFeatures()">全機能を見る</button></div></div>';
-    html+='<div class="spdemo-title"><h3>役職ごとに見る価値</h3><small>同じデータを違う視点で利用</small></div><div class="spdemo-tabs"><button class="on" onclick="SPDemo.persona(this,\'crew\')">クルー</button><button onclick="SPDemo.persona(this,\'manager\')">店長</button><button onclick="SPDemo.persona(this,\'hq\')">本部</button></div><div id="spdemoPersona">'+personaHtml('crew')+'</div>';
+    html+='<div class="spdemo-note"><b>デモの見方</b><br>実装済みの運用フローを架空データで再現しています。Web Push本番配信、自由記述の自動翻訳、労務・会社ルールを含む高度なシフト最適化は今後強化する領域です。</div><div class="spdemo-title"><h3>役職ごとに見る価値</h3><small>同じデータを違う視点で利用</small></div><div class="spdemo-tabs"><button class="on" onclick="SPDemo.persona(this,\'crew\')">クルー</button><button onclick="SPDemo.persona(this,\'manager\')">店長</button><button onclick="SPDemo.persona(this,\'hq\')">本部</button></div><div id="spdemoPersona">'+personaHtml('crew')+'</div>';
     html+='<div id="spdemoFeatureStart"></div>';
     featureGroups.forEach(function(group){
       html+='<div class="spdemo-title"><h3>'+group.title+'</h3><small>'+group.items.length+'機能</small></div>';
@@ -204,7 +204,7 @@
     else if(key==='unavailable') h='<div class="spdemo-title"><h3>期間休み</h3><small>学生・実習・帰省</small></div><div class="spdemo-card"><div class="name">10/05〜10/09</div><div class="desc">学校の実習期間</div><span class="spdemo-chip blue">提出対象外</span><span class="spdemo-chip blue">仮組み対象外</span><span class="spdemo-chip blue">未提出通知なし</span></div><div class="spdemo-note">期間休みを登録した時点で、その期間の自分の仮組みがあれば対象シフトを外す。</div>';
     else if(key==='lateoff') h='<div class="spdemo-title"><h3>締切後の休み申請</h3><small>通常希望と分離</small></div><div class="spdemo-card"><div class="name">サンプルC ・ 10/12</div><div class="desc">家庭都合のため休み希望</div><span class="spdemo-chip amber">確認待ち</span><div class="spdemo-actions"><button class="spdemo-btn blue" onclick="this.parentElement.parentElement.querySelector(\'.spdemo-chip\').textContent=\'承認済み\'">承認</button><button class="spdemo-btn ghost">却下</button></div></div><div class="spdemo-note">承認された休みは、次に仮組みを再生成したとき除外される。</div>';
     else if(key==='reminder') h='<div class="spdemo-title"><h3>未提出 / 再通知</h3><small>不足日のみ判定</small></div><div class="spdemo-card"><div class="spdemo-stat"><strong>サンプルA</strong><span class="spdemo-chip red">未提出 3日・未通知</span></div><div class="spdemo-stat"><strong>サンプルB</strong><span class="spdemo-chip blue">未提出 1日・再通知済み</span></div><div class="spdemo-stat"><strong>サンプルC</strong><span class="spdemo-chip green">提出完了</span></div></div><div class="spdemo-note">期間休みの日は「未提出」に数えない。同じ周期・同じ人への再通知は重複記録しない。</div>';
-    else if(key==='draft') h='<div class="spdemo-title"><h3>シフト自動仮組み</h3><small>6:00 → 翌6:00</small></div><div class="spdemo-card"><div class="spdemo-stat"><strong>基本必要人数</strong><span>2名</span></div><div class="spdemo-stat"><strong>17:00〜20:00</strong><span>3名に増員</span></div><div class="spdemo-stat"><strong>仮組み条件</strong><span>提出希望＋必要人数</span></div></div>'+timeline()+'<div class="spdemo-note">スキルは配置を決める条件には使わず、配置後の「警告」にだけ使う。</div>';
+    else if(key==='draft') h='<div class="spdemo-title"><h3>シフト自動仮組み</h3><small>6:00 → 翌6:00</small></div><div class="spdemo-card"><div class="spdemo-stat"><strong>基本必要人数</strong><span>2名</span></div><div class="spdemo-stat"><strong>17:00〜20:00</strong><span>3名に増員</span></div><div class="spdemo-stat"><strong>仮組み条件</strong><span>提出希望＋必要人数</span></div></div>'+timeline()+'<div class="spdemo-note">スキルは配置を決める条件には使わず、配置後の「警告」にだけ使う。</div><div class="spdemo-warn">現行の自動仮組みは「提出希望＋必要人数」が中心です。休憩、連勤、週労働時間、会社独自ルールまで含む最適化は今後の強化領域です。</div>';
     else if(key==='shift-edit') h='<div class="spdemo-title"><h3>仮組み編集 → 公開</h3><small>最後は人が決める</small></div>'+timeline()+'<div class="spdemo-actions"><button class="spdemo-btn ghost" onclick="alert(\'デモ：スタッフ・日付・開始/終了を編集できます\')">✎ バーを編集</button><button class="spdemo-btn primary" onclick="this.textContent=\'✓ 公開済み\'">シフトを公開</button></div><div class="spdemo-note">公開後の変更は「変更申請」に分けて履歴を残す。</div>';
     else if(key==='support') h='<div class="spdemo-title"><h3>応援勤務</h3><small>店舗をまたぐ</small></div><div class="spdemo-card"><div class="name">10/07 17:00〜22:00 ・ サンプル駅前店</div><span class="spdemo-chip blue">初勤務</span><div class="desc">Skill Passport：そのまま引き継ぎ<br>Store Guide：駅前店の差分だけ確認<br>発注：未習得のため警告</div></div>';
     else if(key==='national') h='<div class="spdemo-title"><h3>全国組織階層</h3><small>多店舗管理</small></div><div class="spdemo-tree"><div>🗾 全国</div><div class="l1">├ 北エリア（サンプル）</div><div class="l2">│ └ A県</div><div class="l3">│　└ Aブロック</div><div class="l4">│　　└ サンプル西口店</div><div class="l1">└ 南エリア（サンプル）</div><div class="l2">　└ B県</div></div><div class="spdemo-note">実運用では実在する組織名だけ登録。デモではすべて架空名称。</div>';
@@ -292,6 +292,16 @@
     hero.insertAdjacentElement('afterend',d);
   }
 
+  function addRecruitmentCard(){
+    const home=document.getElementById('home');
+    const pitch=document.getElementById('spdemoPitch');
+    if(!home || !pitch || document.getElementById('spdemoRecruitment')) return;
+    const sec=document.createElement('section');
+    sec.id='spdemoRecruitment'; sec.className='section';
+    sec.innerHTML='<div class="head"><h3>シフト</h3><small>最新デモ</small></div><div class="card tapcard" style="border-color:#f5c27f;background:#fff9f0" onclick="SPDemo.open();SPDemo.detail(\'shift-request\')"><div class="row"><div class="grow"><div class="title" style="font-size:18px">シフト希望受付中</div><div class="sub">10/1〜10/15 ・ 締切 9/28 23:59</div></div><span class="tag amber">締切間近</span></div><div class="sub" style="margin-top:8px">曜日一括休み・期間休み・締切後申請にも対応 →</div></div>';
+    pitch.insertAdjacentElement('afterend',sec);
+  }
+
   function addShiftLatest(){
     const page=document.getElementById('shift');
     if(!page || document.getElementById('spdemoShiftLatest')) return;
@@ -318,7 +328,7 @@
   };
 
   function init(){
-    css(); ensureOverlay(); addFab(); addHomePitch(); addShiftLatest(); refreshHomeDate();
+    css(); ensureOverlay(); addFab(); addHomePitch(); addRecruitmentCard(); addShiftLatest(); refreshHomeDate();
   }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
 })();
