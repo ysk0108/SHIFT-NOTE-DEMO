@@ -1,10 +1,11 @@
-const CACHE_NAME = 'shift-note-shell-v1';
+const CACHE_NAME = 'skill-passport-demo-v2';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
   './pwa-icon.svg',
-  './pwa-client.js'
+  './pwa-client.js',
+  './demo-showcase.js'
 ];
 
 self.addEventListener('install', event => {
