@@ -120,7 +120,7 @@
   }
 
   function overview(){
-    let html='<div class="spdemo-hero"><span class="spdemo-badge">上司・企業向けプレゼンモード</span><h3>人が変わっても、店が変わっても、仕事の情報が途切れない。</h3><p>Skill Passport・店舗知識・シフト・マニュアル・引き継ぎを一つにつなぐ店舗オペレーション基盤。</p><div class="spdemo-kpis"><div class="spdemo-kpi"><strong>22</strong><span>主要機能をデモ化</span></div><div class="spdemo-kpi"><strong>3</strong><span>クルー / 店長 / 本部</span></div><div class="spdemo-kpi"><strong>1</strong><span>一つの業務基盤</span></div></div><div class="spdemo-actions"><button class="spdemo-btn white" onclick="SPDemo.tour(0)">▶ 60秒で見る</button><button class="spdemo-btn blue" onclick="SPDemo.scrollFeatures()">全機能を見る</button></div></div>';
+    let html='<div class="spdemo-hero"><span class="spdemo-badge">上司・企業向けプレゼンモード</span><h3>人が変わっても、店が変わっても、仕事の情報が途切れない。</h3><p>Skill Passport・店舗知識・シフト・マニュアル・引き継ぎを一つにつなぐ店舗オペレーション基盤。</p><div class="spdemo-kpis"><div class="spdemo-kpi"><strong>24</strong><span>主要機能をデモ化</span></div><div class="spdemo-kpi"><strong>3</strong><span>クルー / 店長 / 本部</span></div><div class="spdemo-kpi"><strong>1</strong><span>一つの業務基盤</span></div></div><div class="spdemo-actions"><button class="spdemo-btn white" onclick="SPDemo.tour(0)">▶ 60秒で見る</button><button class="spdemo-btn blue" onclick="SPDemo.scrollFeatures()">全機能を見る</button></div></div>';
     html+='<div class="spdemo-title"><h3>役職ごとに見る価値</h3><small>同じデータを違う視点で利用</small></div><div class="spdemo-tabs"><button class="on" onclick="SPDemo.persona(this,\'crew\')">クルー</button><button onclick="SPDemo.persona(this,\'manager\')">店長</button><button onclick="SPDemo.persona(this,\'hq\')">本部</button></div><div id="spdemoPersona">'+personaHtml('crew')+'</div>';
     html+='<div id="spdemoFeatureStart"></div>';
     featureGroups.forEach(function(group){
