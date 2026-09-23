@@ -289,7 +289,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
   <div class="card"><div class="title">レギュラークルー</div><div class="sub">閲覧・確認・完了・報告</div></div>
   <div class="card"><div class="title">リーダー</div><div class="sub">＋店舗内編集・報告一次対応</div></div>
   <div class="card"><div class="title">店長</div><div class="sub">＋公開・権限管理・高緊急度対応</div></div>
-  <div class="card"><div class="title">MG</div><div class="sub">管轄全体の管理・本部連携</div></div>
+  <div class="card"><div class="title">MG</div><div class="sub">管轄内の管理</div></div>
   <div class="card"><div class="title">統括</div><div class="sub">管轄店舗を横断して管理</div></div>
   <div class="card"><div class="title">オーナー</div><div class="sub">複数店舗の確認・承認</div></div>
   
@@ -334,7 +334,7 @@ const ackState=demoPeople.map((p,i)=>({
   time:null
 }));
 ackState.forEach((p,i)=>{if(p.ack&&!p.self){const h=17+Math.floor(Math.random()*3),m=String(Math.floor(Math.random()*60)).padStart(2,'0');p.time=h+':'+m}});
-const roleLabels={regular:'レギュラークルー',leader:'リーダー',manager:'店長',owner:'オーナー',toukatsu:'統括',mg:'MG',hq:'本部'};
+const roleLabels={regular:'レギュラークルー',leader:'リーダー',manager:'店長',owner:'オーナー',toukatsu:'統括',mg:'MG',hq:'非表示'};
 const languageOptions=[
  {code:'ja',label:'日本語'},
  {code:'en',label:'English'},
@@ -1409,7 +1409,7 @@ function openAdminCenter(){
         '<div class="card"><strong>--</strong><div class="sub">未確認率</div><div class="kpidown">導入前 → 導入後</div></div>'+
         '<div class="card"><strong>--</strong><div class="sub">平均対応完了時間</div><div class="kpidown">導入前 → 導入後</div></div>'+
         '<div class="card"><strong>--</strong><div class="sub">マニュアル再確認率</div><div class="kpidown">導入前 → 導入後</div></div>'+
-        '<div class="card"><strong>--</strong><div class="sub">他店舗勤務時の質問件数</div><div class="kpidown">導入前 → 導入後</div></div>'+
+        '<div class="card"><strong>--</strong><div class="sub">応援勤務時の質問件数</div><div class="kpidown">導入前 → 導入後</div></div>'+
         '<div class="card"><strong>--</strong><div class="sub">未確認者への再通知回数</div><div class="kpidown">導入前 → 導入後</div></div>'+
         '<div class="card"><strong>--</strong><div class="sub">FAQ化できた質問数</div><div class="kpidown">パイロット中に集計</div></div>'+
       '</div>'+
