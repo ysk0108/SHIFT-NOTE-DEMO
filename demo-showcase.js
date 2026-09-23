@@ -38,16 +38,6 @@
       ]
     },
     {
-      title:'多店舗・本部運用',
-      items:[
-        ['national','🗾','全国組織階層','全国→エリア→都道府県→ブロック→店舗','店舗数が増えても同じ構造で管理'],
-        ['hq','📣','本部一括配信','全国・階層・店舗単位で通知やマニュアルを配信','全店統一と店舗ごとの差を両立'],
-        ['store-settings','⚙','店舗運用設定','必要人数・夜勤時間・警告などを店舗別設定','同じチェーンでも店舗事情に合わせられる'],
-        ['search','🔎','大人数検索','大量スタッフをページ分割して検索','全国規模で全件一括読込しない設計'],
-        ['ops','🛡','監査・障害・バックアップ','監査ログ、保持期間、障害記録、復旧履歴','企業導入時に必要な運用証跡を残す']
-      ]
-    },
-    {
       title:'基盤・安全性',
       items:[
         ['roles','🔐','役職・権限','レギュラー〜本部までサーバー側RLSで制御','画面を隠すだけではなくDB側でも権限判定'],
@@ -120,7 +110,7 @@
   }
 
   function overview(){
-    let html='<div class="spdemo-hero"><span class="spdemo-badge">上司・企業向けプレゼンモード</span><h3>人が変わっても、店が変わっても、仕事の情報が途切れない。</h3><p>Skill Passport・店舗知識・シフト・マニュアル・引き継ぎを一つにつなぐ店舗オペレーション基盤。</p><div class="spdemo-kpis"><div class="spdemo-kpi"><strong>24</strong><span>主要機能をデモ化</span></div><div class="spdemo-kpi"><strong>3</strong><span>クルー / 店長 / 本部</span></div><div class="spdemo-kpi"><strong>1</strong><span>一つの業務基盤</span></div></div><div class="spdemo-actions"><button class="spdemo-btn white" onclick="SPDemo.tour(0)">▶ 60秒で見る</button><button class="spdemo-btn blue" onclick="SPDemo.scrollFeatures()">全機能を見る</button></div></div>';
+    let html='<div class="spdemo-hero"><span class="spdemo-badge">上司・企業向けプレゼンモード</span><h3>人が変わっても、店が変わっても、仕事の情報が途切れない。</h3><p>Skill Passport・店舗知識・シフト・マニュアル・引き継ぎを一つにつなぐ店舗オペレーション基盤。</p><div class="spdemo-kpis"><div class="spdemo-kpi"><strong>19</strong><span>主要機能をデモ化</span></div><div class="spdemo-kpi"><strong>2</strong><span>クルー / 店長</span></div><div class="spdemo-kpi"><strong>1</strong><span>一つの業務基盤</span></div></div><div class="spdemo-actions"><button class="spdemo-btn white" onclick="SPDemo.tour(0)">▶ 60秒で見る</button><button class="spdemo-btn blue" onclick="SPDemo.scrollFeatures()">全機能を見る</button></div></div>';
     html+='<div class="spdemo-note"><b>デモの見方</b><br>実装済みの運用フローを架空データで再現しています。Web Push本番配信、自由記述の自動翻訳、労務・会社ルールを含む高度なシフト最適化は今後強化する領域です。</div><div class="spdemo-title"><h3>役職ごとに見る価値</h3><small>同じデータを違う視点で利用</small></div><div class="spdemo-tabs"><button class="on" onclick="SPDemo.persona(this,\'crew\')">クルー</button><button onclick="SPDemo.persona(this,\'manager\')">店長</button><button onclick="SPDemo.persona(this,\'hq\')">本部</button></div><div id="spdemoPersona">'+personaHtml('crew')+'</div>';
     html+='<div id="spdemoFeatureStart"></div>';
     featureGroups.forEach(function(group){
@@ -160,7 +150,7 @@
     ['4 / 8','希望からシフトを仮組み','必要人数と集まった希望から、店長が直せる「たたき台」を自動生成する。','__TIMELINE__'],
     ['5 / 8','スキルは「警告」に使う','スキル不足を理由に自動配置を禁止しない。配置はできるが、店長には誰が何を不足しているかを見せる。','<div class="spdemo-warn">⚠ サンプルB：フライヤー油管理が未習得</div><div class="spdemo-note">最終判断を人に残すことで、現場を止めない。</div>'],
     ['6 / 8','引き継ぎは「見た」だけで終わらせない','未確認 → 確認済み → 対応中 → 完了。誰がどこまで対応したかを残す。','<div class="spdemo-flow"><span class="on">未確認</span><span class="on">確認済み</span><span class="on">対応中</span><span class="on">完了</span></div><div class="spdemo-card"><div class="name">冷凍ケース右側の温度が高め</div><div class="desc">確認 4/5名 ・ 店長が未確認者を把握</div></div>'],
-    ['7 / 8','全国展開しても同じ構造','全国 → エリア → 県 → ブロック → 店舗。本部共通と店舗ローカルを分ける。','<div class="spdemo-tree"><div>🗾 全国</div><div class="l1">└ エリアA</div><div class="l2">└ ○○県</div><div class="l3">└ ブロックA</div><div class="l4">└ サンプル西口店</div></div>'],
+    ['7 / 8','店舗運用を一つにつなぐ','全国 → エリア → 県 → ブロック → 店舗。店舗内の運用に集中して見せる。','<div class="spdemo-card"><div class="name">店舗運用モード</div><div class="desc">現在のデモでは本部・他店舗管理は非表示。クルーと店長の現場運用に絞っています。</div></div>'],
     ['8 / 8','SKILL PASSPORTが目指すもの','シフトアプリでも、マニュアルアプリでもない。人・店舗・日々の運営を一つにつなぐ。','<div class="spdemo-card"><div class="name">店舗オペレーション基盤</div><div class="desc">Skill Passport × Store Guide × シフト仮組み × マニュアル × 引き継ぎ × 本部管理</div><div class="value">「人が変わっても、店が変わっても、仕事の情報が途切れない。」</div></div>']
   ];
 
@@ -189,6 +179,7 @@
   }
 
   function detail(key){
+    if(['national','hq','store-settings','search','ops'].includes(key)){ setBody('<div class="spdemo-title"><h3>現在非表示</h3><small>本部・他店舗管理</small></div><div class="spdemo-card"><div class="name">この機能は現在のデモでは表示していません</div><div class="desc">本部・多店舗向けの基盤は残していますが、今回の説明対象から一旦外しています。</div></div><button class="spdemo-btn ghost" onclick="SPDemo.overview()">← 全機能ガイドへ</button>'); return; }
     const common='<button class="spdemo-btn ghost" onclick="SPDemo.overview()">← 全機能ガイドへ</button>';
     let h='';
 
