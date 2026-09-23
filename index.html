@@ -122,7 +122,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
     </div>
   </div>
   <div id="guideBanner" class="banner" style="display:none"><b>📍 この店舗は初めてです</b><p>いつもの店舗との違いだけ確認。Skill Passportはそのまま引き継がれます。</p><button class="btn blue" onclick="openGuide()">Store Guideを開く</button></div>
-  <section id="hqPanel" class="section" style="display:none!important"><div class="head"><h3>本部ダッシュボード</h3><small>全店舗</small></div><div class="hq"><div class="card"><strong>7</strong><span class="sub">未確認引き継ぎ</span></div><div class="card"><strong>2</strong><span class="sub">高・緊急報告</span></div><div class="card"><strong>5</strong><span class="sub">再確認待ち</span></div><div class="card"><strong>3</strong><span class="sub">未対応Help</span></div></div></section>
+  
   <section class="section"><div class="head"><h3>今日の重要事項</h3><small>引き継ぎ</small></div>
     <div class="card" id="sharedReportCard">
       <div class="row"><div class="grow"><div class="title">共有報告：冷凍ケース右側の温度が高め</div><div class="sub">現在7℃。継続監視してください。</div></div><span class="tag amber">通常</span></div>
@@ -170,15 +170,15 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
 
 <main id="manuals" class="page">
 <button class="pageback" onclick="goBack()">← 戻る</button>
-<section class="section"><div class="head"><h3>業務マニュアル</h3><small>本部作成・QR対応</small></div>
+<section class="section"><div class="head"><h3>業務マニュアル</h3><small>管理者作成・QR対応</small></div>
   <div class="qrhero">
     <div class="title">▦ QRで映像マニュアルを開く</div>
-    <div class="sub">機器に貼ったQRをかざすと、本部が作成した最新版の映像マニュアルへ直接移動します。</div>
+    <div class="sub">機器に貼ったQRをかざすと、管理者が作成した最新版の映像マニュアルへ直接移動します。</div>
     <button class="btn full" style="margin-top:12px;background:#fff;color:#101828" onclick="openQRScanner()">QRをかざす</button>
   </div>
   <input class="input" placeholder="業務を検索">
-  <div class="card"><div class="row"><div class="grow"><div class="title">🎬 コピー機の用紙補充</div><div class="sub">本部作成・映像 1:42・v1.3・2026/09/20更新</div></div><span class="tag red">再確認必要</span></div><button class="btn blue full" style="margin-top:10px" onclick="showVideoManual()">映像を見る</button></div>
-  <div class="card"><div class="title">🧾 公共料金受付</div><div class="sub">本部作成・映像 2:18・v2.0・最新版確認済み</div></div>
+  <div class="card"><div class="row"><div class="grow"><div class="title">🎬 コピー機の用紙補充</div><div class="sub">管理者作成・映像 1:42・v1.3・2026/09/20更新</div></div><span class="tag red">再確認必要</span></div><button class="btn blue full" style="margin-top:10px" onclick="showVideoManual()">映像を見る</button></div>
+  <div class="card"><div class="title">🧾 公共料金受付</div><div class="sub">管理者作成・映像 2:18・v2.0・最新版確認済み</div></div>
 </section>
 <section class="section"><div class="quickhelp"><div class="qhhead"><div><div class="qhtitle">報告・質問</div><div class="sub">異常報告や分からないことをその場から送れます。</div></div><span class="tag blue">Quick</span></div><div class="qhbuttons"><button onclick="openReportQuick('report')">! 報告する</button><button onclick="openReportQuick('question')">? 質問する</button></div></div></section>
 </main>
@@ -218,7 +218,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
         <option>MG</option>
         <option>統括</option>
         <option>オーナー</option>
-        <option>本部</option>
+        
       </select>
       <div class="sub">レギュラークルー／リーダーは宛先に表示しません。</div>
     </div>
@@ -292,7 +292,7 @@ input,textarea,select{font:inherit}.input{width:100%;border:1px solid var(--line
   <div class="card"><div class="title">MG</div><div class="sub">管轄全体の管理・本部連携</div></div>
   <div class="card"><div class="title">統括</div><div class="sub">管轄店舗を横断して管理</div></div>
   <div class="card"><div class="title">オーナー</div><div class="sub">複数店舗の確認・承認</div></div>
-  <div class="card"><div class="title">本部</div><div class="sub">全店共通マニュアル・全店舗監視</div></div>
+  
 </section>
 </main>
 
@@ -687,7 +687,7 @@ const maximalPhraseI18n=[
  {ja:'この端末',en:'This device','zh-CN':'此设备',ko:'이 기기',vi:'Thiết bị này',ne:'यो उपकरण',pt:'Este dispositivo',si:'මෙම උපාංගය',ta:'இந்த சாதனம்'},
  {ja:'社員ID + Face ID',en:'Employee ID + Face ID','zh-CN':'员工ID + Face ID',ko:'사원 ID + Face ID',vi:'ID nhân viên + Face ID',ne:'कर्मचारी ID + Face ID',pt:'ID do funcionário + Face ID',si:'සේවක ID + Face ID',ta:'பணியாளர் ID + Face ID'},
  {ja:'映像の内容',en:'Video contents','zh-CN':'视频内容',ko:'영상 내용',vi:'Nội dung video',ne:'भिडियो सामग्री',pt:'Conteúdo do vídeo',si:'වීඩියෝ අන්තර්ගතය',ta:'வீடியோ உள்ளடக்கம்'},
- {ja:'本部からの注意',en:'HQ note','zh-CN':'总部注意事项',ko:'본부 주의사항',vi:'Lưu ý từ trụ sở',ne:'मुख्यालय सूचना',pt:'Aviso da sede',si:'මූලස්ථාන සටහන',ta:'தலைமையக குறிப்பு'},
+ {ja:'管理者からの注意',en:'HQ note','zh-CN':'总部注意事项',ko:'본부 주의사항',vi:'Lưu ý từ trụ sở',ne:'मुख्यालय सूचना',pt:'Aviso da sede',si:'මූලස්ථාන සටහන',ta:'தலைமையக குறிப்பு'},
  {ja:'確認しました',en:'Confirmed','zh-CN':'已确认',ko:'확인했습니다',vi:'Đã xác nhận',ne:'पुष्टि गरियो',pt:'Confirmado',si:'තහවුරු කළා',ta:'உறுதிப்படுத்தப்பட்டது'},
  {ja:'最新版を確認しました',en:'Latest version confirmed','zh-CN':'已确认最新版',ko:'최신 버전 확인 완료',vi:'Đã xác nhận phiên bản mới nhất',ne:'नवीनतम संस्करण पुष्टि',pt:'Versão mais recente confirmada',si:'නවතම අනුවාදය තහවුරු කළා',ta:'சமீபத்திய பதிப்பு உறுதிப்படுத்தப்பட்டது'},
  {ja:'最終更新',en:'Last updated','zh-CN':'最后更新',ko:'최종 업데이트',vi:'Cập nhật gần nhất',ne:'अन्तिम अपडेट',pt:'Última atualização',si:'අවසන් යාවත්කාලීන කිරීම',ta:'கடைசி புதுப்பிப்பு'},
@@ -842,7 +842,7 @@ const handovers=[
 const notifications=[
  {id:1,type:'再通知',title:'共有報告が未確認です',body:'「冷凍ケース右側の温度が高め」を確認してください。',read:false},
  {id:2,type:'期限超過',title:'引き継ぎの期限を超過',body:'「冷凍ケース右側の温度上昇」・担当 山本直樹・期限 19:30',read:false},
- {id:3,type:'マニュアル更新',title:'コピー機マニュアル v1.3',body:'本部が更新しました。再確認が必要です。',read:false},
+ {id:3,type:'マニュアル更新',title:'コピー機マニュアル v1.3',body:'管理者が更新しました。再確認が必要です。',read:false},
  {id:4,type:'非公開質問',title:'店長宛の質問',body:'レギュラークルーから非公開質問が届いています。',read:true}
 ];
 const adminAccounts=[
@@ -859,7 +859,7 @@ let lastBackup='本日 18:30';
 const auditLogs=[
  {time:'19:48',text:'渡邉友介が引き継ぎ「冷凍ケース右側の温度上昇」を完了'},
  {time:'19:42',text:'渡邉友介が全体報告を確認'},
- {time:'19:10',text:'本部が「コピー機の用紙補充」v1.3を公開'},
+ {time:'19:10',text:'管理者が「コピー機の用紙補充」v1.3を公開'},
  {time:'18:55',text:'佐藤美咲が店長宛に非公開質問を送信'},
  {time:'18:30',text:'自動バックアップ完了'}
 ];
@@ -1275,13 +1275,13 @@ function openReportQuick(mode){
 function applyStore(){const s=document.getElementById('store').value;document.getElementById('homeTitle').textContent=s+'の今日';document.getElementById('guideBanner').style.display=s==='西口店'?'none':'block';refreshUserWatermark()}
 function applyRole(){const r=currentAccountRole;document.getElementById('hqPanel').style.display=r==='hq'?'block':'none';const rn=document.getElementById('roleName');if(rn)rn.textContent=(roleLabels[r]||r)+'（アカウント登録）';const ms=document.getElementById('managerShiftSection');if(ms)ms.style.display=roleRank[r]>=roleRank.manager?'block':'none';refreshUserWatermark()}
 function urgency(btn,l){currentUrgency=l;document.querySelectorAll('.urg button').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('urgNote').textContent={
-低:'低：全クルー共有＋本部以外のリーダー以上へ通知。',
-通常:'通常：全クルー共有＋本部以外のリーダー以上へ通知。',
+低:'低：全クルー共有＋リーダー以上へ通知。',
+通常:'通常：全クルー共有＋リーダー以上へ通知。',
 高:'高：店長以上へ通知。',
 緊急:'緊急：店長以上へ即時通知・エスカレーション。'}[l]}
 function submitReport(){const t=document.getElementById('reportText').value.trim();if(!t)return toast('状況を入力してください');const msg={
-低:'全クルー共有＋本部以外のリーダー以上へ通知しました',
-通常:'全クルー共有＋本部以外のリーダー以上へ通知しました',
+低:'全クルー共有＋リーダー以上へ通知しました',
+通常:'全クルー共有＋リーダー以上へ通知しました',
 高:'店長以上へ通知しました',
 緊急:'店長以上へ緊急通知・エスカレーションしました'}[currentUrgency];toast(msg);document.getElementById('reportText').value='';clearPreview('reportPreview')}
 function setHelpVisibility(v){
@@ -1377,18 +1377,17 @@ function openAdminCenter(){
     '</div>').join('');
   const secRow=(key,title,desc)=>'<div class="controlrow"><div><div class="title">'+title+'</div><div class="sub">'+desc+'</div></div><div class="switch '+(securityState[key]?'on':'')+'" onclick="toggleSecurity(\''+key+'\')"></div></div>';
   const logs=auditLogs.map(x=>'<div class="logline"><div class="logtime">'+x.time+'</div><div class="logtext">'+x.text+'</div></div>').join('');
-  const permRoles=['regular','leader','manager','mg','toukatsu','owner','hq'];
+  const permRoles=['regular','leader','manager','mg','toukatsu','owner'];
   const permRows=[
-    ['自分のSkill Passport',['✓','✓','✓','✓','✓','✓','✓']],
-    ['店舗の公開マニュアル',['✓','✓','✓','✓','✓','✓','✓']],
-    ['自分のシフト・希望提出',['✓','✓','✓','✓','✓','✓','✓']],
-    ['シフト作成・承認',['—','—','✓','✓','✓','✓','✓']],
-    ['店舗追加・名称変更の申請',['—','—','✓','✓','✓','✓','✓']],
-    ['店舗マスタの承認・反映',['—','—','✓','✓','✓','✓','✓']],
-    ['確認状況一覧',['—','—','✓','✓','✓','✓','✓']],
-    ['アカウント管理',['—','—','✓','✓','✓','✓','✓']],
-    ['監査ログ',['—','—','—','—','—','✓','✓']],
-    ['本部公開管理',['—','—','—','—','—','—','✓']]
+    ['自分のSkill Passport',['✓','✓','✓','✓','✓','✓']],
+    ['店舗の公開マニュアル',['✓','✓','✓','✓','✓','✓']],
+    ['自分のシフト・希望提出',['✓','✓','✓','✓','✓','✓']],
+    ['シフト作成・承認',['—','—','✓','✓','✓','✓']],
+    ['店舗追加・名称変更の申請',['—','—','✓','✓','✓','✓']],
+    ['店舗マスタの承認・反映',['—','—','✓','✓','✓','✓']],
+    ['確認状況一覧',['—','—','✓','✓','✓','✓']],
+    ['アカウント管理',['—','—','✓','✓','✓','✓']],
+    ['監査ログ',['—','—','—','—','—','✓']],
   ];
   const permissionTable='<div class="permtable"><table><tr><th>機能</th>'+permRoles.map(x=>'<th>'+roleLabels[x]+'</th>').join('')+'</tr>'+permRows.map(row=>'<tr><td>'+row[0]+'</td>'+row[1].map(v=>'<td class="'+(v==='✓'?'permok':'permno')+'">'+v+'</td>').join('')+'</tr>').join('')+'</table></div>';
   const auditSection=roleRank[currentAccountRole]>=roleRank.owner
@@ -1809,10 +1808,10 @@ function simulateQRRead(){stopQR();toast('QRを読み取りました');setTimeou
 function showVideoManual(){
   stopQR();videoDemoPlaying=false;
   document.getElementById('modalBody').innerHTML=
-    '<h3>🎬 コピー機の用紙補充</h3><div class="sub">本部作成・v1.3・最終更新 2026/09/20</div>'+
+    '<h3>🎬 コピー機の用紙補充</h3><div class="sub">管理者作成・v1.3・最終更新 2026/09/20</div>'+
     '<div class="videoplayer"><div class="videoframe" id="videoFrame"><button class="playbtn" id="playBtn" onclick="toggleVideoDemo()">▶</button></div><div class="timeline"><span id="videoProgress"></span></div><div class="videometa"><span id="videoTime">0:00</span><span>1:42</span></div></div>'+
     '<div class="card"><div class="title">映像の内容</div><div class="sub">① 側面カバーを開く → ② 用紙をそろえてセット → ③ 紙詰まり表示を確認</div></div>'+
-    '<div class="card"><div class="title">本部からの注意</div><div class="sub">用紙の向きとトレイ番号を必ず確認してください。更新時は再確認が必要です。</div></div>'+
+    '<div class="card"><div class="title">管理者からの注意</div><div class="sub">用紙の向きとトレイ番号を必ず確認してください。更新時は再確認が必要です。</div></div>'+
     '<button class="btn primary full" onclick="closeModal();toast(\'映像マニュアルの確認を記録しました\')">確認しました</button>';
   document.getElementById('modal').classList.add('open');
 }
